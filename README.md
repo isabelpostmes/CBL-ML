@@ -17,4 +17,4 @@ $ git pull    (Downloads everything from Git that is different from what you hav
 # ---------------------------------------------------------------------------------
 
 
-I hope this helps, but keep in mind this are just the basic commands, check https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html to see every command possible.
+I hope this helps, but keep in mind these are just the basic commands, check https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html to see every command possible.
