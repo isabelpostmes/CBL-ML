@@ -6,7 +6,7 @@ $ git status     (show which files have been changed by you in comparison to wha
 
 $ git add <files you changed>    (add to the upload list the files you changed and want to be added to Git)
 
-$ git commit -m ":sparkles: A small description of what you are adding and changed compared to what is in Git at the moment" 
+$ git commit -m ":"sparkles": A small description of what you are adding and changed compared to what is in Git at the moment" 
 
 $ git push     (Uploads everything that you commited)
 
