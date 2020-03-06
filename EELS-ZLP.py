@@ -16,7 +16,7 @@ from scipy.signal import savgol_filter
 
 # Spectrum1, read the intensity
 ndat=63
-EELSData_intensity_zlp_1 = np.loadtxt("data/Spectrum1.txt")
+EELSData_intensity_zlp_1 = np.loadtxt("Data/Spectrum1.txt")
 
 # Energy loss values
 EELSData_Eloss_1 = np.zeros(ndat)
@@ -32,7 +32,7 @@ while(i<ndat):
 
 # Spectrum2, read the intensity
 ndat=59
-EELSData_intensity_zlp_2 = np.loadtxt("data/Spectrum2.txt")
+EELSData_intensity_zlp_2 = np.loadtxt("Data/Spectrum2.txt")
 
 # Energy loss values
 EELSData_Eloss_2 = np.zeros(ndat)
@@ -48,7 +48,7 @@ while(i<ndat):
 
 # Spectrum3, read the intensity
 ndat=63
-EELSData_intensity_zlp_3 = np.loadtxt("data/Spectrum3.txt")
+EELSData_intensity_zlp_3 = np.loadtxt("Data/Spectrum3.txt")
 
 # Energy loss values
 EELSData_Eloss_3 = np.zeros(ndat)
@@ -64,7 +64,7 @@ while(i<ndat):
 
 # Spectrum4, read the intensity
 ndat=52
-EELSData_intensity_zlp_4 = np.loadtxt("data/Spectrum4.txt")
+EELSData_intensity_zlp_4 = np.loadtxt("Data/Spectrum4.txt")
 
 # Energy loss values
 EELSData_Eloss_4 = np.zeros(ndat)
@@ -80,7 +80,7 @@ while(i<ndat):
 
 # Spectrum5, read the intensity
 ndat=40
-EELSData_intensity_zlp_5 = np.loadtxt("data/Spectrum5.txt")
+EELSData_intensity_zlp_5 = np.loadtxt("Data/Spectrum5.txt")
 
 # Energy loss values
 EELSData_Eloss_5 = np.zeros(ndat)
