@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Overview
 
 ### neuralnetworksanddeeplearning.com integrated scripts for Python 3.5.2 and Theano with CUDA support
@@ -11,3 +12,6 @@ The testing file (**test.py**) contains all three networks (network.py, network2
 In test.py there are examples of networks configurations with proper comments. I did that to relate with particular chapters from the book.
 
 
+=======
+# thesis
+>>>>>>> a8ba46826043911acdb422693ed34ce56aedcb25
