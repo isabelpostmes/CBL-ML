@@ -1,20 +1,13 @@
-# Hello Alien Friends!
-For those who don't know/remember, here you have the major steps for uploading or downloading stuff.
+## Overview
 
-# Uploading:
-$ git status     (show which files have been changed by you in comparison to what is uploaded at the moment in Git)
+### neuralnetworksanddeeplearning.com integrated scripts for Python 3.5.2 and Theano with CUDA support
 
-$ git add <files you changed>    (add to the upload list the files you changed and want to be added to Git)
+These scrips are updated ones from the **neuralnetworksanddeeplearning.com** gitHub repository in order to work with Python 3.5.2
 
-$ git commit -m " : sparkles: A small description of what you are adding and changed compared to what is in Git at the moment" 
+The testing file (**test.py**) contains all three networks (network.py, network2.py, network3.py) from the book and it is the starting point to run (i.e. *train and evaluate*) them.
 
-$ git push     (Uploads everything that you commited)
+## Just type at shell: **python3.5 test.py**
 
-
-# Downloading
-$ git pull    (Downloads everything from Git that is different from what you have in your pc)
-
-# ---------------------------------------------------------------------------------
+In test.py there are examples of networks configurations with proper comments. I did that to relate with particular chapters from the book.
 
 
-I hope this helps, but keep in mind these are just the basic commands, check https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html to see every command possible.
