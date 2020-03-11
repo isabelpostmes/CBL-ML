@@ -12,7 +12,7 @@ File where training and validation data is loaded and prepared.
 In this notebook consists of the neural network programming, trains on the data and gives output.
 
 ### history.csv
-Output values (loss, accuracy, ...) from the NN, training over epochs. 
+Output values (loss, chi square, accuracy, ...) from the NN, training over epochs. 
 
 
 
