@@ -135,8 +135,8 @@ x_train, y_train_norm, x_val, y_val = prepare_single_data()
 
 def prepare_semisingle_data():
     '''Training set of many copies of one single spectrum'''
-    y_train = EELSData_intensity_zlp_2
-    x_train = EELSData_Eloss_2
+    y_train = EELSData_intensity_zlp_1
+    x_train = EELSData_Eloss_1
 
     vector = np.ones(N_train)
     x_train =  np.swapaxes( (np.reshape(vector,[N_train,1, 1]) * x_train), 1, 2)
@@ -172,15 +172,21 @@ def prepare_semisingle_data():
 
 import random
 
+seednumber = np.random.randint(100)
+print("Seed number for this set is:", seednumber)
+
 def sequence():
     N_data = 10000
     x = [random.randint(0,4) for i in range(N_data)]
     return x
 
-def prepare_x_data(maxim):
-        N_data = 10000
+def prepare_x_data():
+        N_train = 10000
+        N_val = 2000
+        N_train_tot = (N_train-N_val)*50
+        
         xdata1, x2, x3, x4, x5 = EELSData_Eloss_1, EELSData_Eloss_2, EELSData_Eloss_3, EELSData_Eloss_4, EELSData_Eloss_5
-        random.seed(9001)
+        random.seed(seednumber)
         array1 = sequence()
         mix_x = array1
         
@@ -197,10 +203,15 @@ def prepare_x_data(maxim):
                 mix_x[n] = x5
 
         mix_x = np.concatenate(mix_x)
-        x_train, x_val = mix_x[:maxim], mix_x[maxim:]
+        x_train, x_val = mix_x[:N_train_tot], mix_x[N_train_tot:]
         return x_train, x_val
     
-def prepare_y_data(maxim):
+def prepare_y_data():
+        N_train = 10000
+        N_data = 10000
+        N_val = 2000
+        N_train_tot = (N_train-N_val)*50
+        
         y1, y2, y3, y4, y5 = EELSData_intensity_zlp_1, EELSData_intensity_zlp_2, EELSData_intensity_zlp_3, EELSData_intensity_zlp_4, EELSData_intensity_zlp_5
         y1 = np.divide(y1, max(y1))
         y2 = np.divide(y2, max(y2))
@@ -208,7 +219,7 @@ def prepare_y_data(maxim):
         y4 = np.divide(y4, max(y4))
         y5 = np.divide(y5, max(y5))
         
-        random.seed(9001)
+        random.seed(seednumber)
         array2 = sequence()
         mix_y = array2
         
@@ -226,19 +237,15 @@ def prepare_y_data(maxim):
                 mix_y[n] = y5    
         
         mix_y = np.concatenate(mix_y)
-        y_train, y_val = mix_y[:maxim], mix_y[maxim:]
+        y_train, y_val = mix_y[:N_train_tot], mix_y[N_train_tot:]
         
         
         return y_train, y_val
     
 def prepare_mix_data():
-    N_train = 10000
-    N_data = 10000
-    maxim = N_train*40
-    N_val = 2000
 
-    x_train, x_val = prepare_x_data(400000)
-    y_train, y_val = prepare_y_data(400000)    
+    x_train, x_val = prepare_x_data()
+    y_train, y_val = prepare_y_data()    
     
     return x_train, y_train, x_val, y_val
 
