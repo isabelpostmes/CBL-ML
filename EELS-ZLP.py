@@ -12,7 +12,6 @@ from scipy.signal import savgol_filter
 
 ##################################################
 # Read data from file
-#
 
 # Spectrum1, read the intensity
 ndat=63
@@ -96,9 +95,12 @@ while(i<ndat):
 print("\n ************************ Data files have been prepared ***************************** \n")
 
 
-N_train = 10000
-N_val = 2000
+N_train = 1000
+N_data = N_train
+N_val = 200
 N_test = N_val
+N_train_tot = (N_train-N_val)*50
+
 
 def truncate(n, decimals=0):
     multiplier = 10 ** decimals
@@ -131,7 +133,6 @@ def prepare_single_data():
     x_train, y_train, x_val, y_val = np.around(x_train, 4), np.around(y_train, 4), np.around(x_val, 4), np.around(y_val, 4)
     return x_train, y_train, x_val, y_val
 
-x_train, y_train_norm, x_val, y_val = prepare_single_data()
 
 def prepare_semisingle_data():
     '''Training set of many copies of one single spectrum'''
@@ -176,14 +177,10 @@ seednumber = np.random.randint(100)
 print("Seed number for this set is:", seednumber)
 
 def sequence():
-    N_data = 10000
     x = [random.randint(0,4) for i in range(N_data)]
     return x
 
 def prepare_x_data():
-        N_train = 10000
-        N_val = 2000
-        N_train_tot = (N_train-N_val)*50
         
         xdata1, x2, x3, x4, x5 = EELSData_Eloss_1, EELSData_Eloss_2, EELSData_Eloss_3, EELSData_Eloss_4, EELSData_Eloss_5
         random.seed(seednumber)
@@ -207,17 +204,14 @@ def prepare_x_data():
         return x_train, x_val
     
 def prepare_y_data():
-        N_train = 10000
-        N_data = 10000
-        N_val = 2000
-        N_train_tot = (N_train-N_val)*50
         
         y1, y2, y3, y4, y5 = EELSData_intensity_zlp_1, EELSData_intensity_zlp_2, EELSData_intensity_zlp_3, EELSData_intensity_zlp_4, EELSData_intensity_zlp_5
-        y1 = np.divide(y1, max(y1))
-        y2 = np.divide(y2, max(y2))
-        y3 = np.divide(y3, max(y3))
-        y4 = np.divide(y4, max(y4))
-        y5 = np.divide(y5, max(y5))
+        normalization = max(y1)
+        y1 = np.divide(y1, normalization)
+        y2 = np.divide(y2, normalization)
+        y3 = np.divide(y3, normalization)
+        y4 = np.divide(y4, normalization)
+        y5 = np.divide(y5, normalization)
         
         random.seed(seednumber)
         array2 = sequence()
@@ -251,3 +245,18 @@ def prepare_mix_data():
 
 print('\n ****************** Training and validation sets have been prepared **************** \n')
 print(' prepare_single_data \n prepare_semisingle_data \n prepare_mixed_data')
+
+import matplotlib.pyplot as plt
+
+x_train, y_train, x_val, y_val = prepare_mix_data()
+N_train_tot = len(x_train)
+N_val_tot = len(x_val)
+
+x_train.reshape(N_train_tot, 1)
+y_train.reshape(N_train_tot, 1)
+x_val.reshape(N_val_tot, 1)
+y_val.reshape(N_val_tot, 1)
+
+plt.plot(x_train[2000:2400], y_train[2000:2400], 'o')
+plt.title('200 training points')
+plt.show()
