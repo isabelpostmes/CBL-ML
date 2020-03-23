@@ -10,6 +10,8 @@ from io import StringIO
 from scipy.signal import savgol_filter
 ###############################################
 
+mode = 'Mixture'
+
 ##################################################
 # Read data from file
 
@@ -99,7 +101,6 @@ N_train = 1000
 N_data = N_train
 N_val = 200
 N_test = N_val
-N_train_tot = (N_train-N_val)*50
 
 
 def truncate(n, decimals=0):
@@ -111,27 +112,19 @@ def prepare_single_data():
     y_train = EELSData_intensity_zlp_2
     x_train = EELSData_Eloss_2
 
-
     vector = np.ones(N_train)
     x_train =  np.swapaxes( (np.reshape(vector,[N_train,1, 1]) * x_train), 1, 2)
-    x_val = x_train[N_train-N_test:]
-    x_train = x_train[:(N_train-N_test)]
     
     y_train = np.swapaxes( (np.reshape(vector,[N_train,1, 1]) * y_train), 1, 2)
     ### Normalization
     y_max = np.max(y_train, axis=1)
     y_train_norm = np.divide(y_train, y_max[:, None, :])
     y_train_norm = np.squeeze(y_train_norm, axis=2)
-    y_val = y_train_norm[N_train-N_test:]
-    y_train = y_train_norm[:(N_train-N_test)]
 
-    y_train = y_train.flatten()
+    y_train = y_train_norm.flatten()
     x_train = x_train.flatten()
-    y_val = y_val.flatten()
-    x_val = x_val.flatten()
     
-    x_train, y_train, x_val, y_val = np.around(x_train, 4), np.around(y_train, 4), np.around(x_val, 4), np.around(y_val, 4)
-    return x_train, y_train, x_val, y_val
+    return x_train, y_train
 
 
 def prepare_semisingle_data():
@@ -200,8 +193,8 @@ def prepare_x_data():
                 mix_x[n] = x5
 
         mix_x = np.concatenate(mix_x)
-        x_train, x_val = mix_x[:N_train_tot], mix_x[N_train_tot:]
-        return x_train, x_val
+    
+        return mix_x
     
 def prepare_y_data():
         
@@ -231,31 +224,43 @@ def prepare_y_data():
                 mix_y[n] = y5    
         
         mix_y = np.concatenate(mix_y)
-        y_train, y_val = mix_y[:N_train_tot], mix_y[N_train_tot:]
-        
-        
-        return y_train, y_val
+
+        return mix_y
     
+from sklearn.model_selection import train_test_split
+
 def prepare_mix_data():
 
-    x_train, x_val = prepare_x_data()
-    y_train, y_val = prepare_y_data()    
+    x_train = prepare_x_data()
+    y_train = prepare_y_data()  
+    
+    df = np.stack((x_train, y_train)).T
+    np.matrix(df)
+    
+    #splitting data randomly to train and test using the sklearn library
+    df_train, df_test = train_test_split(df, test_size=0.2)
+    x_train = df_train[:,0]
+    y_train = df_train[:,1]
+    x_val = df_test[:,0]
+    y_val = df_test[:,1]
     
     return x_train, y_train, x_val, y_val
 
 print('\n ****************** Training and validation sets have been prepared **************** \n')
-print(' prepare_single_data \n prepare_semisingle_data \n prepare_mixed_data')
+print(' prepare_single_data \n prepare_semisingle_data \n prepare_mix_data')
 
 import matplotlib.pyplot as plt
 
-x_train, y_train, x_val, y_val = prepare_mix_data()
+if mode == 'Mixture':
+    x_train, y_train, x_val, y_val = prepare_mix_data()
+    
+if mode == 'Single':
+    x_train, y_train = prepare_single_data()
+    
 N_train_tot = len(x_train)
-N_val_tot = len(x_val)
 
 x_train.reshape(N_train_tot, 1)
 y_train.reshape(N_train_tot, 1)
-x_val.reshape(N_val_tot, 1)
-y_val.reshape(N_val_tot, 1)
 
 plt.plot(x_train[2000:2400], y_train[2000:2400], 'o')
 plt.title('200 training points')
