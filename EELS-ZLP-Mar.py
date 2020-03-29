@@ -15,6 +15,9 @@ mode = 'Mixture'
 ##################################################
 # Read data from file
 
+minval = 180
+maxval= 230
+
 # Spectrum1, read the intensity
 
 EELSData_intensity_zlp_1 = np.loadtxt("Data/Mar/ZLP_200keV_100ms_Spectrum1_m0d9567eV_8p6eV.txt")
@@ -23,12 +26,13 @@ ndat=int(len(EELSData_intensity_zlp_1))
 EELSData_Eloss_1 = np.zeros(ndat)
 Eloss_min = -0.9567 # eV
 Eloss_max = +8.6 # eV
-
 i=0
 while(i<ndat):
     EELSData_Eloss_1[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
+EELSData_intensity_zlp_1 = EELSData_intensity_zlp_1[minval:maxval]
+EELSData_Eloss_1 = EELSData_Eloss_1[minval:maxval]
 
 
 # Spectrum2, read the intensity
@@ -38,13 +42,13 @@ ndat=int(len(EELSData_intensity_zlp_2))
 EELSData_Eloss_2 = np.zeros(ndat)
 Eloss_min = -0.947 # eV
 Eloss_max = +8.468 # eV
-
 i=0
 while(i<ndat):
     EELSData_Eloss_2[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
-
+EELSData_Eloss_2 = EELSData_Eloss_2[minval:maxval]
+EELSData_intensity_zlp_2 = EELSData_intensity_zlp_2[minval:maxval]
 
 # Spectrum3, read the intensity
 EELSData_intensity_zlp_3 = np.loadtxt("Data/Mar/ZLP_200keV_100ms_Spectrum3_m0d94eV_8p3603eV.txt")
@@ -53,13 +57,13 @@ ndat=int(len(EELSData_intensity_zlp_3))
 EELSData_Eloss_3 = np.zeros(ndat)
 Eloss_min = -0.94 # eV
 Eloss_max = +8.3603 # eV
-
 i=0
 while(i<ndat):
     EELSData_Eloss_3[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
-
+EELSData_Eloss_3 = EELSData_Eloss_3[minval:maxval]
+EELSData_intensity_zlp_3 = EELSData_intensity_zlp_3[minval:maxval]
 
 # Spectrum4, read the intensity
 EELSData_intensity_zlp_4 = np.loadtxt("Data/Mar/ZLP_200keV_100ms_Spectrum4_m0d961eV_8p7343eV.txt")
@@ -68,13 +72,13 @@ ndat=int(len(EELSData_intensity_zlp_4))
 EELSData_Eloss_4 = np.zeros(ndat)
 Eloss_min = -0.961 # eV
 Eloss_max = +8.7343 # eV
-
 i=0
 while(i<ndat):
     EELSData_Eloss_4[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
-
+EELSData_Eloss_4 = EELSData_Eloss_4[minval:maxval]
+EELSData_intensity_zlp_4 = EELSData_intensity_zlp_4[minval:maxval]
 
 # Spectrum5, read the intensity
 EELSData_intensity_zlp_5 = np.loadtxt("Data/Mar/ZLP_200keV_100ms_Spectrum5_m0d951eV_8p5967eV.txt")
@@ -83,13 +87,14 @@ ndat=int(len(EELSData_intensity_zlp_5))
 EELSData_Eloss_5 = np.zeros(ndat)
 Eloss_min = -0.951 # eV
 Eloss_max = +8.5967 # eV
-
 i=0
 while(i<ndat):
     EELSData_Eloss_5[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
-    
+EELSData_Eloss_5 = EELSData_Eloss_5[minval:maxval] 
+EELSData_intensity_zlp_5 = EELSData_intensity_zlp_5[minval:maxval]
+
 # Spectrum6, read the intensity
 EELSData_intensity_zlp_6 = np.loadtxt("Data/Mar/ZLP_200keV_100ms_Spectrum6_m0d852eV_7p4173eV.txt")
 ndat=int(len(EELSData_intensity_zlp_6))
@@ -97,13 +102,14 @@ ndat=int(len(EELSData_intensity_zlp_6))
 EELSData_Eloss_6 = np.zeros(ndat)
 Eloss_min = -0.852 # eV
 Eloss_max = +7.4173 # eV
-
 i=0
 while(i<ndat):
     EELSData_Eloss_6[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
-    
+EELSData_Eloss_6 = EELSData_Eloss_6[minval:maxval] 
+EELSData_intensity_zlp_6 = EELSData_intensity_zlp_6[minval:maxval]
+
 # Spectrum7, read the intensity
 EELSData_intensity_zlp_7 = np.loadtxt("Data/Mar/ZLP_200keV_100ms_Spectrum7_m0d852eV_7p4173eV.txt")
 ndat=int(len(EELSData_intensity_zlp_7))
@@ -111,13 +117,15 @@ ndat=int(len(EELSData_intensity_zlp_7))
 EELSData_Eloss_7 = np.zeros(ndat)
 Eloss_min = -0.852 # eV
 Eloss_max = +7.4173 # eV
-
 i=0
 while(i<ndat):
     EELSData_Eloss_7[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
-    
+EELSData_Eloss_7 = EELSData_Eloss_7[minval:maxval]
+EELSData_intensity_zlp_7 = EELSData_intensity_zlp_7[minval:maxval]
+
+
 import matplotlib.pyplot as plt
 
 plt.plot(EELSData_Eloss_1, EELSData_intensity_zlp_1,color="blue",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #1")
@@ -138,6 +146,8 @@ plt.show()
 
 
 ################### SECOND SUBSET OF DATA #######################
+
+window_width = 100
 
 ZLP1 = np.loadtxt("Data/Mar/Part2/ZLP_200keV_10ms_Spectrum1_m0p5492eV_3p8104eV.txt")
 ZLP2 = np.loadtxt("Data/Mar/Part2/ZLP_200keV_10ms_Spectrum2_m0p5492eV_3p8104eV.txt")
@@ -165,29 +175,33 @@ while(i<ndat):
     xdata[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
-plt.plot(xdata, ZLP1 ,color="green",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #1")
-plt.plot(xdata, ZLP2 ,color="lightgreen",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #2")
-plt.plot(xdata, ZLP3 ,color="blue",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #3")
-plt.plot(xdata, ZLP4 ,color="navy",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #4")
-plt.plot(xdata, ZLP5 ,color="black",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #5")
-plt.plot(xdata, ZLP6 ,color="orange",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #6")
-plt.plot(xdata, ZLP7 ,color="yellow",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #7")
-plt.plot(xdata, ZLP8 ,color="darkgreen",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #8")
-plt.plot(xdata, ZLP9 ,color="purple",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #9")
-plt.plot(xdata, ZLP10 ,color="pink",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #10")
-plt.plot(xdata, ZLP11 ,color="red",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #11")
-plt.plot(xdata, ZLP12 ,color="brown",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #12")
-plt.plot(xdata, ZLP13 ,color="grey",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #13")
-plt.plot(xdata, ZLP14 ,color="orange",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #14")
-plt.plot(xdata, ZLP15 ,color="lightblue",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #15")
+    
 
-plt.xlabel(r"Energy loss (eV)",fontsize=13)
-plt.ylabel(r"Intensity (a.u.)",fontsize=13)
-plt.ylim(0,1e5)
-plt.xlim(-0.05,0.1)
-plt.grid(True)
+
+#plt.plot(xdata, ZLP1 ,color="green",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #1")
+#plt.plot(xdata, ZLP2 ,color="lightgreen",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #2")
+#plt.plot(xdata, ZLP3 ,color="blue",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #3")
+##plt.plot(xdata, ZLP4 ,color="navy",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #4")
+#plt.plot(xdata, ZLP5 ,color="black",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #5")
+#plt.plot(xdata, ZLP6 ,color="orange",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #6")
+#plt.plot(xdata, ZLP7 ,color="yellow",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #7")
+#plt.plot(xdata, ZLP8 ,color="darkgreen",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #8")
+#plt.plot(xdata, ZLP9 ,color="purple",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #9")
+#plt.plot(xdata, ZLP10 ,color="pink",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #10")
+#plt.plot(xdata, ZLP11 ,color="red",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #11")
+#plt.plot(xdata, ZLP12 ,color="brown",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #12")
+#plt.plot(xdata, ZLP13 ,color="grey",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #13")
+#plt.plot(xdata, ZLP14 ,color="orange",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #14")
+#plt.plot(xdata, ZLP15 ,color="lightblue",ls="solid",linewidth=2.0,marker="D",markersize=0.0,label="ZLP spectrum #15")
+
+#plt.xlabel(r"Energy loss (eV)",fontsize=13)
+#plt.ylabel(r"Intensity (a.u.)",fontsize=13)
+#plt.ylim(0,1e5)
+#plt.xlim(-0.05,0.1)
+#plt.grid(True)
 #plt.legend(fontsize=12)
-plt.savefig("EELSData-ZLP-2.pdf")
+#plt.savefig("EELSData-ZLP-2.pdf")
+#plt.show()
             
 print("\n ************************ Data files have been prepared ***************************** \n")
 
@@ -270,14 +284,14 @@ def sequence():
 
 def prepare_x_data():
         
-        xdata1, x2, x3, x4, x5, x6, x7 = EELSData_Eloss_1, EELSData_Eloss_2, EELSData_Eloss_3, EELSData_Eloss_4, EELSData_Eloss_5, EELSData_Eloss_6, EELSData_Eloss_7
+        x1, x2, x3, x4, x5, x6, x7 = EELSData_Eloss_1, EELSData_Eloss_2, EELSData_Eloss_3, EELSData_Eloss_4, EELSData_Eloss_5, EELSData_Eloss_6, EELSData_Eloss_7
         random.seed(seednumber)
         array1 = sequence()
         mix_x = array1
         
         for n, i in enumerate(array1):
             if i == 0:
-                mix_x[n] = xdata1
+                mix_x[n] = x1
             if i == 1:
                 mix_x[n] = x2
             if i == 2:
@@ -297,7 +311,7 @@ def prepare_x_data():
     
 def prepare_y_data():
         
-        y1, y2, y3, y4, y5, y6, y7 = EELSData_intensity_zlp_1, EELSData_intensity_zlp_2, EELSData_intensity_zlp_3, EELSData_intensity_zlp_4, EELSData_intensity_zlp_5, EELSData_intensity_zlp_5, EELSData_intensity_zlp_5
+        y1, y2, y3, y4, y5, y6, y7 = EELSData_intensity_zlp_1, EELSData_intensity_zlp_2, EELSData_intensity_zlp_3, EELSData_intensity_zlp_4, EELSData_intensity_zlp_5, EELSData_intensity_zlp_6, EELSData_intensity_zlp_7
         normalization = max(y1)
         y1 = np.divide(y1, normalization)
         y2 = np.divide(y2, normalization)
@@ -366,3 +380,7 @@ N_train_tot = len(x_train)
 x_train.reshape(N_train_tot, 1)
 y_train.reshape(N_train_tot, 1)
 
+
+plt.plot(x_train, y_train, 'o')
+plt.title('200 training points')
+plt.show()
