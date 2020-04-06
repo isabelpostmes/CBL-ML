@@ -3,16 +3,17 @@
 This is the Github repository for my MSc project. 
 
 ### Data
-Place where raw ZLP data is stored.
+Place where raw ZLP data is stored and where Results are added. Results section contains training data, prediction values and chi square values. See 'Logbook.txt' inside Results folder for which data is where.
 
-### EELS-ZLP.py
+### EELS-ZLP(-Mar).py
 File where training and validation data is loaded and prepared.
 
 ### Notebook.ipynb
-In this notebook consists of the neural network programming, trains on the data and gives output.
+This notebook consists of the neural network programming, trains on the data and gives output.
 
-### history.csv
-Output values (loss, chi square, accuracy, ...) from the NN, training over epochs. 
+### Gaussian.ipynb
+Alternative method to fit the ZLP data. 
+
 
 
 
