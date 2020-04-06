@@ -1,0 +1,14 @@
+02.04.20 seed 5: 100ms data
+        cost function goes to 2 and std(MC) = 1/2 * std(data)
+
+03.04.20 seed 1: 100ms data
+        idem
+03.04.20 seed 33: 10ms data
+        idem
+
+06.04.20 seed 4: 100ms data with y_train = y_smooth + sigma
+        cost function goes to 1 and std(MC) is still 1/2 * std(data)
+06.04.20 seed 6: 10ms data with y_train = y_smooth + sigma  (and nbins=50)
+        cost function doesnt go to 1 but stucks around 1.3 and therefore doesnt converge. try again for less nbins.
+06.04.20 seed 7: 10ms data with y_train = y_smooth + sigma  (and nbins=40)
+
