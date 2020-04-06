@@ -1,4 +1,4 @@
-# Machine Learning on Neural Networks
+# Machine Learning on TEM-EELS
 
 This is the Github repository for my MSc project. 
 
