@@ -12,3 +12,13 @@
         cost function doesnt go to 1 but stucks around 1.3 and therefore doesnt converge. try again for less nbins.
 06.04.20 seed 7: 10ms data with y_train = y_smooth + sigma  (and nbins=40)
 
+07.04.20 seed 14: 10ms data with Nrep = 10, y_train = y_mean + sigma
+07.04.20 seed 15: 10ms data with Nrep = 50, y_train = y_mean + sigma
+
+09.04.20 seed 16: 10ms data closure testing
+
+15.04.20 seed 1a: 10ms 200keV with Nrep = 10, y_train = y_mean + sigma
+15.04.20 seed 18: 10ms 200keV with Nrep = 10, y_train = y_mean + sigma 
+        chi2 goes to 1; this set can be used for residuals.
+
+
