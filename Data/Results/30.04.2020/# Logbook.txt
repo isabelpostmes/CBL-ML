@@ -1,0 +1,8 @@
+Round 1: training with predict_x: energy = 140 keV, t = 100 ms, range = [-1.1, 1.1]
+Nrep = 20
+
+Round 2: training with predict_x: energy = 120 keV, t = 100 ms, range = [-1, 1]
+Nrep = 20
+
+Round 3: training with predict_x: energy = .6 keV, t = 100 ms, range = [-1, 1] (foutje)
+Nrep = 20
