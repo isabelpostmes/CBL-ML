@@ -1,0 +1,7 @@
+Round 1 : prediction on 100ms, range dE = [-1,1] sample. E_beam: [1:1000] = 120keV, [1001:2000] = 400keV
+check: is i=3 slecht?
+
+Round 2: prediction on 100ms, range dE = [-1,1] sample. E_beam: [1:1000] = 180keV, [1001:2000] = 180keV
+
+Round 3: prediction on 100ms, range dE = [-1,1] sample. E_beam: [1:1000] = 150keV, [1001:2000] = 250keV
+
