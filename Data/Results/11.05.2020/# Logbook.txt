@@ -1,0 +1,10 @@
+round 1: predict_x = 8 sets of 1000 prediction points: first 4000 for t=10ms, then 4000 for t=100ms. 
+
+interpol_energy1 = .6 
+interpol_energy2 = 2 
+interpol_energy3 = .4
+interpol_energy4 = 2.2
+interpol_time = .1 and 1
+
+
+
