@@ -200,7 +200,9 @@ Unscaled input variables can result in a slow or unstable learning process, wher
 
 The discretization technique used to assign mean and standard deviation the data points is Equal Width Discretization (EWD) \cite{ewd}. EWD is a simple discretization method that divides the range of observed values for a feature into k equal sized bins. The intervals are computed by 
  $\Delta E = (E_{max} - E_{min}) / k$. The value of k is chosen empirically such that the number of bins is high enough to not lose valuable information, but still contains a sufficient number of data points to calculate the uncertainties.\
-Within each energy bin $\Delta E$, the median and variance of all data points within this bin are determined and returned to the original data points. This way, each data point is a vector $[dE, D_i, \sigma_i]$ where dE is the original energy loss; $D_i$ and $\sigma_i$ are the median and std of the bin $i$ where this point belongs to. \\
+Within each energy bin $\Delta E$, the median and variance of all data points within this bin are determined and returned to the original data points. This way, each data point is a vector $[dE, D_i, \sigma_i]$ where dE is the original energy loss; $D_i$ and $\sigma_i$ are the median and std of the bin $i$ where this point belongs to. 
+The energy loss of the sample data covers a $[-0.3, 8]$ eV range. Since the ZLP feature is several orders of magnitude bigger than the sample features, we take the logarithm of the intensity to train the network. 
+\\
 
 \begin{figure}[H]
     \centering
@@ -209,11 +211,12 @@ Within each energy bin $\Delta E$, the median and variance of all data points wi
     \label{ranges}
 \end{figure}
 
+\subsubsection{Closure Testing}
+In order to validate if the computed error associated to each training point is reasonable, a method called Closure Testing provides insight \cite{closure}.  The 'true' values are then the best Gaussian fit sampled at the energy data of the training points. Sampling this Gaussian at the points $(dE_i)$ where we have data and fluctuating it by a Gaussian random number with size $\sigma_i$ returns a $\chi^2$ of 1, indicating that the computed errors by means of EWD are a good approximation.\\
 
-In order to validate if the computed error associated to each training point is reasonable, a method called Closure Testing provides insight \cite{closure}.  The 'true' values are then the best Gaussian fit sampled at the energy data of the training points. Sampling this Gaussian at the points $(dE_i)$ where we have data and fluctuating it by a Gaussian random number with size $\sigma_i$ returns a $\chi^2$ of 1, indicating that the computed errors by means of EWD are a good approximation.
 
 
-\subsection{Fitting regions}
+\subsection{Training regions}
 It is important to make an informed choice as to the energy range of the input data over which the neural network is trained. Figure \ref{ranges} below is a schematic low-loss spectrum showing five relevant energy ranges \cite{reed}. Region (a) doesn't contain loss electrons and contributions solely come from dark counts in the detector. Range (b) and (c) together form the 'ZLP-region', with the left- and right hand side of the ZLP respectively. Since we make use of a monochromated electron beam, the energy distribution is approximately symmetric around zero and range (c) will be the mirrored version of range (b) until a certain energy limit, which we will call $dE_1$. Range (e) sets in at higher energy loss $dE_2$ and represents the almost pure loss signal, with essentially negligible ZLP contributions. Region (d) is the transition in which the ZLP tail gradually gives way to the loss signal. It is this region that is specifically of interest, as it contains the low-loss features of the sample.  Our objective is to automatically determine the right values for $dE_1$ and $dE_2$ before training the neural network.
 
 \begin{figure}[H]
@@ -223,9 +226,7 @@ It is important to make an informed choice as to the energy range of the input d
     \label{ranges}
 \end{figure}
 
-\subsection{Methods}
-The spectra were obtained with an electron beam energy resolution (FWHM) of $0.03$ eV. 
-The energy loss of the sample data covers a $[-0.3, 8]$ eV range. Since the ZLP feature is several orders of magnitude bigger than the sample features, we take the logarithm of the intensity to train the network. Before training, a window is to be applied to the training inputs to an upper boundary $dE_1$, to ensure the network trains on data of the ZLP solely. In order to attain a model that meets $log(I_{ZLP}) \rightarrow 0$ as $dE \rightarrow \infty$, pseudo data is to be added for $E>dE_2$ where the ZLP contribution becomes negligible. The model is trained on data for $E<dE_1$ and $E>dE_2$, the interpolation region $dE_1 < E < dE_2$ contains the predictions of interest. \\
+Before training, a window is to be applied to the training inputs to an upper boundary $dE_1$, to ensure the network trains on data of the ZLP solely. In order to attain a model that meets $log(I_{ZLP}) \rightarrow 0$ as $dE \rightarrow \infty$, pseudo data is to be added for $E>dE_2$ where the ZLP contribution becomes negligible. The model is trained on data for $E<dE_1$ and $E>dE_2$, the interpolation region $dE_1 < E < dE_2$ contains the predictions of interest. \\
 
 In order to set the right values for $dE_1$ and $dE_2$, we look at the ratio 
 \begin{equation}
@@ -252,6 +253,17 @@ After the choice on $dE_1$ and $dE_2$, the set of training data (TD) will be pre
     \item TD = SD + PD
 \end{enumerate}
 
+\subsection{Monte Carlo sampling}
+Training points are generated by Monte Carlo sampling; for the set of training points $[dE, D_i, \sigma_i]$, a set of MC training points is generated by adding a stochastic noise signal on top of the the data with a std equal to the corresponding error on that point. 
+
+\begin{itemize}
+    \item $train_x$: dE
+    \item $train_y$: $D_i$ + rand.norm(0, $\sigma_i$)
+\end{itemize}
+
+Repetitive training of the NN (number of repetitions = $N_{rep}$) on each set of MC pseudo data yields a prediction that is distributed with a mean and std corresponding to the mean and error of the original training set. \\
+... to be continued
+
 \section{Results}
 Here we present the main results of this paper
 
@@ -260,3 +272,4 @@ Here we present the main results of this paper
 
 \bibliography{main}
 \end{document}
+
