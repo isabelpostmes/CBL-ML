@@ -230,7 +230,17 @@ The energy loss of the sample data covers a $[-0.3, 8]$ eV range. Since the ZLP 
     \label{ranges}
 \end{figure}
 
-In order to validate if the computed error associated to each training point is reasonable, a method called Closure Testing provides insight \cite{closure}.  The 'true' values are then the best Gaussian fit sampled at the energy data of the training points. Sampling this Gaussian at the points $(dE_i)$ where we have data and fluctuating it by a Gaussian random number with size $\sigma_i$ returns a $\chi^2$ of 1, indicating that the computed errors by means of EWD are a good approximation.\\ (...)
+\subsection{Closure Testing}
+In order to validate if the computed error associated to each training point is reasonable, a method called closure testing provides insight \cite{closure}. A closure test ensures that uncertainties introduced by methodology are small compared to the generic experimental errors of the data. A basic requirement for a successful methodology is the ability of generalization, which means that the model works on widely different datasets without the need for manual fine-tuning.\\
+The basic idea of closure testing is the following \cite{closure}: we take as general assumed form of the ZLP the smooth fit to the data and we create a set of 'perfect' pseudo data by sampling this smooth function at our data points. Smoothing of the data is realized by application of a Hanning window \cite{hann}, a popular method in signal processing, based on the convolution of a scaled window with the signal. \\
+Next, on each 'perfect' data point we impose a gaussian random number with size equal to the corresponding error from the original dataset. If we then train our neural network on these points, given that the pseudo-data are fluctuated on average by one $\sigma$ away from the 'perfect' value, by construction we should find the error function $\chi^2$ of the best fit will be approximately one. Results of the $\chi^2$ values with the closure test can be observed in Fig. \ref{closure}. These values were obtained with the look-back method discussed in section \textit{ (..nowhere yet..),} which ensures that the final $\chi^2$ is taken at the optimum stopping point, before overlearning sets in.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=70mm]{plots/closure.png}
+    \caption{Histogram of $\chi^2$ values obtained after training the neural network on 500 sets of artificial data created for closure testing.}
+    \label{closure}
+\end{figure}
 
 \subsection{Training regions}
 It is important to make an informed choice as to the energy range of the input data over which the neural network is trained. Figure \ref{ranges} below is a schematic low-loss spectrum showing five relevant energy ranges \cite{reed}. Region (a) doesn't contain loss electrons and contributions solely come from dark counts in the detector. Range (b) and (c) together form the 'ZLP-region', with the left- and right hand side of the ZLP respectively. Since we make use of a monochromated electron beam, the energy distribution is approximately symmetric around zero and range (c) will be the mirrored version of range (b) until a certain energy limit, which we will call $dE_1$. Range (e) sets in at higher energy loss $dE_2$ and represents the almost pure loss signal, with essentially negligible ZLP contributions. Region (d) is the transition in which the ZLP tail gradually gives way to the loss signal. It is this region that is specifically of interest, as it contains the low-loss features of the sample.  Our objective is to automatically determine the right values for $dE_1$ and $dE_2$ before training the neural network.
@@ -298,7 +308,7 @@ Nrep & \textless{}$\mu$\textgreater {[}eV{]} & r{[}$\mu${]} & \textless{}$\sigma
 1000 & 11.35578                              & 0.99999894   & 0.17812                                  & 0.99527003      \\ \hline
 5000 & 11.35643                              & 0.99999979   & 0.17807                                  & 0.99920997      \\ \hline
 \end{tabular}
-\caption{Comparison between the artificial and the original central values and errors. <$\mu$> and <$\sigma$> are the expectation value of the median and errors respectively. The scatter correlation $r$ gives the spread around the straight line. $<\mu^{(exp)}>$ = 11.35623, $<\sigma^{(exp)}>$ = 0.17805. }
+\caption{Comparison between the artificial and the original central values and errors. $<\mu>$ and $<\sigma>$ are the expectation value of the median and errors respectively. The scatter correlation $r$ gives the spread around the straight line. $<\mu^{(exp)}>$ = 11.35623, $<\sigma^{(exp)}>$ = 0.17805. }
 \label{tablemc}
 \end{table}
 
