@@ -254,19 +254,24 @@ It is important to make an informed choice as to the energy range of the input d
 
 Before training, a window is to be applied to the training inputs to an upper boundary $dE_1$, to ensure the network trains on data of the ZLP solely. In order to attain a model that meets $log(I_{ZLP}) \rightarrow 0$ as $dE \rightarrow \infty$, pseudo data is to be added for $E>dE_2$ where the ZLP contribution becomes negligible. The model is trained on data for $E<dE_1$ and $E>dE_2$, the interpolation region $dE_1 < E < dE_2$ contains the predictions of interest. \\
 
-\subsection{Preliminary feature extraction}
+\subsection{Preliminary feature identification}
 
-In an ideal microscope the electron beam would be perfectly monochromatic, correspondingly the ZLP would appear as a delta function in an EEL spectrum \cite{rafferty}. In practice the ZLP has a finite width defining the energy resolution of the system. At some energy loss the contribution to the sample kicks in, rapidly increasing the value of $R$. It is at this point that the intensity profile, earlier monotonically decreasing, will have its first local minimum and correspondingly the first derivative will cross zero. By calculating the log derivative of the mean sample intensity, we can conclude that  $\frac{d}{dE}log(I)=0$ at $dE_2$ = $1.715$ eV  (Fig. \ref{bound}). 
+Using first and second derivatives is a feature extraction method to achieve a relatively high accuracy with a low computational complexity. The slope of any function is described by the first derivative, therefore the second derivative is essentially the change in slope, representing the curvature of the signal. This can be useful to determine the boundary from the ZLP to the sample region. \\
+
+In an ideal microscope the electron beam would be perfectly monochromatic, correspondingly the ZLP would appear as a delta function in an EEL spectrum \cite{rafferty}. In practice the ZLP has a finite width defining the energy resolution of the system. At some energy loss the contribution to the sample kicks in and it is at this point that the intensity profile, earlier monotonically decreasing, will have its first local minimum and correspondingly the first derivative will cross zero. It is this point, previously defined as $dE_2$, that marks the transition from the interpolation to the sample region. The first crossing of $\frac{d}{dE}log(I)$ with zero differs slightly between the individual spectra: we take as $dE_2$ the lowest of these, as we can say with certainty that the intensity of the sample has kicked in at the first notice of a local minimum. For this set of data, we find $dE_2$ = $1.468$ eV (Fig. \ref{bound}). 
 
 \begin{figure}[H]
     \centering 
-    \includegraphics[width=150mm]{plots/bound.png}
-    \caption{Log and log derivative of the sample intensity. The intensity profile is calculated as the median over the collection of training samples. The crossing of the first derivative with zero is \textbf{1.715} eV and marks the transition to the sample region ($dE_2$). Before taking the derivative, smoothing by means of a Hann window \cite{hann} was applied to log(I) to remove noise and reveal underlying trends. }
+    \includegraphics[width=170mm]{plots/derivatives.png}
+    \caption{First and second derivatives and log derivatives of the nine experimental spectra. All functions are normalized to the maximum spectrum intensity to make sense of the relative change. The first crossing of the log derivative with zero is \textbf{1.468} eV and marks the transition to the sample region ($dE_2$). Before taking each derivative, smoothing by means of a Hann window \cite{hann} was applied to remove noise and reveal underlying trends. }
     \label{bound}
 \end{figure}
 
-By stating that the ideal zero loss peak is symmetric around zero up to energy loss $dE_1$, hypothetically we could determine its value by mirroring the left-hand tail to the right side and see when the two significantly start to deviate. In practice however, the ZLP is not symmetric due to various external factors such as astigmatism \cite{astigma} and virtual scattering events \cite{rafferty}, which makes direct reflection of the left-hand tail unfavorable. \\
+From changes in the normalized second derivatives in Fig \ref{bound}, one is able to define significant features appearing in the spectrum. 
+
+By stating that the ideal zero loss peak is symmetric around zero up to energy loss $dE_1$, hypothetically we could determine the value of $dE_2$ by mirroring the left-hand tail to the right side and see when the two significantly start to deviate. In practice however, the ZLP is not symmetric due to various external factors such as astigmatism \cite{astigma} and virtual scattering events \cite{rafferty}, which makes direct reflection of the left-hand tail unfavorable. \\
 The value of $dE_1$ will be chosen as $dE_2 / a$, with $a$ a positive integer. The choice of $a$ is empirical and will be cross-validated. \\ 
+
 After the choice on $dE_1$ and $dE_2$, the set of training data (TD) will be prepared taking the following steps:
 \begin{enumerate}
     \item Keep only sample data (SD) inside the window [$dE_{min}, dE_1$]
@@ -309,7 +314,7 @@ Nrep & \textless{}$\mu$\textgreater {[}eV{]} & r{[}$\mu${]} & \textless{}$\sigma
 \label{tablemc}
 \end{table}
 
-\subsection{Ratios for eventual feature extraction}
+\subsection{Ratios for eventual feature identification}
 
 In order to compare the level of desired signal from the sample to the level of the modeled ZLP tail, we define two working definitions, first of which the sample-to-peak ratio (SPR):
 
