@@ -254,7 +254,7 @@ It is important to make an informed choice as to the energy range of the input d
 
 Before training, a window is to be applied to the training inputs to an upper boundary $dE_1$, to ensure the network trains on data of the ZLP solely. In order to attain a model that meets $log(I_{ZLP}) \rightarrow 0$ as $dE \rightarrow \infty$, pseudo data is to be added for $E>dE_2$ where the ZLP contribution becomes negligible. The model is trained on data for $E<dE_1$ and $E>dE_2$, the interpolation region $dE_1 < E < dE_2$ contains the predictions of interest. \\
 
-\subsection{Preliminary feature identification}
+\subsection{Derivatives for preliminary feature identification}
 
 Using first and second derivatives is a feature extraction method to achieve a relatively high accuracy with a low computational complexity. The slope of any function is described by the first derivative, therefore the second derivative is essentially the change in slope, representing the curvature of the signal. This can be useful to determine the boundary from the ZLP to the sample region. \\
 
@@ -289,7 +289,6 @@ To be precise, given a training data point
     Y^{(k)} = Y(dE, D_i,\sigma_i) + r^{(k)}\sigma_i.
 \end{equation}
 The variables $r^{(k)}$ are normally distributed random numbers, such that each element in the Monte Carlo set is a fluctuation around the central value of the experimental data: each replica $k$ contains as many data points as the original set. \\
-Repetitive training of the neural network on each set of MC pseudo data yields a prediction that is distributed with a mean and std corresponding to the mean and error of the original training set. For each replica, the predicted ZLP is subtracted from the individual original spectra to obtain one set of subtractions. Repeating this procedure yields a collection of $N_{rep}$ subtractions for each original spectrum, over which statistical properties such as median and variance can be calculated. \\
 
 The value of $N_{rep}$ should be chosen in such a way that the set of replicas models the probability distribution of original training data faithfully. A comparison of the central values and errors of the artificial set with the original data is shown in Fig \ref{mc} for samples of 100, 500, 1000 and 5000 replicas. The results from a more quantitative comparison can be observed in table \ref{tablemc}.
 
@@ -314,6 +313,19 @@ Nrep & \textless{}$\mu$\textgreater {[}eV{]} & r{[}$\mu${]} & \textless{}$\sigma
 \label{tablemc}
 \end{table}
 
+\subsection{ZLP subtraction}
+Repetitive training of the neural network on each set of MC pseudo data yields a prediction that is distributed with a mean and std corresponding to the mean and error of the original training set. For each replica, the predicted ZLP is subtracted from the individual original spectra to obtain one set of subtractions. Repeating this procedure yields a collection of $N_{rep}$ subtractions for each original spectrum, over which statistical properties such as median and variance can be calculated. \\
+
+Direct subtraction of the predicted ZLP on each of the original spectra doesn't yield a physical result, as the intensity of the samples in range (a)-(c) (Fig. \ref{ranges}) doesn't coincide between themselves and the predicted ZLP. In order for the subtracted spectrum to make physical sense, we impose that the ZLP to be subtracted will be a smooth transition from the exact replicate of the ZLP in region (a)-(c) to the prediction from the neural network in region (d)-(e). This way, we keep only the prediction of the region of our interest. The smooth matching of the ZLP will be the following:
+\begin{align}
+ dE &< dE_0          &   I_{ZLP}^{(k)} &= I_{orig}\\
+ dE_0 &< dE < dE_1   &  I_{ZLP}^{(k)} &= I_{NN}^{(k)} \times  \left( 1 - \exp(-(dE - dE_1)^2/\delta^2)\right) \\
+ dE_1 &< dE < 10 \cdot dE_2 &  I_{ZLP}^{(k)} &= I_{NN}^{(k)}\\
+ dE &> 10 \cdot dE_2 &   I_{ZLP}^{(k)} &= 0
+\end{align}
+Here $dE_0$ is the start of the smooth transition from ZLP to NN region given by $(3.4)$, with $dE_0<dE_1$  and $\delta \ll |dE_0 - dE_1|$
+
+
 \subsection{Ratios for eventual feature identification}
 
 In order to compare the level of desired signal from the sample to the level of the modeled ZLP tail, we define two working definitions, first of which the sample-to-peak ratio (SPR):
@@ -328,7 +340,7 @@ To verify the significance of the SPR, we introduce the sample-to-error ratio (S
     SER_{i}^{(k)} = \frac{I_{orig, i} - I_{ZLP}^{(k)}}{\sigma_{ZLP}}
 \end{equation}
 where $\sigma_{ZLP}$ is the error of the predicted ZLP calculated over all replicas. 
-If the SER is bigger than a certain treshold, the signal from the sample significantly excesses the background error. \\
+If the SER is bigger than a certain treshold (e.g. 5), the signal from the sample significantly excesses the background error. \\
 Using the definitions of SPR and SER for each original spectrum, it is convenient to define three regions: the 'ZLP region' where $SPR \rightarrow0$, corresponding to region (a)-(c) (Fig. \ref{ranges}) ending at $dE_1$, the 'interpolation region' (d) between $[dE_1, dE_2]$ and the 'sample region' (e) where $SPR\rightarrow\infty$ as $I_{ZLP}\rightarrow0$.
 
 
