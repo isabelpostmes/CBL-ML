@@ -178,46 +178,52 @@ Motivation for the HEP techniques in the context of material sciences.
 
 In this work we will follow the approach pioneering by the NNPDF collaboration~\cite{Ball:2017nwa}.
 
-\newpage
 \part{ZLP in Vacuum}
 
-ZLP in vacuum, where we construct a N-dimensional model using NNs. Here you show that you can add many extra variables and use them for prediction and interpolation succesfully
+The first part of this studies is dedicated to the prediction of the shape of the zero loss peak when recorded in vacuum. We construct a generalized N-dimensional model which predicts the ZLP based on N input variables. On this basis, we can successfully predict the shape of the ZLP with inter- and extrapolation with respect to each of the input variables. \\
+
+The predicted intensity at any point of the spectrum depends predominantly on the energy loss. We expect the highest intensity at zero loss and the number of counts rapidly decreasing as the energy loss increases. It is common to quantify this decrease in the Full Width Half Maximum (FWHM). Two variables that greatly account for changing the overall intensity of the ZLP are the exposure time and operating beam current, which both have a positive correlation on the number of counts. \\
+Also other factors can account for changing ZLP intensities, such as aperture width and parameters of the electron gun and lenses. These variables could be given as inputs as well, however we expect that these are less relevant than the three input variables mentioned above. Therefore our default model will be built on these three arguments: energy loss, exposure time and beam current. We construct a 3-dimensional model with these continuous inputs and output the ZLP intensity. This model could be extended to an arbitrary dimension N, as long as information on the N input variables is available for training.
+
 \section{The data set (I)}
-The data sets used in this part of the study are listed in table \ref{table:vacuum}.
+For the purpose of this study, four different sets of vacuum recorded zero loss peaks are used, each of them measured under a different setting of exposure time and beam current, as listed in table \ref{table:vacuum}. These data sets were recorded with a Titan TEM, equipped with a Skottky field emitter.
+
 
 \begin{table}[H]
 \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
 \hline
-Set & $t_{exp}$ {[}ms{]} & $E_{beam}$ {[}keV{]} & $N_{files}$ & $N_{dat} / file$ & $dE_{min}$ {[}eV{]} & $dE_{max}$ {[}eV{]} & $I_{max}$ & FWHM {[}eV{]} \\ \hline
+Set & $t_{exp}$ {[}ms{]} & $E_{beam}$ {[}keV{]} & $N_{files}$ & $N_{dat} / file$ & $dE_{min}$  & $dE_{max}$  & $I_{max}$ & FWHM  \\ \hline
 1        & 100                 & 200                  & 15          & 2048               & -0.96              & +8.51               & 739770       & 0.025         \\
 2        & 100                 & 60                   & 7           & 2048               & -0.54              & +5.59               & 326483       & 0.022         \\
-3        & 10                  & 200                  & 12          & 2048               & -0.37              & +2.97               & 70913        & 0.003         \\
+3        & 10                  & 200                  & 12          & 2048               & -0.18              & +2.97               & 70913        & 0.003         \\
 4        & 10                  & 60                   & 6           & 2048               & -0.40              & +4.78               & 30793        & 0.017         \\ \hline
 \end{tabular}
 
-\caption{The data sets of the in vacuum recorded zero loss peaks used for this part of the analysis. We show the number of data points ($N_{files}\times N_{dat}$/file), the energetic range, maximum recorded intensity and FWHM of each set of data.}
+\caption{The data sets of the in vacuum recorded zero loss peaks used for this part of the analysis. We show the number of data points ($N_{files}\times N_{dat}$/file), the energetic range, maximum recorded intensity and FWHM of each set of data. FWHM, $dE_{min}$ and $dE_{max}$ are given in eV.}
 \label{table:vacuum}
 \end{table}
 
 \section{Methodology}
 
-\subsection{General strategy}
-Underline the way to go before diving into detail. Highlight the differences with the pure ZLP signal.
+The main ingredients of our road to success will be:
+\begin{enumerate}
+    \item Data preparation, to set up the raw data for training.
+    \item Neural network formulation, where the network architecture, optimization algorithm and loss function are defined.
+    \item Minimization, which allows an efficient optimization on the three-dimensional input.
+    \item Validation, where the optimal distribution of weights is defined by a stopping criterion and the goodness of the fit is quantified. 
+    \item Interpolation and extrapolation, which is the unique selling point of this procedure. 
+\end{enumerate}
 
-\subsection{Preprocessing}
-Unscaled input variables can result in a slow or unstable learning process, whereas unscaled target variables on regression problems can result in exploding gradients causing the learning process to fail \cite{juan}. The energy loss is scaled between [$-1,1$] and all input spectra are scaled between [$0.1, 0.9$]. \\
+\subsection{Data preparation}
+The four data sets contain spectra that are recorded over a different energy range. As we are only interested in the ZLP region, where the intensity is different from zero, we drop all data that is outside $[-0.1, 0.5]$ eV. This way we capture all the relevant data, discard a big region with zero intensity and we have data for each of the sets over the entire energy range. \\
+We then evolve our data from the original scale to a scale at which we can ease the optimization. Unscaled input variables can result in a slow or unstable learning process, whereas unscaled target variables on regression problems can result in exploding gradients causing the learning process to fail \cite{juan}. The energy loss is scaled between [$-1,1$] and all input spectra are scaled between [$0.1, 0.9$], where 0.9 corresponds to the maximum value of the intensity for each separate data set ($I_{max}$, table \ref{table:vacuum}). 
 
-The discretization technique used to assign mean and standard deviation the data points is Equal Width Discretization (EWD) \cite{ewd}. EWD is a simple discretization method that divides the range of observed values for a feature into k equal sized bins. The intervals are computed by 
+\subsubsection{Observables}
+Central values and errors are calculated for each of the data sets separately, as we expect different outcomes for different exposure time and beam energy. The discretization technique used to assign mean and standard deviation to the data points is Equal Width Discretization (EWD) \cite{ewd}, a simple discretization method that divides the range of observed values for a feature into k equal sized bins. The intervals are computed by 
 $\Delta E = (E_{max} - E_{min}) / k$. The value of k is chosen empirically such that the number of bins is high enough to not lose valuable information, but still contains a sufficient number of data points to calculate the uncertainties.\
-Within each energy bin $\Delta E$, the median and variance of all data points within this bin are determined and returned to the original data points. This way, each data point is a vector $[dE, D_i, \sigma_i]$ where dE is the original energy loss; $D_i$ and $\sigma_i$ are the median and std of the bin $i$ where this point belongs to. 
-The energy loss of the sample data covers a $[-0.3, 8]$ eV range. Since the ZLP feature is several orders of magnitude bigger than the sample features, we take the logarithm of the intensity to train the network. 
-\\
-\subsection{Closure Testing}
-In order to validate if the computed error associated to each training point is reasonable, a method called closure testing provides insight \cite{closure}. A closure test ensures that uncertainties introduced by methodology are small compared to the generic experimental errors of the data. A basic requirement for a successful methodology is the ability of generalization, which means that the model works on widely different datasets without the need for manual fine-tuning.\\
-The basic idea of closure testing is the following \cite{closure}: we take as general assumed form of the ZLP the smooth fit to the data and we create a set of 'perfect' pseudo data by sampling this smooth function at our data points. Smoothing of the data is realized by application of a Hanning window \cite{hann}, a popular method in signal processing, based on the convolution of a scaled window with the signal. \\
-Next, on each 'perfect' data point we impose a gaussian random number with size equal to the corresponding error from the original dataset. If we then train our neural network on these points, given that the pseudo-data are fluctuated on average by one $\sigma$ away from the 'perfect' value, by construction we should find the error function $\chi^2$ of the best fit will be approximately one. Results of the $\chi^2$ values with the closure test can be observed in Fig. \ref{closure1}. These values were obtained with the look-back method discussed in section \textit{ (..nowhere yet..),} which ensures that the final $\chi^2$ is taken at the optimum stopping point, before overlearning sets in.
+ Within each energy bin $\Delta E$, the median and variance of all data points within this bin are determined and returned to the original data points. This way, each data point is a vector $[dE, D_i, \sigma_i]$ where dE is the original energy loss; $D_i$ and $\sigma_i$ are the median and std of the bin where this point belongs to. 
 
-\subsection{Monte Carlo sampling}
+\subsubsection{Monte Carlo sampling}
 Error propagation from experimental data to the fit is performed by Monte Carlo sampling of the training data. In a Monte Carlo approach, any statistical property of the function with error - in our case the ZLP - can be derived from a Monte Carlo sample of replicas of the function. By the generation of $N_{rep}$ replicas of the individual training points, a multi-gaussian distribution is obtained centered at $D_i$ with a standard deviation equal to the corresponding error $\sigma_i$. \\
 To be precise, given a training data point
 \begin{equation}
@@ -228,11 +234,47 @@ To be precise, given a training data point
 \end{equation}
 The variables $r^{(k)}$ are normally distributed random numbers, such that each element in the Monte Carlo set is a fluctuation around the central value of the experimental data: each replica $k$ contains as many data points as the original set. \\
 
-The value of $N_{rep}$ should be chosen in such a way that the set of replicas models the probability distribution of original training data faithfully. A comparison of the central values and errors of the artificial set with the original data is shown in Fig \ref{mc} for samples of 100, 500, 1000 and 5000 replicas. The results from a more quantitative comparison can be observed in table \ref{tablemc}.
+The value of $N_{rep}$ should be chosen in such a way that the set of replicas models the probability distribution of original training data faithfully. A comparison of the central values and errors of the artificial set with the original data is shown in Fig \ref{mcvacuum} for samples of 100, 500, 1000 and 5000 replicas. The results from a more quantitative comparison can be observed in table \ref{tablemcvacuum}.
+
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=160mm]{plots/Montecarlovacuum.png}
+    \caption{Scatter plot of training data vs. Monte Carlo replicas central values (left) and errors (right). }
+    \label{mcvacuum}
+\end{figure}
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|ll|ll|}
+\hline
+Nrep & $\textless{\mu}\textgreater{}$ {[}eV{]} & r{[}$\mu${]} & $\textless{\sigma}\textgreater{}$ {[}eV{]} & r{[}$\sigma${]} \\ \hline
+100  & 0.10259                           & 0.999919   & 0.63618                                  & 0.996990      \\ \hline
+500  & 0.10258                              & 0.999982   & 0.63991                                  & 0.999388      \\ \hline
+1000 & 0.10258                              & 0.999991   & 0.64013                                  & 0.999590      \\ \hline
+5000 & 0.10258                              & 0.999997   & 0.63980                                  & 0.999776      \\ \hline
+\end{tabular}
+\caption{Comparison between the artificial and the original central values and errors. $\textless{\mu}\textgreater{}$ and $\textless{\sigma}\textgreater{}$ are the expectation value of the median and errors respectively. The scatter correlation $r$ gives the spread around the straight line. $\textless{\mu^{exp}}\textgreater{}$ = 0.10258, $\textless{\sigma^{exp}}\textgreater{}$ = 0.63970. }
+\label{tablemcvacuum}
+\end{table}
 
 
+\subsection{Neural Network and fitting strategy}
 
-\subsection{Neural networks and general strategy}
+\subsection{Minimization}
+
+\subsection{Validation}
+
+\subsubsection{Closure Testing}
+In order to validate if the computed error associated to each training point is reasonable, a method called closure testing provides insight \cite{closure}. A closure test ensures that uncertainties introduced by methodology are small compared to the generic experimental errors of the data. A basic requirement for a successful methodology is the ability of generalization, which means that the model works on widely different datasets without the need for manual fine-tuning.\\
+The basic idea of closure testing is the following \cite{closure}: we take as general assumed form of the ZLP the smooth fit to the data and we create a set of 'perfect' pseudo data by sampling this smooth function at our data points. Smoothing of the data is realized by application of a Hanning window \cite{hann}, a popular method in signal processing, based on the convolution of a scaled window with the signal. \\
+Next, on each 'perfect' data point we impose a gaussian random number with size equal to the corresponding error from the original dataset. If we then train our neural network on these points, given that the pseudo-data are fluctuated on average by one $\sigma$ away from the 'perfect' value, by construction we should find the error function $\chi^2$ of the best fit will be approximately one. Results of the $\chi^2$ values with the closure test can be observed in Fig. \ref{closure1}. These values were obtained with the look-back method discussed in section \textit{ (..nowhere yet..),} which ensures that the final $\chi^2$ is taken at the optimum stopping point, before overlearning sets in.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=70mm]{plots/chi2.png}
+    \caption{Histogram of $\chi^2$ values obtained after training the neural network on 500 sets of artificial data created for closure testing.}
+    \label{closure1}
+\end{figure}
+
 \subsection{Interpolation and extrapolation}
 
 
@@ -267,7 +309,7 @@ Property of dataset & Values \\ \hline
 
 \section{Methodology}
 
-
+The energy loss of the sample data covers a $[-0.3, 8]$ eV range. Since the ZLP feature is several orders of magnitude bigger than the sample features, we take the logarithm of the intensity to train the network. 
  
 \subsection{Data processing}
 \begin{figure}[H]
