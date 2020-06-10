@@ -170,6 +170,8 @@ in electron energy-loss spectroscopy (EELS) measurements with faithful uncertain
 
 \section{Introduction}
 
+\cite{AbdulKhalek:2019bux}
+
 Intro to the general problem of low-loss EELS and ZLP background subtraction.
 
 Motivation of the specific materials.
@@ -260,7 +262,28 @@ Nrep & $\textless{\mu}\textgreater{}$ {[}eV{]} & r{[}$\mu${]} & $\textless{\sigm
 \subsection{Neural network and fitting strategy}
 The neural network architecture that we use is 3-10-15-5-1, enabling deep learning with three hidden layers. This choice is made empirically and it is motivated by the flexibility of the network to overlearn, which is necessary for the post-selection criterion, yet to keep the computation time reasonable. The use of a redundant architecture excludes a priori the bias that an underlearning model would bring forth. 
 
+A schematic of the neural network graph can be observed in Fig. \ref{architecture}. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=90mm]{plots/architecture.jpg}
+    \caption{Schematic representation of the neural network used for the prediction of zero loss peaks in vacuum. The input spectrum is a three-dimensional vector containing the energy loss, exposure time and beam energy. The input is passed through three successive fully connected layers before a one-dimensional output of the intensity is produced.}
+    \label{architecture}
+\end{figure}
+
+$N_{rep}$ neural networks are trained on the Monte Carlo data, each on a different set of replicas. The networks are trained to minimize the uncorrelated $\chi^2$ per data point:
+
+\begin{equation} \label{eq:chi2}
+    E^{(k)} = \frac{1}{N_{dat}}\sum_{i=1}^{N_{dat}}\left(\frac{D_i^{MC(k)} - D_i^{pred(k)}}{\sigma_i}\right)^2, 
+\end{equation}
+
+where $D_i^{MC(k)}, D_i^{pred(k)}$ are the artificial Monte Carlo intensity and the predicted intensity in the $k$-th replica, $\sigma_i$ is the standard error associated to the data point. \\
+The chi-squared method is the cornerstone of almost all fitting, as it is an intuitively reasonable measure of how well the predictions fit the data. If the model predictions are all within one standard deviation from the data, then the $\chi^2$ per data point takes a value roughly equal to 1. In general, if $\chi^2/N_{dat}$ is of the order 1, we can say that the fit is a good approximation to the real data. \\
+
+We are not looking for the absolute minimum of the error function, but we rather search for an optimal stopping point to avoid overfitting. At this optimal stopping point, it reproduces the general features of the inputs, but not some accidental fluctuations. This point can be determined by the formulation of a stopping criterion, making it possible to, once the network completed the training, choose the parametrization of the network weights right before it entered the overlearning regime. The look-back stopping method has been widely used in the context of neural networks. \\
+In this technique the training data is first shuffled and then divided into two subsets, usually split 80-20. The first and biggest set is the training set, used for updating the network weights and biases under the minimization of the error function (\ref{eq:chi2}). After each training epoch, the validation set is given as an input to the neural network and the error is monitored. During the initial phase of training, the error on both the training and validation set decrease, but at a certain point the network enters the overlearning regime and the validation error slowly starts to increase, while the training error further decreases. It is at this point that weights and biases are collected to make the prediction. This can only be determined in hindsight, hence the name 'look-back stopping'. One thing to keep in mind is to avoid early stopping in a local minimum rather than the global minimum of the validation error, which can be assured by setting the training length sufficiently long to reach the global minimum.
+
 \subsection{Minimization}
+The minimum of the fitting procedure is found using the backpropagation method. 
 
 \subsection{Validation}
 
