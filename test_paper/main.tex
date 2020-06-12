@@ -423,6 +423,21 @@ Here $dE_0$ is the start of the smooth transition from ZLP to NN region given by
     \label{fig:my_label}
 \end{figure}
 
+\subsection{Band-gap determination}
+Once the subtracted spectra have been obtained, the band gap can be determined based on Bethe’s theory \cite{Bethe}. The low-loss spectrum can be described
+\begin{equation} \label{eq:I1}
+    I(E) = I_0 + c*(dE-dE_{BG})^{(1/2)}
+\end{equation}
+for a direct bandgap, and 
+\begin{equation} \label{e1:I2}
+    I(E) = I_0 + c*(dE-dE_{BG})^{(1/3)}
+\end{equation}
+for an indirect bandgap. Therefore, the bandgap nature (direct or indirect) can be extracted by fitting each $(k)$-th replica subtracted spectrum using quation \ref{eq:I3}:
+\begin{equation} \label{eq:I1}
+    I(E) = I_0 + c*(dE-dE_{BG})^{(b)},
+\end{equation}
+where, by summation over all replicas $N_{rep}$, we can determine the expectation value $<b>$ and its uncertainty $\sigma_b$. 
+
 \subsection{Ratios for eventual feature identification}
 
 In order to compare the level of desired signal from the sample to the level of the modeled ZLP tail, we define two working definitions, first of which the sample-to-peak ratio (SPR):
