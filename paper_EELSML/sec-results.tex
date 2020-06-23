@@ -1,0 +1,20 @@
+\section{Results}
+\label{sec:results}
+
+In this section we present the main results of this work.
+
+
+\subsection{Band-gap determination}
+Traditionally, bandgaps of dielectrics have been measured by methods offering high energy resolution, however limited spatial resolution \cite{Park:2008}. Attaching electron monochromators to transmission electron microscopes has proven to be a powerful method for obtaining high spatial resolution, although still limited by the beam size and delocalization phenomena. 
+
+As suggested in literature \cite{15,14}, the threshold for bandgap detection is the Kimoto limit, which is the energy loss at which 1/1000th of the maximum peak intensity is measured: at this level, sample contributions can be detected above the background of the tails of the zero-loss distribution. We should make sure that we are working above this limit, which for our dataset corresponds to (...) eV.\\
+
+Once the subtracted spectra have been obtained, one can estimate the bandgap, to a first approximation, as the inflection point of the rising intensity. The value can also be roughly estimated from the onset of the absorption or from a linear fit to the maximum positive slope in the EELS spectrum \cite{Schamm:2003}. However, a more accurate and reliable determination is based on the work of Rafferty and Brown  \cite{Rafferty:2000}. The onset of the subtracted spectrum for a a meterial with a direct bandgap is expected to follow a function of the type
+\begin{equation} \label{eq:I1}
+    I(E) = I_0 + c\cdot(dE-E_{BG})^{(1/2)}
+\end{equation}
+where $I_0$ and c are constants, $dE$ is the energy loss and $E_{BG}$ is the bandgap energy. For an indirect bandgap, the power of $(1/2)$ changes to $(3/2)$. Therefore, the bandgap nature (direct or indirect) can be extracted by least-squares fitting of each $(k)$-th replica subtracted spectrum to equation \ref{eq:I3}:
+\begin{equation} \label{eq:I3}
+    I(E) = I_0 + c\cdot(dE-E_{BG})^{(b)}.
+\end{equation}
+This way, by summation over all replicas $N_{rep}$, we can determine the expectation value $\textless{b}\textgreater{}$ and its uncertainty $\sigma_b$. One has to take into account that this approach is very sensitive to the subtraction procedure: the free parameter $E_{BG}$ is the onset of the subtracted spectrum intensity, and it should be investigated how the choice of $dE_1$ affects the free parameter $E_{BG}$.

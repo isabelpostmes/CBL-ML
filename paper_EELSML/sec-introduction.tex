@@ -1,0 +1,79 @@
+
+\section{Introduction}
+\label{sec:introduction}
+
+Electron energy-loss spectroscopy (EELS) within the transmission electron microscope (TEM) provides unique information on the structural, chemical, and electronic properties of materials at the nanoscale.
+%
+Thanks to recent instrumentation breakthroughs
+such as electron monochromators and aberration correctors,
+modern EELS analyses can map these properties with unprecedented spatial and spectral resolution.
+%
+This unique combination makes possible for instance charting the local
+electronic properties of nanomaterials
+down to the single atom scale, and explore this way a number of
+important phenomena
+from bulk and surface plasmons, excitons,
+and phonons to intra-band transitions.
+%
+A particularly relevant region of the EEL spectra is
+the low-loss region, corresponding to electrons that have lost
+less than a few eV following their inelastic interactions
+with the sample.
+%
+This low-loss region contains a plethora of interesting
+information and allows, among other applications,
+to determine locally the bandgap of nanomaterials.
+
+Provided the studied sample is electron-transparent,
+in EELS analyses
+the bulk of the incident electron beam will traverse the sample
+either without interacting or restricted to elastic scatterings.
+%
+In both cases, the resulting energy exchange is too small
+to be measured in EEL spectra, leading to a 
+ high intensity peak centered at energy losses
+of $\Delta E\simeq 0$ and known as the zero loss peak (ZLP).
+%
+The energy resolution of EELS analyses is ultimately determined by
+the electron beam size of the system, often expressed in terms
+of the full width at half maximum (FWHM) of the
+ZLP~\cite{Egerton:2009}.
+%
+In the low-loss region, the contribution from the ZLP
+typically overwhelms the sample contribution arising
+from inelastic scatterings.
+%
+For this reason, important signals of relevant low-loss phenomena such as excitons, phonons, and intraband transitions risk being drowned
+in the tails of the ZLP.
+%
+Therefore, the accurate removal of the ZLP
+contribution is crucial  in order to  chart the  features
+of the low-loss EELS region. 
+
+ Ranging between electron energy losses of 1 and 5 eV, difficultly distinctive features are the presence of relatively narrow exciton peaks, located close to the ZLP. The intensity of valence features is over two orders of magnitude lower than the ZLP \cite{Abajo:2010}. These peaks can be interpreted as arising from the direct exciton transitions and allow for band gap determination \cite{Stoger:2008}. These features require a few meV resolution to be distinguished from the EELS spectrum. The nature (direct of indirect) and the band gap energy $E_g$ can be deduced from the first few eV of the energy-loss function. Several methods have been presented in literature for the determination of the bandgap and due to the dependence on how the bandgap is defined, there is a large discrepancy between values obtained on the same specimen.
+
+ According to several studies \cite{Park:2008, Stoger:2008}, the energy spread of a monochromated ZLP depends mainly on the energy dispersion, monochromator alignment and sample thickness. The first two factors appear both in presence and in absence of a specimen, however the energy spread caused by phonon excitation and exciton losses only occurs in the presence of a material. It is for this reason that the vacuum-recorded ZLP never has the same shape as the one from the VEELS spectrum and can not be used for direct subtraction.
+ 
+In literature, a few common ZLP fitting and removal techniques are described. Dorneich et al. \cite{Dorneich:1998} suggest the use of a Lorentzian function, which might have been a good fit for their specific experimental setup, however fitting a Lorentzian to the ZLP generally underfits the tail intensities. Van Benthem et al. \cite{Benthem:2001} suggest to use a more sophisticated function with seven fit-parameters for ZLP deconvolution; Erni and Browning \cite{Erni:2005} suggest to use a power 
+In 2003, Lazar et al. \cite{Lazar:2003} suggested mirroring the negative energy tail of the ZLP for a simple subtraction. This method was based on the symmetric property of the ZLP, which can be achieved only if a monochromator is used. When EEL spectra are acquired with a monochromator, numerical difficulties regarding ZLP removal are greatly reduced as the tails of the zero loss distribution are significantly smaller at low energy loss. We will make use of this property later in the Methodology section.
+All the abovementioned methods have one thing in common: they lack proper error propagation and uncertainty estimation. On top of that, for each of the methods the fit regime is adjusted to the expected bandgap value and therefore none of them is generalizable. 
+
+The broad variety of ZLP removal and bandgap extraction methods based on fitting an arbitrary functional form does not seem to be sufficiently flexible and automized to any kind of energy loss spectrum. An altogether new approach will be presented in this studies, with the general aim to find an automated way for the subtraction of the ZLP in any EEL spectrum (or set of spectra) and the determination of the bandgap. This way, manual fitting and subtraction no longer have to be the bottomline approach for low-loss EELS readout. 
+
+* Motivation of the specific materials.
+
+
+
+
+In this work we will follow the approach pioneering by the NNPDF collaboration~\cite{Ball:2017}. This approach is based on the combination of a Monte Carlo method, which we will use with neural networks as interpolation and extrapolation functions. The main idea is to train a set of neural networks on a set of Monte Carlo replicas of the experimental data which reproduces their probability distribution. Whereas the Monte Carlo pseudo data represent faithfully the electron loss intensity I(dE) in the energy loss (dE) plane where data is available, the neural networks provide a way for interpolation and extrapolation under the constraint of smoothness. The set of neural networks together provide a faithful measure of the probability distribution for the EELS intensity. \\
+This work is separated into two chapters: in the first, we will reconstruct the vacuum zero loss peak through discrete sampling, without making assumptions on its functional form. This can be best addressed using neural networks as unbiased interpolants. This way we develop a generalized N-dimensional model to predict the shape of the zero loss distribution, based on an arbitrary number N input variables. 
+In the second chapter, we switch from vacuum to on-sample recorded EEL spectra and we use a three-input neural network to fit and predict the intensity of the ZLP. By subtraction, we can find the relevant underlying spectra and look for the bandgap energy.\\
+The general strategy in both chapters will involve two stages. In the first stage, one generates a set Monte Carlo pseudo data on the original ZLP data - either recorded in vacuum, or extracted from the in-sample spectrum. This ensemble is generated such that it is large enough to reproduce the underlying statistical properties of the original dataset. In the second stage, on each Monte Carlo replica an individual neural network will be trained. The experimental predictions will be different in each replica, and the ensemble of the best predictions will be used for the computation of physical observables.\\
+It is especially important to define the way to which the best prediction is determined: the best fit should be independent of the network parametrization, and also establishing the best fit needs to be done with care. Both aspects will be justified explicitly in the methodology section. \\
+
+The paper is organized as follows. For each of the chapters, in sect. 2 we summarize the features of the experimental data. In sect. 3 we verify that the Monte Carlo sample represents the data faithfully, we summarize the methods we use to prepare and fit the neural network, we describe the minimization and validation methods and we discuss the interpolation and extrapolation. In the second chapter, we include the methods that need to be taken for the subtraction and band gap determination. Supporting figures and tables will be presented in the Appendix.
+In sect. 4 we present in detail the results: we discuss the success of the interpolation and extrapolation in Chapter 1 and the success of the subtraction and bandgap determination in Chapter 2. Finally we provide a general summary and outlook on future developments in section 5. 
+
+
+
+* Motivation for the HEP techniques in the context of material sciences.
