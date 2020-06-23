@@ -140,16 +140,22 @@
 \begin{document}
 \newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
 
-\vspace{2cm}
+
+\vspace{-2.0cm}
+\begin{flushright}
+Nikhef/2020-aaa\\
+\end{flushright}
+\vspace{1.5cm}
+
 
 \begin{center}
   {\Large \bf
-  Accessing the low-loss region in EELS with machine learning
+    Mapping Electron Energy Loss Spectra with Machine Learning
   }
 \vspace{1.4cm}
 
 
- Laurien, Luigi, and Sonia\\
+ Laurien, Luigi, Juan, Sonia, .....\\
 
 
 \vspace{0.4cm}
@@ -162,9 +168,29 @@
        
 \end{center}
 
-We use neural networks and Monte Carlo sampling techniques
-to provide a model-independent determination of the zero-loss peak
-in electron energy-loss spectroscopy (EELS) measurements with faithful uncertainty estimation.
+Electron energy-loss spectroscopy (EELS) within the transmission electron microscope (TEM) provides unique information on the structural, chemical, and electronic properties of materials at the nanoscale.
+%
+Thanks to recent instrumentation breakthroughs, modern EELS analyses can
+map these properties with unprecedented spatial and spectral resolution.
+%
+The full exploitation of the information contained in EEL spectra requires
+accessing the
+low-loss region, where the contribution from the zero-loss peak (ZLP) dominates
+over the inelastic scatterings between the incoming electrons and the sample.
+%
+In this work we deploy artificial
+neural networks and Monte Carlo sampling techniques
+to provide a model-independent determination of the ZLP
+both in-vacuum and in-sample.
+%
+This determination is then used to cleanly
+disentangle the ZLP contribution from the sample emission
+with a faithful estimation of the associated uncertainties.
+%
+As an application of our general method, we map the low-loss region
+of MoS$_2$ and study its local electronic properties.
+
+\clearpage
 
 \tableofcontents
 
@@ -248,7 +274,7 @@ $\Delta E = (E_{max} - E_{min}) / k$. The value of k is chosen empirically such 
  Within each energy bin $\Delta E$, the median and variance of all data points within this bin are determined and returned to the original data points. This way, each data point is a vector $[dE, D_i, \sigma_i]$ where dE is the original energy loss; $D_i$ and $\sigma_i$ are the median and std of the bin where this point belongs to. 
 
 \subsubsection*{Monte Carlo sampling}
-Error propagation from experimental data to the fit is performed by Monte Carlo sampling of the training data. In a Monte Carlo approach, any statistical property of the function with error - in our case the ZLP - can be derived from a Monte Carlo sample of replicas of the function. By the generation of $N_{rep}$ replicas of the individual training points, a multi-gaussian distribution is obtained centered at $D_i$ with a standard deviation equal to the corresponding error $\sigma_i$. \\
+Error propagation from experimental data to the fit is performed by Monte Carlo sampling of the training data. In a Monte Carlo approach, any statistical property of the function with error - in our case the ZLP - can be derived from a Monte Carlo sample of replicas of the function. By the generation of $N_{rep}$ replicas of the individual training points, a multi-Gaussian distribution is obtained centered at $D_i$ with a standard deviation equal to the corresponding error $\sigma_i$. \\
 To be precise, given a training data point
 \begin{equation}
     Y = Y(dE, D_i,\sigma_i), 
@@ -506,5 +532,5 @@ Here we present the main results of this paper
 \end{figure}
 
 
-\bibliography{main}
+\bibliography{EELS_ML}
 \end{document}
