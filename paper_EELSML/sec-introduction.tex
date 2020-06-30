@@ -1,0 +1,177 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Electron energy-loss spectroscopy (EELS) within the transmission electron microscope (TEM) provides unique information on the structural, chemical, and electronic properties of materials at the nanoscale.
+%
+Thanks to recent instrumentation breakthroughs
+such as electron monochromators and aberration correctors,
+modern EELS analyses can map these properties with unprecedented spatial and spectral resolution.
+%
+This unique combination makes possible for instance charting the local
+electronic properties of nanomaterials
+down to the single atom scale, and explore this way a number of
+important phenomena
+from bulk and surface plasmons, excitons,
+and phonons to intra-band transitions.
+%
+A particularly relevant region of the EEL spectra is
+the low-loss region, corresponding to electrons that have lost
+less than a few eV following their inelastic interactions
+with the sample.
+%
+This low-loss region contains a plethora of interesting
+information and allows, among other applications,
+to determine locally the bandgap of nanomaterials~\cite{Stoger:2008}.
+
+Provided the studied sample is electron-transparent,
+in EELS analyses
+the bulk of the incident electron beam will traverse the sample
+either without interacting or restricted to elastic scatterings.
+%
+In both cases, the resulting energy exchange is too small
+to be measured in EEL spectra, leading to a 
+ high intensity peak centered at energy losses
+of $\Delta E\simeq 0$ and known as the zero loss peak (ZLP).
+%
+The energy resolution of EELS analyses is ultimately determined by
+the electron beam size of the system, often expressed in terms
+of the full width at half maximum (FWHM) of the
+ZLP~\cite{Egerton:2009}.
+%
+In the low-loss region, the contribution from the ZLP
+typically overwhelms the sample contribution arising
+from inelastic scatterings.
+%
+For this reason, important signals of relevant low-loss phenomena such as excitons,
+phonons, and intraband transitions risk being drowned
+in the tails of the ZLP~\cite{Abajo:2010}.
+%
+Therefore, the accurate removal of the ZLP
+contribution is crucial  in order to  chart the  features
+of the low-loss EELS region. 
+
+The properties of the ZLP in monochromated EELS analyses depend mainly on the electron energy dispersion, the monochromator alignment, and the sample thickness~\cite{Park:2008, Stoger:2008}.
+%
+The first two factors arise already in the absence of a specimen, while the third one is associated
+to elastic scatterings with the sample such as  phonon excitation and exciton losses.
+%
+For this reason, measurements of EEL spectra can only be used for calibration purposes
+but are not suitable
+to subtract the ZLP from spectra taken on specimens, since their shapes will be in general
+different.
+
+Several approaches to ZLP subtraction have been put forward in the literature.
+%
+These are based on specific model assumptions about the ZLP properties, specifically
+concerning its parametric functional dependence, from Lorentzian~\cite{Dorneich:1998}
+and power laws~\cite{Erni:2005} to more general multiple-parameter functions~\cite{Benthem:2001}.
+%
+Another approach is based on the mirroring the $\Delta E <0$ region of the spectra, assuming
+that the $\Delta E>0$ region is fully symmetric~\cite{Lazar:2003}.
+%
+These  subtraction methods are however affected by three main limitations.
+%
+Firstly, they rely on specific model assumptions {\it e.g.} with
+the choice of functional form, introducing a methodological
+bias whose size is difficult to quantify.
+%
+Secondly, they lack an estimate of the associated uncertainties, which in turn affects
+the reliability of any physics interpretations of the low loss region such as the band gap extraction.
+%
+Thirdly, manual choices of such as those of the fitting ranges introduce a significant degree of
+arbitrariness in the procedure.
+
+In this work we bypass these limitations by developing a model-independent strategy
+for ZLP subtractions in EELS analysis by means of machine learning techniques.
+%
+Our strategy is based on the so-called NNPDF approach~\cite{Ball:2008by,Ball:2012cx,Ball:2014uwa,Ball:2017nwa}, originally
+developed for studies
+of the quark and gluon structure of the proton in high-energy particle collisions.
+%
+The main idea is to combine the  Monte Carlo replica  method to construct a probability
+distribution in the space of experimental data with artificial
+neural networks as unbiased interpolators to describe the ZLP.
+%
+This way one achieves
+a faithful sampling of the probability distribution in the space of ZLP,
+which then can be applied to subtract its contribution to EEL spectra while keeping
+full track of all the associated
+data, model, and parametrisation uncertainties.
+%
+Further, thanks to the model independence
+of our approach, we can assemble high-dimensionality ML models
+of the ZLP spectra with multiple inputs, and extrapolate them reliably
+to other operation conditions of the microscope beyond those included
+in the training dataset.
+
+In recent years
+machine learning techniques have been deployed in several studies
+related in some way or another to electron microscopy methods
+in the context of material science.
+%
+Representative examples
+include the automated identification
+of atomic-level structural information~\cite{10.1145/2834892.2834896},
+the extraction of chemical information
+and defect classification~\cite{doi:10.1021/acsnano.7b07504},
+and spatial resolution enhancement
+using  using a generative adversarial network~\cite{cite-key}.
+%
+We note however that this is the first
+time that neural networks are used as 
+ unbiased
+background removal interpolators, and combined with
+the Monte Carlo sampling technique to construct a faithful estimate
+of the ML model uncertainties.
+
+The present study is composed of two main parts.
+%
+In the first one, we construct a ML model of the ZLP spectra taken
+in vacuum based on an arbitrarily large number of input
+variables.
+%
+We demonstrate how the model describes successfully all the
+input spectra and assess its extrapolation for other operation
+conditions.
+%
+In the second part, we apply the same techniques to
+the parametrisation of the ZLP from spectra taken on sample specimens.
+%
+Here one has to be careful to define the fitting ranges
+in an automated way while avoiding contamination from
+the signal associated to inelastic scatterings.
+%
+We carefully validate our fitting methodology by means of closure tests, were
+artificial pseudo-data based on a known underlying model is generated
+to compare with the model output.
+
+As a proof of concept, we apply the machine learning ZLP removal technique
+developed here to map the local electronic properties
+from a low-loss region analysis of EELS taken on
+MoS$_2$ nanostructures~\cite{soniamos2}.
+%
+MoS$_2$ is a highly promising material exhibiting a wide range of possible applications for electronic and optical devices.
+%
+In particular, we study the possible metallic character and
+determine the value of its
+bandgap in different regions of the nanostructures.
+%
+We will also quantify the statistical significance of the inelastic
+scattering signals in the low-loss region following the ZLP
+background subtraction.
+
+The paper is organized as follows.
+%
+First of all in Sect.~\ref{sec:dataset}
+summarize the main features of the experimental data.
+%
+In Sect.~\ref{sec:methodology} we describe our methodology
+and discuss its application to the in-vacuum and in-sample
+ZLP parametrisations.
+%
+In Sect.~\ref{sec:results} we present the main results
+of this work and the corresponding physical interpretation
+of the ZLP-subtracted low-loss EEL spectra.
+%
+Finally in Sect.~\ref{sec:summary} we summarise
+and outline possible future developments.
