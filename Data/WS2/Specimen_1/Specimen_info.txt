@@ -1,0 +1,8 @@
+SPECIMEN: 
+>> WS2 nanostructures grown onto SiN TEM grid	
+
+STEM mode
+
+>> Exposure time: 0.008s
+>> Dispersion: 0.01eV/ch
+>> Aperture spectrometer: 5mm
