@@ -174,12 +174,13 @@ Despite this breakthrough, the the ultimate spatial resolution obtainable by TEM
 
 
 \subsection{Removal of the zero loss peak}
-Provided the thickness of the sample is small, the greatest part of the incident electron beam transfers through the sample elastically, implicating the energy exchange is too small to measure in a TEM-EELS system. A high intensity peak around 0 eV loss can be observed called the zero loss peak (ZLP). The width of the ZLP, typically 0.2-2 eV, reflects the energy distribution of the electron source \cite{Egerton:2009}. Ranging between electron energy losses of 1 and 5 eV, difficultly distinctive features are the presence of relatively narrow exciton peaks, located close to the ZLP. The intensity of valence features is over two orders of magnitude lower than the ZLP \cite{Abajo:2010}. These peaks can be interpreted as arising from the direct exciton transitions and allow for band gap determination \cite{Stoger:2008}. These features require a few meV resolution to be distinguished from the EELS spectrum. The nature (direct of indirect) and the band gap energy $E_g$ can be deduced from the first few eV of the energy-loss function. Several methods have been presented in literature for the determination of the bandgap and due to the dependence on how the bandgap is defined, there is a large discrepancy between values obtained on the same specimen.\\
+Provided the thickness of the sample is small, the greatest part of the incident electron beam transfers through the sample elastically, implicating the energy exchange is too small to measure in a TEM-EELS system. A high intensity peak around 0 eV loss can be observed called the zero loss peak (ZLP). The width of the ZLP, typically 0.2-2 eV, reflects the energy distribution of the electron source \cite{Egerton:2009}. Ranging between electron energy losses of 1 and 5 eV, difficultly distinctive features are the presence of relatively narrow exciton peaks, located close to the ZLP. The intensity of valence features is over two orders of magnitude lower than the ZLP \cite{Abajo:2010}. These peaks can be interpreted as arising from the direct exciton transitions and allow for band gap determination \cite{Stoger:2008}. These features require a few meV resolution to be distinguished from the EELS spectrum. The nature (direct of indirect) and the band gap energy $E_g$ can be deduced from the first few eV of the energy-loss function. Once the zero loss peak tail is removed from the bandgap signal, the bandgap can be measured. Several methods have been proposed in literature for the extraction of the bandgap energy from VEEL spectra \cite{Batson:1986, Lazar:2003, Rafferty:2000, Schamm:2003}. 
+However, due to the dependence on how the bandgap is defined, there is a large discrepancy between values obtained on the same specimen.\\
 
 According to several studies \cite{Park:2008, Stoger:2008}, the energy spread of a monochromated ZLP depends mainly on the energy dispersion, monochromator alignment and sample thickness. The first two factors appear both in presence and in absence of a specimen, however the energy spread caused by phonon excitation and exciton losses only occurs in the presence of a material. It is for this reason that the vacuum-recorded ZLP never has the same shape as the one from the VEELS spectrum and can not be used for direct subtraction. \\ 
-In literature, a few common ZLP fitting and removal techniques are described. Dorneich et al. \cite{Dorneich:1998} suggest the use of a Lorentzian function, which might have been a good fit for their specific experimental setup, however fitting a Lorentzian to the ZLP generally underfits the tail intensities. Van Benthem et al. \cite{Benthem:2001} suggest to use a more sophisticated function with seven fit-parameters for ZLP deconvolution; Erni and Browning \cite{Erni:2005} suggest to use a power 
+In literature, a few common ZLP fitting and removal techniques are described. Dorneich et al. \cite{Dorneich:1998} suggest the use of a Lorentzian function, which might have been a good fit for their specific experimental setup, however fitting a Lorentzian to the ZLP generally underfits the tail intensities. Van Benthem et al. \cite{Benthem:2001} suggest to use a more sophisticated function with seven fit-parameters for ZLP deconvolution; Erni and Browning \cite{Erni:2005} suggest to fit a power-law to the tail of the zero loss peak, extrapolated to the bandgap signal, but they highlight that it is not an adequate fit function to the zero loss peak and that deviations from the experimental tail are certainly present.\\
 In 2003, Lazar et al. \cite{Lazar:2003} suggested mirroring the negative energy tail of the ZLP for a simple subtraction. This method was based on the symmetric property of the ZLP, which can be achieved only if a monochromator is used. When EEL spectra are acquired with a monochromator, numerical difficulties regarding ZLP removal are greatly reduced as the tails of the zero loss distribution are significantly smaller at low energy loss. We will make use of this property later in the Methodology section.\\
-All the abovementioned methods have one thing in common: they lack proper error propagation and uncertainty estimation. On top of that, for each of the methods the fit regime is adjusted to the expected bandgap value and therefore none of them is generalizable. \\
+All the abovementioned methods have one thing in common: they lack proper error estimation. On top of that, for each of the methods the fitting regime is adjusted to the expected bandgap value and therefore none of them is generalizable. \\
 
 The broad variety of ZLP removal and bandgap extraction methods based on fitting an arbitrary functional form does not seem to be sufficiently flexible and automized to any kind of energy loss spectrum. An altogether new approach will be presented in this studies, with the general aim to find an automated way for the subtraction of the ZLP in any EEL spectrum (or set of spectra) and the determination of the bandgap. This way, manual fitting and subtraction no longer have to be the bottomline approach for low-loss EELS readout. 
 
@@ -190,10 +191,11 @@ The broad variety of ZLP removal and bandgap extraction methods based on fitting
 
 \subsection{The NNPDF approach}
 In this work we will follow the approach pioneering by the NNPDF collaboration~\cite{Ball:2017}. This approach is based on the combination of a Monte Carlo method, which we will use with neural networks as interpolation and extrapolation functions. The main idea is to train a set of neural networks on a set of Monte Carlo replicas of the experimental data which reproduces their probability distribution. Whereas the Monte Carlo pseudo data represent faithfully the electron loss intensity I(dE) in the energy loss (dE) plane where data is available, the neural networks provide a way for interpolation and extrapolation under the constraint of smoothness. The set of neural networks together provide a faithful measure of the probability distribution for the EELS intensity. \\
-This work is separated into two chapters: in the first, we will reconstruct the vacuum zero loss peak through discrete sampling, without making assumptions on its functional form. This can be best addressed using neural networks as unbiased interpolants. This way we develop a generalized N-dimensional model to predict the shape of the zero loss distribution, based on an arbitrary number N input variables. 
+
+This work is separated into two chapters: in the first, we will reconstruct the vacuum zero loss peak through discrete sampling, without making assumptions on its functional form. This can be best addressed using neural networks as unbiased interpolants. We will exploit the peculiar feature of neural networks to provide an interpolation without requiring andy assumption on the functional form of the underlying physics of a given observable. This way we develop a generalized N-dimensional model to predict the shape of the zero loss distribution, based on an arbitrary number N input variables. 
 In the second chapter, we switch from vacuum to on-sample recorded EEL spectra and we use a three-input neural network to fit and predict the intensity of the ZLP. By subtraction, we can find the relevant underlying spectra and look for the bandgap energy.\\
 The general strategy in both chapters will involve two stages. In the first stage, one generates a set Monte Carlo pseudo data on the original ZLP data - either recorded in vacuum, or extracted from the in-sample spectrum. This ensemble is generated such that it is large enough to reproduce the underlying statistical properties of the original dataset. In the second stage, on each Monte Carlo replica an individual neural network will be trained. The experimental predictions will be different in each replica, and the ensemble of the best predictions will be used for the computation of physical observables.\\
-It is especially important to define the way to which the best prediction is determined: the best fit should be independent of the network parametrization, and also establishing the best fit needs to be done with care. Both aspects will be justified explicitly in the methodology section. \\
+It is important to define the way to which the best prediction is determined: the best fit should be independent of the network parametrization, and also establishing the best fit needs to be done with care. Both aspects will be justified explicitly in the methodology section. \\
 
 The paper is organized as follows. For each of the chapters, in sect. 2 we summarize the features of the experimental data. In sect. 3 we verify that the Monte Carlo sample represents the data faithfully, we summarize the methods we use to prepare and fit the neural network, we describe the minimization and validation methods and we discuss the interpolation and extrapolation. In the second chapter, we include the methods that need to be taken for the subtraction and band gap determination. Supporting figures and tables will be presented in the Appendix.
 In sect. 4 we present in detail the results: we discuss the success of the interpolation and extrapolation in Chapter 1 and the success of the subtraction and bandgap determination in Chapter 2. Finally we provide a general summary and outlook on future developments in section 5. 
@@ -240,7 +242,8 @@ The main ingredients of our road to success will be:
 
 \subsection{Data preparation}
 The four data sets contain spectra that are recorded over a different energy range. As we are only interested in the ZLP region, where the intensity is different from zero, we drop all data that is outside $[-0.1, 0.5]$ eV. This way we capture all the relevant data, discard a big region with zero intensity and we have data for each of the sets over the entire energy range. \\
-We then evolve our data from the original scale to a scale at which we can ease the optimization. Unscaled input variables can result in a slow or unstable learning process, whereas unscaled target variables on regression problems can result in exploding gradients causing the learning process to fail \cite{juan}. The energy loss is scaled between [$-1,1$] and all input spectra are scaled between [$0.1, 0.9$], where 0.9 corresponds to the maximum value of the intensity for each separate data set ($I_{max}$, table \ref{table:vacuum}). 
+We then evolve our data from the original scale to a scale at which we can ease the optimization. Unscaled input variables can result in a slow or unstable learning process, whereas unscaled target variables on regression problems can result in exploding gradients causing the learning process to fail \cite{juan}. The energy loss is scaled between [$-1,1$] and all input spectra are scaled between [$0.1, 0.9$], where 0.9 corresponds to the maximum value of the intensity for each separate data set ($I_{max}$, table \ref{table:vacuum}). \\
+
 
 \subsubsection*{Observables}
 Central values and errors are calculated for each of the data sets separately, as we expect different outcomes for different exposure time and beam energy. The discretization technique used to assign mean and standard deviation to the data points is Equal Width Discretization (EWD) \cite{Dash:2011}, a simple discretization method that divides the range of observed values for a feature into k equal sized bins. The intervals are computed by 
@@ -279,9 +282,12 @@ Nrep & $\textless{\mu}\textgreater{}$ {[}eV{]} & r{[}$\mu${]} & $\textless{\sigm
 \caption{Comparison between the artificial and the original central values and errors. $\textless{\mu}\textgreater{}$ and $\textless{\sigma}\textgreater{}$ are the expectation value of the median and errors respectively. The scatter correlation $r$ gives the spread around the straight line. $\textless{\mu^{exp}}\textgreater{}$ = 0.10258, $\textless{\sigma^{exp}}\textgreater{}$ = 0.63970. }
 \label{tablemcvacuum}
 \end{table}
+It is clear that already for 100 replicas, the distribution of the original data is represented with a correlation higher than 99\%. \\
 
+We now have a faithful representation of the data set with inputs  $dE$ and outputs $D_i$, for $N_{rep} \geq 100$. For we want to train the neural network on all the four data sets in one go, we add two extra dimensions to the training inputs for the beam energy and the exposure time: now each training point is represented by a vector $(dE, t_{exp}, E_{beam}$ and we can start to train the neural network with three inputs.
 
 \subsection{Neural network and fitting strategy}
+An artificial neural network consists of a net of interconnected units called neurons. The state of each neuron (i) is determined as the activation of the neurons connected to it. The connection between each set of neurons (i,j) is characterized by a weight $w_{i,j}$ and the activation of each neuron is a function g that gives a weighted average of all inputs from connected neurons. The activation function is generally non-linear: thanks to this non-linear behaviour, the neural network is able to reproduce nontrivial functions. \\
 The neural network architecture that we use is 3-10-15-5-1, enabling deep learning with three hidden layers. This choice is made empirically and it is motivated by the flexibility of the network to overlearn, which is necessary for the post-selection criterion, yet to keep the computation time reasonable. The use of a redundant architecture excludes a priori the bias that an underlearning model would bring forth. 
 
 A schematic of the neural network graph can be observed in Fig. \ref{architecture}. 
@@ -294,7 +300,7 @@ A schematic of the neural network graph can be observed in Fig. \ref{architectur
 
 $N_{rep}$ neural networks are trained on the Monte Carlo data, each on a different set of replicas. The networks are trained to minimize the uncorrelated $\chi^2$ per data point:
 
-\begin{equation} \label{eq:chi2}
+\begin{equation}
     E^{(k)} = \frac{1}{N_{dat}}\sum_{i=1}^{N_{dat}}\left(\frac{D_i^{MC(k)} - D_i^{pred(k)}}{\sigma_i}\right)^2, 
 \end{equation}
 
@@ -302,10 +308,30 @@ where $D_i^{MC(k)}, D_i^{pred(k)}$ are the artificial Monte Carlo intensity and 
 The chi-squared method is the cornerstone of almost all fitting, as it is an intuitively reasonable measure of how well the predictions fit the data. If the model predictions are all within one standard deviation from the data, then the $\chi^2$ per data point takes a value roughly equal to 1. In general, if $\chi^2/N_{dat}$ is of the order 1, we can say that the fit is a good approximation to the real data. \\
 
 We are not looking for the absolute minimum of the error function, but we rather search for an optimal stopping point to avoid overfitting. At this optimal stopping point, it reproduces the general features of the inputs, but not some accidental fluctuations. This point can be determined by the formulation of a stopping criterion, making it possible to, once the network completed the training, choose the parametrization of the network weights right before it entered the overlearning regime. The look-back stopping method has been widely used in the context of neural networks. \\
-In this technique the training data is first shuffled and then divided into two subsets, usually split 80-20. The first and biggest set is the training set, used for updating the network weights and biases under the minimization of the error function (\ref{eq:chi2}). After each training epoch, the validation set is given as an input to the neural network and the error is monitored. During the initial phase of training, the error on both the training and validation set decrease, but at a certain point the network enters the overlearning regime and the validation error slowly starts to increase, while the training error further decreases. It is at this point that weights and biases are collected to make the prediction. This can only be determined in hindsight, hence the name 'look-back stopping'. One thing to keep in mind is to avoid early stopping in a local minimum rather than the global minimum of the validation error, which can be assured by setting the training length sufficiently long to reach the global minimum.
+In this technique the training data is first shuffled and then divided into two subsets, usually split 80-20. The first and biggest set is the training set, used for updating the network weights and biases under the minimization of the error function (\ref{eq:chi2}). After each training epoch, the validation set is given as an input to the neural network and the error  is monitored. During the initial phase of training, the error on both the training set ($\chi^2_{train}$) and validation set ($\chi^2_{val}$) decrease, but at a certain point the network enters the overlearning regime and the validation error slowly starts to increase, while the training error further decreases. It is at this point that weights and biases are collected to make the prediction. This can only be determined in hindsight, hence the name 'look-back stopping'. One thing to keep in mind is to avoid early stopping in a local minimum rather than the global minimum of the validation error, which can be assured by setting the training length sufficiently long to reach the global minimum.\\
+For each replica, the prediction at $\chi^2_{val}$,min is collected and the full ensemble of $N_{rep}$ predictions is used to model the probability distribution. 
 
-\subsection{Minimization}
-The minimum of the fitting procedure is found using the backpropagation method. 
+
+\subsection{Minimization process}
+The training algorithm of the neural network allows us to select the parameters such that the net reproduces the given training data. The learning algorithm we use to train our network is supervised learning by the backpropagation method. For a set of input and output data (\textbf{x},\textbf{z}), the network makes a prediction (\textbf{x},\textbf{y(x)}) where we want y(x) to get as close to z as possible. In our case, \textbf{x} represents the training points $[dE, t_{exp}, E_{beam}]$, \textbf{z} are the corresponding intensities and y(\textbf{x}) is the prediction $D^{(pred)}$ on \textbf{x}.  \\
+The general state of the neural network can be given by
+\begin{equation}
+    \xi_i^(l) = g(h_i^{(l)}), \indent h_i^{(l)} = \sum_{j=1}^{n_{l-1}} w_{ij}^{(l-1)} \xi_{j}^{(l-1)} - \theta^{(l)};
+    \indent i = 1,...,n_l, \indent l = 1,...,L.
+\end{equation}
+Here, $\xi_i^l$ represents the state of the neurons in the $l^{th}$ layer, $g$ is the activation function. $w_{ij}^{(l)}$ are the weights between neurons in layer (l) and (l-1), $\theta_i^{(l)}$ is the bias of unit \textit{i} in layer (l). 
+The inputs and outputs correspond to the vector states in the first and the last layer in the network:
+
+\begin{align}
+\textbf{x} &= \textbf{\xi}^{(1)}, \\ 
+\textbf{y(x)} &= \textbf{\xi}^{(L)} = D_i^{(pred)}. 
+\end{align}
+
+Given a fixed activation function, the error function \ref{eq:chi2} is a function of the weights and biases. It can be minimized by looking for the direction of steepest descent in the parameter space of weights and biases, and modifying the parameters in that direction:
+\begin{align}
+   \delta w_{ij}^{(l)}  &= -\eta \frac{\partial E}{\partial w_{ij}^{(l)}} \\
+   \delta b_i^{(l)}  = &-\eta \frac{\partial E}{\partial b_i^{(l)}} 
+\end{align}
 
 \subsection{Validation}
 
@@ -439,6 +465,7 @@ Direct subtraction of the predicted ZLP on each of the original spectra doesn't 
  dE_1 &< dE < 10 \cdot dE_2 &  I_{ZLP}^{(k)} &= I_{NN}^{(k)}\\
  dE &> 10 \cdot dE_2 &   I_{ZLP}^{(k)} &= 0
 \end{align}
+
 Here $dE_0$ is the start of the smooth transition from ZLP to NN region given by eq. $(5.4)$, with $dE_0<dE_1$  and $\delta \ll |dE_0 - dE_1|$. 
 
 \begin{figure}[H]
@@ -454,11 +481,11 @@ Traditionally, bandgaps of dielectrics have been measured by methods offering hi
 As suggested in literature \cite{15,14}, the threshold for bandgap detection is the Kimoto limit, which is the energy loss at which 1/1000th of the maximum peak intensity is measured: at this level, sample contributions can be detected above the background of the tails of the zero-loss distribution. We should make sure that we are working above this limit, which for our dataset corresponds to (...) eV.\\
 
 Once the subtracted spectra have been obtained, one can estimate the bandgap, to a first approximation, as the inflection point of the rising intensity. The value can also be roughly estimated from the onset of the absorption or from a linear fit to the maximum positive slope in the EELS spectrum \cite{Schamm:2003}. However, a more accurate and reliable determination is based on the work of Rafferty and Brown  \cite{Rafferty:2000}. The onset of the subtracted spectrum for a a meterial with a direct bandgap is expected to follow a function of the type
-\begin{equation} \label{eq:I1}
+\begin{equation} 
     I(E) = I_0 + c\cdot(dE-E_{BG})^{(1/2)}
 \end{equation}
 where $I_0$ and c are constants, $dE$ is the energy loss and $E_{BG}$ is the bandgap energy. For an indirect bandgap, the power of $(1/2)$ changes to $(3/2)$. Therefore, the bandgap nature (direct or indirect) can be extracted by least-squares fitting of each $(k)$-th replica subtracted spectrum to equation \ref{eq:I3}:
-\begin{equation} \label{eq:I3}
+\begin{equation} 
     I(E) = I_0 + c\cdot(dE-E_{BG})^{(b)}.
 \end{equation}
 This way, by summation over all replicas $N_{rep}$, we can determine the expectation value $\textless{b}\textgreater{}$ and its uncertainty $\sigma_b$. One has to take into account that this approach is very sensitive to the subtraction procedure: the free parameter $E_{BG}$ is the onset of the subtracted spectrum intensity, and it should be investigated how the choice of $dE_1$ affects the free parameter $E_{BG}$.
