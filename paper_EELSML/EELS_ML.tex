@@ -1,4 +1,5 @@
-\documentclass[11pt,a4paper]{article}
+%\documentclass[11pt,a4paper]{article}
+\documentclass[12pt]{iopart}
 
 \usepackage[colorlinks=true, linkcolor=black!50!blue, urlcolor=blue, citecolor=blue, anchorcolor=blue]{hyperref}
 \usepackage[font=small,labelfont=bf,margin=0mm,labelsep=period,tableposition=top]{caption}
@@ -9,7 +10,7 @@
 \usepackage{afterpage}
 \usepackage{epsfig,cite}
 \usepackage{amssymb}
-\usepackage{amsmath}
+%\usepackage{amsmath}
 \usepackage{bm}
 \usepackage{dsfont}
 \usepackage{multirow}
@@ -24,7 +25,7 @@
 
 \usepackage{multirow,booktabs,multirow}
 
-\bibliographystyle{JHEP}
+\bibliographystyle{iopart-num}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -33,7 +34,6 @@
 \newcommand{\ee}{\end{equation}}
 \newcommand{\bea}{\begin{eqnarray}}
 \newcommand{\eea}{\end{eqnarray}}
-\newcommand{\bi}{\begin{itemize}}
 \newcommand{\ei}{\end{itemize}}
 \newcommand{\ben}{\begin{enumerate}}
 \newcommand{\een}{\end{enumerate}}
@@ -82,15 +82,10 @@
 \newcommand{\cut}{\mathrm{cut}}
 \newcommand{\parr}{\mathrm{par}}
 \newcommand{\val}{\mathrm{val}}
-\newcommand{\tr}{\mathrm{tr}}
-\newcommand{\checkk}{\mathrm{check}}
 \newcommand{\reff}{\mathrm{ref}}
 \newcommand{\Mll}{M_{ll}}
 \newcommand{\extra}{\mathrm{extra}}
 \newcommand{\draft}[1]{}
-\newcommand{\comment}[1]{{\bf \it  #1}}
-\def\beq{\begin{equation}}
-\def\eeq{\end{equation}}
 % Added by MU 
 \def \a{\alpha}
 \def \b{\beta}
@@ -123,9 +118,9 @@
 \def\xbb{x_{2}^{0}}
 \def\smx{\stackrel{x\to 0}{\longrightarrow}}
 \def\Li{{\rm Li}}
-\numberwithin{equation}{section}
-\numberwithin{figure}{section}
-\numberwithin{table}{section}
+%\numberwithin{equation}{section}
+%\numberwithin{figure}{section}
+%\numberwithin{table}{section}
 \newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
 \newcommand{\tmtextit}[1]{{\itshape{#1}}}
 \newcommand{\tmtextrm}[1]{{\rmfamily{#1}}}
@@ -133,25 +128,20 @@
 \usepackage{tabularx}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \begin{document}
-\newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
-\vspace{-2.0cm}
-\begin{flushright}
-Nikhef/2020-022\\
-\end{flushright}
-\vspace{1.5cm}
-\begin{center}
-  {\Large \bf
-    Mapping Electron Energy Loss Spectra with Machine Learning
-  }
-\vspace{1.4cm}
- Laurien, Luigi, Juan, Sonia, .....\\
-\vspace{0.4cm}
-       {\it TU Delft and Nikhef
-       }
-       \vspace{1.0cm}
-       {\bf \large Abstract}
-       
-\end{center}
+%\newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
+
+\title[Mapping Electron Energy Loss Spectra with Machine Learning]{Mapping Electron Energy Loss Spectra with Machine Learning}
+
+\author{ Laurien, Luigi, Juan, Sonia, ...}
+
+\address{TUD and Nikhef}
+\ead{s.conesaboj@tudelft.nl}
+\vspace{10pt}
+\begin{indented}
+\item[]September 2020
+\end{indented}
+
+\begin{abstract}
 Electron energy-loss spectroscopy (EELS) within the transmission electron microscope (TEM) provides unique information on the structural, chemical, and electronic properties of materials at the nanoscale.
 %
 Thanks to recent instrumentation breakthroughs, modern EELS analyses can
@@ -173,25 +163,12 @@ with a faithful estimation of the associated uncertainties.
 %
 As an application of our general method, we map the low-loss region
 of MoS$_2$ and study its local electronic properties.
-\clearpage
-\tableofcontents
+\end{abstract}
+
 \input{sec-introduction.tex}
 \input{sec-dataset.tex}
 \input{sec-methodology.tex}
 \input{sec-results.tex}
 \input{sec-summary.tex}
-%\section{Appendix}
-%\begin{figure}[H]
-%    \centering
-%    \includegraphics[width=130mm]{plots/spectrum.png}
-%    \caption{Energy electron loss spectra taken at nine different positions on a sample of MoS2. Up: original intensity. Below: logarithmic intensity. Retrieved from \cite{soniamos2}. }
-%    \label{spectra}
-%\end{figure}
-%\begin{figure}[H]
-%    \centering
-%    \includegraphics[width=155mm]{plots/ewd.png}
-%    \caption{Log intensity profile of the sample data after applying EWD with $n_{bins}$=600.}
-%    \label{ranges}
-%\end{figure}
 \bibliography{EELS_ML}
 \end{document}

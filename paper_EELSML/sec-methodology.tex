@@ -196,12 +196,12 @@ As mentioned before in section\ref{sec:regions}, the shape of a monochromated pe
 Repetitive training of the neural network on each set of MC pseudo data yields a prediction that is distributed with a mean and std corresponding to the mean and error of the original training set. For each replica, the predicted ZLP is subtracted from the individual original spectra to obtain one set of subtractions. Repeating this procedure yields a collection of $N_{rep}$ subtractions for each original spectrum, over which statistical properties such as median and variance can be calculated. \\
 
 Direct subtraction of the predicted ZLP on each of the original spectra doesn't yield a physical result, as the intensity of the samples in range (a)-(c) (Fig. \ref{ranges}) doesn't coincide between themselves and the predicted ZLP. In order for the subtracted spectrum to make physical sense, we impose that the ZLP to be subtracted will be a smooth transition from the exact replicate of the ZLP in region (a)-(c) to the prediction from the neural network in region (d),(e). This way, we keep only the prediction of the region of our interest. The smooth matching of the ZLP will be the following:
-\begin{align}
- dE &< dE_0          &   I_{ZLP}^{(k)} &= I_{orig}\\
- dE_0 &< dE < dE_1   &  I_{ZLP}^{(k)} &= I_{NN}^{(k)} \times  \left( 1 - \exp(-(dE - dE_1)^2/\delta^2)\right) \\
- dE_1 &< dE < 10 \cdot dE_2 &  I_{ZLP}^{(k)} &= I_{NN}^{(k)}\\
- dE &> 10 \cdot dE_2 &   I_{ZLP}^{(k)} &= 0
-\end{align}
+\bea
+ dE &\le dE_0            I_{ZLP}^{(k)} &= I_{orig}\\
+ dE_0 &< dE < dE_1     I_{ZLP}^{(k)} &= I_{NN}^{(k)} \times  \left( 1 - \exp(-(dE - dE_1)^2/\delta^2)\right) \\
+ dE_1 &< dE < 10 \cdot dE_2 &  I_{ZLP}^{(k)} = I_{NN}^{(k)}\\
+ dE &> 10 \cdot dE_2    I_{ZLP}^{(k)} &= 0
+\eea
 Here $dE_0$ is the start of the smooth transition from ZLP to NN region given by eq. $(5.4)$, with $dE_0<dE_1$  and $\delta \ll |dE_0 - dE_1|$. 
 
 \begin{figure}[H]
