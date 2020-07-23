@@ -167,17 +167,40 @@ As an application of our general method, we map the low-loss region
 of WS$_2$ and study its local electronic properties.
 \end{abstract}
 
-\noindent{\it Keywords:\/} \keywords{eels, neural networks, zero-loss peak subtraction} \\
+\noindent{\it Keywords:} Transmission Electron Microscopy,
+Electron Energy Loss Spectroscopy, Neural Networks, Bandgap, van
+der Waals materials.\\
+
+\noindent
 \submitto{Mach. Learn.: Sci. Technol.}
 \maketitle
 
 %% The words table and figure should be written in full and not abbreviaged to tab. and fig. Do not include ‘eq.’, ‘equation’ etc before an equation number or ‘ref.’ ‘reference’ etc before a reference number.
 
+% Table of contents
+\tableofcontents
+\clearpage
 
+% General introduction
 \input{sec-introduction.tex}
-\input{sec-dataset.tex}
+
+% Review of EELS
+\input{sec-eels.tex}
+
+% Discuss the methodology that we are going to use
 \input{sec-methodology.tex}
-\input{sec-results.tex}
+
+% Dataset, including TMDs
+\input{sec-dataset.tex}
+
+% Discussion of results in vacuum
+% including closure test validation
+\input{sec-results-vacuum.tex}
+
+% Discussion of the results in sample
+\input{sec-results-sample.tex}
+
+% Summary and outlook
 \input{sec-summary.tex}
 \bibliography{EELS_ML}
 \end{document}
