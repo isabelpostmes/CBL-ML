@@ -13,68 +13,64 @@ As it is well known, the ZLP will in general be different
 in the two cases: for in-sample spectra, one expects a broadening
 arising from elastic electron-sample interactions that is missing in
 the vacuum spectra.
-%
-These datasets will be used as input for the training of our
-machine learning model of the ZLP, to be described in the next section.
 
-\paragraph{Vacuum spectra.}
+\paragraph{Vacuum spectra}
 %
-For the purpose of this study, four different sets of vacuum recorded zero loss peaks are used, each of them measured under a different setting of exposure time and beam current, as listed in Table~\ref{table:vacuum}. These data sets were recorded with a Titan TEM, equipped with a Skottky field emitter.
+For the ML model of the ZLP, four different sets of vacuum recordings
+have been used, each measured under a different setting of exposure time 
+and beam current. 
 %
-In each case
-indicate
-the number of data points ($N_{\rm files}\times N_{dat}$/file), the energetic range, maximum recorded intensity and FWHM of each set of data. FWHM, $dE_{\rm min}$ and $dE_{\rm max}$ are given in eV.
+The data sets were recorded with a Titan TEM, equipped with a Skottky field emitter.
+A maximum energy resolution (FWHM) of 0.003 eV could be realized. 
 %
-The data from Table~\ref{table:vacuum} will be use to construct a ML-based
+Table~\ref{table:vacuumdata} below indicates for each of the data sets the number of data files, 
+the energy loss range, maximum recorded intensity and FWHM. 
+%
+These four data sets have been used to construct a ML-based
 multidimensional model of the ZLP which can be inter- and extrapolated
 to other operation conditions of the microscope.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \begin{table}[h]
-  \renewcommand{\arraystretch}{1.40}
-\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
-\toprule
-Set & $t_{\rm exp}$ {[}ms{]} & $E_{\rm beam}$ {[}keV{]} & $N_{\rm files}$ & $N_{dat} / file$ & $dE_{\rm min}$  & $dE_{\rm max}$  & $I_{\rm max}$ & FWHM  \\ \hline
+\caption{Properties of the zero loss peaks acquired in vacuum, used as inputs for training the multidimensional neural network model.} 
+\item[]\begin{tabular}{@{}llllllllll}
+\br
+Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm beam}$ {(}keV{)} & $N_{\rm files}$ & $N_{dat} / file$ & $\Delta E_{\rm min}$  & $\Delta E_{\rm max}$  & $I_{\rm max}$ & FWHM  \\ 
+\mr
 1        & 100                 & 200                  & 15          & 2048               & -0.96              & +8.51               & 739770       & 0.025         \\
 2        & 100                 & 60                   & 7           & 2048               & -0.54              & +5.59               & 326483       & 0.022         \\
 3        & 10                  & 200                  & 12          & 2048               & -0.18              & +2.97               & 70913        & 0.003         \\
-4        & 10                  & 60                   & 6           & 2048               & -0.40              & +4.78               & 30793        & 0.017         \\ \bottomrule
+4        & 10                  & 60                   & 6           & 2048               & -0.40              & +4.78               & 30793        & 0.017         \\ 
+\br
 \end{tabular}
-\vspace{0.4cm}
-\caption{The data sets of the in vacuum recorded zero loss peaks used for this part of the analysis. We show the number of data points ($N_{files}\times N_{dat}$/file), the energetic range, maximum recorded intensity and FWHM of each set of data. FWHM, $dE_{min}$ and $dE_{max}$ are given in eV.}
-\label{table:vacuum}
+\label{table:vacuumdata}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-
 
 \paragraph{Sample spectra}
 %
 In this work we will study the local electronic properties
 via a low-loss region analysis of EELS taken on
-MoS$_2$ nanostructures~ \cite{soniamos2}.
+WS$_2$ nanostructures.
 %
-MoS$_2$ is a highly promising material exhibiting a wide range of possible applications for electronic and optical devices.
+WS$_2$ is a highly promising material exhibiting a wide range of 
+possible applications for electronic and optical devices.
 %
-When MoS$_2$ is thinned down to a single monolayer (ML), its indirect band gap switches to a direct band gap of around 1.88 eV~\cite{Nerl:2016}.
+When WS$_2$ is thinned down to a single monolayer, its 
+indirect band gap switches to a direct band gap of around 1.35 eV.
+%
+A collection of electron loss spectra acquired at different positions 
+at the specimen is used to construct the neural network training inputs. 
+%
+These sets of data were obtained directly from the work of (... ref to Sonia).
+%
+A specimen image of the positions can be observed in figure~\ref{fig:ws2positions}.  
+This nanostructure exhibits flat layers with different thicknesses, which 
+can be distinguished from the picture as color differences.
+%
+Energy loss spectra obtained at positions 1-3 are vacuum recordings, 
+positions 4-13 represent in-sample data.
 
-To obtain these measurements,
-a monochromated electron source was used operating at 60 kV, which achieves an energy resolution of around 30 meV. The most-distinctive features of the EELS spectra are two relatively narrow peaks around 1.88 and 2.05 eV, arising from the direct exciton transitions and split by interlayer interactions and spin-orbit coupling. These measurements for the position of the bandgap is consistent with previous studies~\cite{Nerl:2016, Komsa:2012}. The peaks could be revealed after subtraction of a fitted Gaussian curve and a power law to the ZLP and its right-hand tail. 
-%
-An ensemble of electron loss spectra acquired at different positions at the sample is used to construct the training inputs (Fig. \ref{spectra}). As the ZLP is several orders of magnitude bigger than the sample data, the logarithm of the intensity is used to train the model.
-%
-The main features of our data sets are summarized in Table \ref{table:spectra}, where we show (...). 
 
-\begin{table}[H]
-\centering
-\begin{tabular}{|l|l|}
-\hline
-Property of dataset & Values \\ \hline
-1                   & x      \\ \hline
-2                   & x      \\ \hline
-3                   & x      \\ \hline
-4                   & x      \\ \hline
-5                   & x      \\ \hline
-\end{tabular}
-\caption{Table 1}
-\label{table:spectra}
-\end{table}
