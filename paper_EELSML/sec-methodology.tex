@@ -3,23 +3,72 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:methodology}
 
-Explain machine learning methodology
+\subsection{Feedforward neural network}
 
-\subsection{General approach}
+One of the reasons for the widespread success of machine learning 
+is the growing availability of high processing capabilities 
+and the large amounts of data at disposal~\cite{LeCun:2015}.
+%
+Typical machine learning algorithms are divided into three classes:
+supervised learning, unsupervised learning and reinforcement learning.
+%
+A supervised learning regression tool of a feedforward neural network 
+was chosen for the purpose of this study. This is the simplest type 
+in the group of neural networks and it was selected for it can accomodate 
+multidimensional input data and 
+incorporate non-linear interactions, within reasonable computation times. 
+%
+For predicting the properties of the ZLP in vacuum, we construct an multidimensional
+input neural network, a schematic of which can be observed in figure~\ref{fig:architecture}.
+The choice to use a redundant architecture is motivated by the flexibility of the network 
+to overlearn, which is necessary for post-selecting the optimal parameters.
+This way, one excludes a priori the bias that an underlearning model would bring forth. 
 
-The main ingredients of our road to success will be:
-\begin{enumerate}
-    \item Data preparation, to set up the raw data for training.
-    \item Neural network formulation, where the network architecture, optimization algorithm and loss function are defined.
-    \item Minimization, which allows an efficient optimization on the three-dimensional input.
-    \item Validation, where the optimal distribution of weights is defined by a stopping criterion and the goodness of the fit is quantified. 
-    \item Interpolation and extrapolation, which is the unique selling point of this procedure. 
-\end{enumerate}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=90mm]{plots/architecture.jpg}
+    \caption{Schematic graph of the neural network used for the prediction of zero loss peak properties in vacuum. The input spectrum is a three-dimensional vector containing the energy loss, exposure time and beam energy. The input is passed through three successive fully connected layers before a one-dimensional output of the intensity is produced.}
+    \label{fig:architecture}
+\end{figure}
 
-\subsection{Data preparation}
-The four data sets contain spectra that are recorded over a different energy range. As we are only interested in the ZLP region, where the intensity is different from zero, we drop all data that is outside $[-0.1, 0.5]$ eV. This way we capture all the relevant data, discard a big region with zero intensity and we have data for each of the sets over the entire energy range. \\
-We then evolve our data from the original scale to a scale at which we can ease the optimization. Unscaled input variables can result in a slow or unstable learning process, whereas unscaled target variables on regression problems can result in exploding gradients causing the learning process to fail \cite{juan}. The energy loss is scaled between [$-1,1$] and all input spectra are scaled between [$0.1, 0.9$], where 0.9 corresponds to the maximum value of the intensity for each separate data set ($I_{max}$, table \ref{table:vacuum}). 
+\subsection{Fitting strategy}
+%
+Input data consists of intensities in the low-loss region, 
+where we drop all data in regions with zero intensity. As unscaled input variables
+can result in a slow or unstable learning process,
+energy loss is scaled between [-1,1] and spectrum intensities between [0.1, 0.9]
+in order to eaze the optimization~\cite{Ball:2008by}.
+%
+For the second part of this study, the prediction of the ZLP for in-sample data,
+the same neural network graph was used but now only for a 1D input, the energy loss. 
+%
+Input data for training the NN still consists of intensities in the low-loss region, 
+but now on ZLP data recorded on a specimen. Using the same feedforward neural network,
+we predict the shape of the ZLP and subtract it from the data.
+%
+We use Adam backpropagation~\cite{Adam} to optimize the learning parameters in the network. 
+The network is trained to minimize the uncorrelated $\chi^2$ per data point:
 
+\begin{equation}\label{eq:chi2}
+    E = \frac{1}{N_{dat}}\sum_{i=1}^{N_{dat}}\left(\frac{D_i - D_i^{pred}}{\sigma_i}\right)^2, 
+\end{equation}
+
+where $D_i, D_i^{pred(k)}$ are the input intensity and the predicted intensity respectively,
+$\sigma_i$ is the standard error associated to the data point. 
+%
+The chi-squared method is the cornerstone of almost all fitting, as it is an intuitively 
+reasonable measure of how well the predictions fit the data.
+In general, if $\chi^2/N_{dat}$ is of the order 1, we can say that the fit is a 
+good approximation to the real data. 
+%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% OLD TEXT
+
+\newpage
+
+
+####### Old part ######
 \subsubsection*{Observables}
 Central values and errors are calculated for each of the data sets separately, as we expect different outcomes for different exposure time and beam energy. The discretization technique used to assign mean and standard deviation to the data points is Equal Width Discretization (EWD) \cite{Dash:2011}, a simple discretization method that divides the range of observed values for a feature into k equal sized bins. The intervals are computed by 
 $\Delta E = (E_{max} - E_{min}) / k$. The value of k is chosen empirically such that the number of bins is high enough to not lose valuable information, but still contains a sufficient number of data points to calculate the uncertainties.\
