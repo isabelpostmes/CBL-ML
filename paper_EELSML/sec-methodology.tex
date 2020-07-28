@@ -31,7 +31,6 @@ This way, one excludes a priori the bias that an underlearning model would bring
     \label{fig:architecture}
 \end{figure}
 
-\subsection{Fitting strategy}
 %
 Input data consists of intensities in the low-loss region, 
 where we drop all nonrelevant data (zero intensity). As unscaled input variables
@@ -101,154 +100,102 @@ models the probability distribution of original training data faithfully.
 %
 After construction of the $N_{rep}$ sets of MC replicas, a neural network is
 trained on each replica and from the ensemble of predictions, expectation values
-and uncertainties are calculated. 
+and uncertainties are calculated. \newline
+%
+A basic requirement for a successful methodology is the ability of generalization, 
+which means that the model works on widely different datasets without 
+the need for manual fine-tuning.
+%
+In order to check for generalizability, we have validated by means of 
+closure testing\cite{Ball:2015oha} if the computed error 
+associated to each training point is reasonable. 
+%
+A closure test ensures that uncertainties introduced by methodology are small 
+compared to the generic experimental errors of the data. 
+%
 
-
-
-\newpage
-
-\section{Old part}
-
-
-\subsubsection*{Closure Testing}
-In order to validate if the computed error associated to each training point is reasonable, a method called closure testing provides insight \cite{Ball:2015oha}. A closure test ensures that uncertainties introduced by methodology are small compared to the generic experimental errors of the data. A basic requirement for a successful methodology is the ability of generalization, which means that the model works on widely different datasets without the need for manual fine-tuning.\\
-The basic idea of closure testing is the following \cite{Ball:2015oha}: we take as general assumed form of the ZLP the smooth fit to the data and we create a set of 'perfect' pseudo data by sampling this smooth function at our data points. Smoothing of the data is realized by application of a Hanning window \cite{Essenwanger:1986}, a popular method in signal processing, based on the convolution of a scaled window with the signal. \\
-Next, on each 'perfect' data point we impose a gaussian random number with size equal to the corresponding error from the original dataset. If we then train our neural network on these points, given that the pseudo-data are fluctuated on average by one $\sigma$ away from the 'perfect' value, by construction we should find the error function $\chi^2$ of the best fit will be approximately one. Results of the $\chi^2$ values with the closure test can be observed in Fig. \ref{closure1}. These values were obtained with the look-back method discussed in section \textit{ (..nowhere yet..),} which ensures that the final $\chi^2$ is taken at the optimum stopping point, before overlearning sets in.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=70mm]{plots/chi2.png}
-    \caption{Histogram of $\chi^2$ values obtained after training the neural network on 500 sets of artificial data created for closure testing.}
-    \label{closure1}
-\end{figure}
-
-\subsection{Interpolation and extrapolation}
-
-ZLP in sample, where i) we compare with the vacuum results, ii) we modify the training region to make sure we don't fit the signal from sample, 3) we perform the substraction and look for interesting features in the low-loss spectra
-
-The energy loss of the sample data covers a $[-0.3, 8]$ eV range. Since the ZLP feature is several orders of magnitude bigger than the sample features, we take the logarithm of the intensity to train the network. 
- 
-\subsection{Data processing}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=70mm]{plots/closure.png}
-    \caption{Histogram of $\chi^2$ values obtained after training the neural network on 500 sets of artificial data created for closure testing.}
-    \label{closure2}
-\end{figure}
-
-\subsection{Training regions} \label{sec:regions}
-It is important to make an informed choice as to the energy range of the input data over which the neural network is trained. Figure \ref{ranges} below is a schematic low-loss spectrum showing five relevant energy ranges \cite{Reed:2002}. Region (a) doesn't contain loss electrons and contributions solely come from dark counts in the detector. Range (b) and (c) together form the 'ZLP-region', with the left- and right hand side of the ZLP respectively. Since we make use of a monochromated electron beam, the energy distribution is approximately symmetric around zero and range (c) will be the mirrored version of range (b) until a certain energy limit, which we will call $dE_1$ (we will elaborate on this assumption in section \ref{sec:subtraction}. Range (e) sets in at higher energy loss $dE_2$ and represents the almost pure loss signal, with essentially negligible ZLP contributions. Region (d) is the transition in which the ZLP tail gradually gives way to the loss signal. It is this region that is specifically of interest, as it contains the low-loss features of the sample.  Our objective is to automatically determine the right values for $dE_1$ and $dE_2$ before training the neural network.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=100mm]{plots/ranges.png}
-    \caption{Schematic illustration of the relevant energy ranges used in the model}
-    \label{ranges}
-\end{figure}
-
-Before training, a window is to be applied to the training inputs to an upper boundary $dE_1$, to ensure the network trains on data of the ZLP solely. In order to attain a model that meets $log(I_{ZLP}) \rightarrow 0$ as $dE \rightarrow \infty$, pseudo data is to be added for $E>dE_2$ where the ZLP contribution becomes negligible. The model is trained on data for $E<dE_1$ and $E>dE_2$, the interpolation region $dE_1 < E < dE_2$ contains the predictions of interest. \\
-
-\subsection{Derivatives for preliminary feature identification}
-
-Using first and second derivatives is a feature extraction method to achieve a relatively high accuracy with a low computational complexity. The slope of any function is described by the first derivative, therefore the second derivative is essentially the change in slope, representing the curvature of the signal. This can be useful to determine the boundary from the ZLP to the sample region. \\
-
-In an ideal microscope the electron beam would be perfectly monochromatic, correspondingly the ZLP would appear as a delta function in an EEL spectrum \cite{Rafferty:2000}. In practice the ZLP has a finite width defining the energy resolution of the system. At some energy loss the contribution to the sample kicks in and it is at this point that the intensity profile, earlier monotonically decreasing, will have its first local minimum and correspondingly the first derivative will cross zero. It is this point, previously defined as $dE_2$, that marks the transition from the interpolation to the sample region. The first crossing of $\frac{d}{dE}log(I)$ with zero differs slightly between the individual spectra: we take as $dE_2$ the lowest of these, as we can say with certainty that the intensity of the sample has kicked in at the first notice of a local minimum. For this set of data, we find $dE_2$ = $1.468$ eV (Fig. \ref{bound}). 
-
-\begin{figure}[H]
-    \centering 
-    \includegraphics[width=170mm]{plots/derivatives.png}
-    \caption{First and second derivatives and log derivatives of the nine experimental spectra. All functions are normalized to the maximum spectrum intensity to make sense of the relative change. The first crossing of the log derivative with zero is \textbf{1.468} eV and marks the transition to the sample region ($dE_2$). Before taking each derivative, smoothing by means of a Hann window \cite{hann} was applied to remove noise and reveal underlying trends. }
-    \label{bound}
-\end{figure}
-
-From changes in the normalized second derivatives in Fig \ref{bound}, one is able to define significant features appearing in the spectrum. 
-
-By stating that the ideal zero loss peak is symmetric around zero up to energy loss $dE_1$, hypothetically we could determine the value of $dE_2$ by mirroring the left-hand tail to the right side and see when the two significantly start to deviate. In practice however, the ZLP is not symmetric due to various external factors such as astigmatism \cite{astigma} and virtual scattering events \cite{rafferty}, which makes direct reflection of the left-hand tail unfavorable. \\
-The value of $dE_1$ will be chosen as $dE_2 / a$, with $a$ a positive integer. The choice of $a$ is empirical and will be cross-validated. \\ 
-
-After the choice on $dE_1$ and $dE_2$, the set of training data (TD) will be prepared taking the following steps:
+\subsection{ZLP subtraction and band gap determination}
+Abovementioned methods will be implemented for both vacuum and on-sample 
+recorded ZLP data. For the subtraction of the ZLP in sample, 
+we compare with the vacuum results, we modify the training region to make sure
+we don't fit the signal from the sample before subtracting the ZLP predictions
+and looking for the right band gap determination of the specimen.
+%
+Before training, a window is to be applied to the training inputs 
+to an upper boundary $\Delta$E$_1$, to ensure the network trains 
+on data of the ZLP solely. 
+%
+In order to attain a model that meets log(I$_{ZLP}$) $\rightarrow $0 
+as $\Delta$E$\rightarrow \infty$, 
+pseudo data is to be added for E $>\Delta$E$_2$ 
+where the ZLP contribution becomes negligible. 
+%
+The model is trained on data for E$<\Delta$E$_1$ and E$>\Delta$E$_2$, 
+the interpolation region $\Delta$E$_1<$E$<\Delta$E$_2$ contains 
+the predictions of interest, as it entails the low-loss features 
+of the sample. \newline
+%
+It is possible to determine automatically the right values for $\Delta$E$_1$
+and $\Delta$E$_2$ by using the first derivative of the spectrum intensity (dI/dE).
+%
+In an ideal microscope the electron beam would be perfectly monochromatic, 
+correspondingly the ZLP would appear as a delta function in an EEL spectrum~\cite{Rafferty:2000}.
+%
+In practice the ZLP has a finite width defining the energy resolution of the system. 
+At some energy loss the contribution to the sample kicks in and the intensity profile, 
+earlier monotonically decreasing, will have its first local minimum.
+%
+At this point the ZLP and sample contribution are of the same order of magnitude
+and we will use this as the ultimate value of $\Delta$E$_1$ to end our
+ZLP regime.
+%
+The value of $\Delta$E$_1$ to be used as upper boundary of the training data
+can be lower, but not higher than this limit.\newline
+%
+The first derivatives of the vacuum spectra provide insight 
+on the energy loss for which the ZLP intensity becomes negligible. For high
+energy loss the dI/dE approaches zero gradually, and $\Delta$E$_2$ marks the
+point at which the derivative crosses zero.
+%
+After the choice on $\Delta$E$_1$ and $\Delta$E$_2$, the set of experimental 
+training data (TD) will be prepared taking the following steps:
 \begin{enumerate}
     \item Keep only sample data (SD) inside the window [$dE_{min}, dE_1$]
     \item Create pseudo data (PD) with $log(I)$=0 in range [$dE_2, dE_{max}$]
     \item TD = SD + PD
 \end{enumerate}
-
-\subsection{Monte Carlo sampling}
-The value of $N_{rep}$ should be chosen in such a way that the set of replicas models the probability distribution of original training data faithfully. A comparison of the central values and errors of the artificial set with the original data is shown in Fig \ref{mc} for samples of 100, 500, 1000 and 5000 replicas. The results from a more quantitative comparison can be observed in table \ref{tablemc}.
-
-\begin{figure}[H]
-    \centering 
-    \includegraphics[width=160mm]{plots/MC.png}
-    \caption{Scatter plot of training data vs. Monte Carlo replicas central values (left) and errors (right). }
-    \label{mc}
-\end{figure}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{|l|ll|ll|}
-\hline
-Nrep & \textless{}$\mu$\textgreater {[}eV{]} & r{[}$\mu${]} & \textless{}$\sigma$\textgreater {[}eV{]} & r{[}$\sigma${]} \\ \hline
-100  & 11.35525                              & 0.99998925   & 0.17783                                  & 0.96617604      \\ \hline
-500  & 11.35693                              & 0.99999808   & 0.17799                                  & 0.99172921      \\ \hline
-1000 & 11.35578                              & 0.99999894   & 0.17812                                  & 0.99527003      \\ \hline
-5000 & 11.35643                              & 0.99999979   & 0.17807                                  & 0.99920997      \\ \hline
-\end{tabular}
-\caption{Comparison between the artificial and the original central values and errors. $\textless{\mu}\textgreater{}$ and $\textless{\sigma}\textgreater{}$ are the expectation value of the median and errors respectively. The scatter correlation $r$ gives the spread around the straight line. $\textless{\mu^{exp}}\textgreater{}$ = 11.35623, $\textless{\sigma^{exp}}\textgreater{}$ = 0.17805. }
-\label{tablemc}
-\end{table}
-
-
-\subsection{Parametrisation of in-vacuum spectra}
-
-
-The first part of this studies is dedicated to the prediction of the shape of the zero loss peak when recorded in vacuum. We construct a generalized N-dimensional model which predicts the ZLP from N arguments. On this basis, we can successfully predict the shape of the ZLP with inter- and extrapolation with respect to each of the input variables. 
-
-The predicted intensity at any point of the spectrum depends predominantly on the energy loss. We expect the highest intensity at zero loss and the number of counts rapidly decreasing as the energy loss increases. It is common to quantify this decrease in the Full Width Half Maximum (FWHM). Two variables that greatly account for the overall intensity of the ZLP are the exposure time and operating beam current, which both have a positive correlation on the number of counts. \\
-Also other factors can account for changing ZLP intensities, such as aperture width and parameters of the electron gun and lenses. These variables could be given as inputs as well, however we expect that these are less relevant than the three input variables mentioned above. Therefore our default model will be built on these three arguments: energy loss, exposure time and beam current. We construct a 3-dimensional model with these continuous inputs and output the ZLP intensity. This model could be extended to an arbitrary dimension N, as long as information on the N input variables is available for training.
-
-
-
-\subsection{Parametrisation of in-sample spectra}
-
-
-\subsection{ZLP subtraction}
-\label{sec:subtraction}
-
-As mentioned before in section\ref{sec:regions}, the shape of a monochromated peak is approximately symmetric up to energy loss $dE_1$ (this should be checked with the vacuum recorded peak). We can determine the value of $dE_1$ by finding the energy loss where the mirrored ZLP starts to deviate from the full spectrum. It is this value that will be used as the upper boundary of the training window for the NN. \\
-
-Repetitive training of the neural network on each set of MC pseudo data yields a prediction that is distributed with a mean and std corresponding to the mean and error of the original training set. For each replica, the predicted ZLP is subtracted from the individual original spectra to obtain one set of subtractions. Repeating this procedure yields a collection of $N_{rep}$ subtractions for each original spectrum, over which statistical properties such as median and variance can be calculated. \\
-
-Direct subtraction of the predicted ZLP on each of the original spectra doesn't yield a physical result, as the intensity of the samples in range (a)-(c) (Fig. \ref{ranges}) doesn't coincide between themselves and the predicted ZLP. In order for the subtracted spectrum to make physical sense, we impose that the ZLP to be subtracted will be a smooth transition from the exact replicate of the ZLP in region (a)-(c) to the prediction from the neural network in region (d),(e). This way, we keep only the prediction of the region of our interest. The smooth matching of the ZLP will be the following:
-\bea
- dE &\le dE_0            I_{ZLP}^{(k)} &= I_{orig}\\
- dE_0 &< dE < dE_1     I_{ZLP}^{(k)} &= I_{NN}^{(k)} \times  \left( 1 - \exp(-(dE - dE_1)^2/\delta^2)\right) \\
- dE_1 &< dE < 10 \cdot dE_2 &  I_{ZLP}^{(k)} = I_{NN}^{(k)}\\
- dE &> 10 \cdot dE_2    I_{ZLP}^{(k)} &= 0
-\eea
-Here $dE_0$ is the start of the smooth transition from ZLP to NN region given by eq. $(5.4)$, with $dE_0<dE_1$  and $\delta \ll |dE_0 - dE_1|$. 
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=120mm]{plots/matching.png}
-    \caption{Representation of the smooth transition from $I_{ZLP} = I_{orig}$ for $dE<dE_0$ to$I_{ZLP} = I_{NN}$ for $dE>dE_1$. }
-    \label{fig:my_label}
-\end{figure}
-
-
-
-\subsection{Ratios for eventual feature identification}
-
-In order to compare the level of desired signal from the sample to the level of the modeled ZLP tail, we define two working definitions, first of which the sample-to-peak ratio (SPR):
-
-\begin{equation}
-    SPR_{i}^{(k)} = \frac{I_{orig, i} - I_{ZLP}^{(k)}}{I_{ZLP}^{(k)}}
+%
+For each replica, the predicted ZLP is subtracted from the individual 
+experimental spectra to obtain one set of subtractions. 
+Repeating this procedure yields a collection of $N_{rep}$ subtractions 
+for each original spectrum, over which statistical properties such as 
+median and variance can be calculated.\newline
+%
+From these subtractions, which contain the 'pure' sample data, 
+it is possible estimate the band gap. To a first approximation,
+this can be done as the inflection point of the rising intensity.
+%
+The value can also be roughly estimated from the onset of the absorption 
+or from a linear fit to the maximum positive slope in the 
+EELS spectrum~\cite{Schamm:2003}. 
+%
+However, a more accurate and reliable determination is based on the work of 
+Rafferty and Brown~\cite{Rafferty:2000}. The onset of the subtracted spectrum 
+for a a material with a direct bandgap is expected to follow a function of the type
+\begin{equation}\label{eq:I1}
+    I(E) = I_0 + c\cdot(dE-E_{BG})^{(b)}
 \end{equation}
-where $i$ is the number of the original spectra, $k$ runs over the number of replicas ($k=1,..,N_{rep}$) and $I_{ZLP}$ is the predicted ZLP for that replica. By summing over all replicas, the median and error of $SPR_i$ give a measure for the contribution of the sample to the total intensity profile at any point over the spectrum. \\
+where I$_0$ and c are constants, b equals 0.5, $\Delta$E is the energy loss and E$_{BG}$ 
+is the bandgap energy.For an indirect bandgap, the power of $(1/2)$ changes to $(3/2)$. 
+%
+Therefore, the bandgap nature (direct or indirect) can be extracted by 
+least-squares fitting of each k-th replica subtracted spectrum to equation~\ref{eq:I1}.
+%
+By summating over all replicas, one can determine $\textless{b}\textgreater{}$, 
+$\textless{E_{BG}}\textgreater{}$ 
+and their uncertainties, while keeping track of how the free parameter
+E$_{BG}$ is sensitive to the choice of $\Delta$E$_1$, which marks the onset
+of the subtracted spectrum intensity.
+%
 
-To verify the significance of the SPR, we introduce the sample-to-error ratio (SER):
-\begin{equation}
-    SER_{i}^{(k)} = \frac{I_{orig, i} - I_{ZLP}^{(k)}}{\sigma_{ZLP}}
-\end{equation}
-where $\sigma_{ZLP}$ is the error of the predicted ZLP calculated over all replicas. 
-If the SER is bigger than a certain treshold (e.g. 5), the signal from the sample significantly excesses the background error. \\
-Using the definitions of SPR and SER for each original spectrum, it is convenient to define three regions: the 'ZLP region' where $SPR \rightarrow0$, corresponding to region (a)-(c) (Fig. \ref{ranges}) ending at $dE_1$, the 'interpolation region' (d) between $[dE_1, dE_2]$ and the 'sample region' (e) where $SPR\rightarrow\infty$ as $I_{ZLP}\rightarrow0$.
+
