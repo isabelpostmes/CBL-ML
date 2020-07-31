@@ -1,7 +1,55 @@
-\section{Results}
-\label{sec:results}
+\section{Results vaccuum}
+\label{sec:results_vaccum}
 
 In this section we present the main results of this work.
+
+In this section we present the experimental data used
+in the present analysis.
+%
+It is divided into EEL spectra taken in vacuum, for calibration
+purposes, and spectra taken in sample, for the physics interpretation.
+%
+As it is well known, the ZLP will in general be different
+in the two cases: for in-sample spectra, one expects a broadening
+arising from elastic electron-sample interactions that is missing in
+the vacuum spectra.
+
+\paragraph{Vacuum spectra}
+%
+For the ML model of the ZLP, four different sets of vacuum recordings
+have been used, each measured under a different setting of exposure time 
+and beam current. 
+%
+The data sets were recorded with a Titan TEM, equipped with a Skottky field emitter.
+A maximum energy resolution (FWHM) of 0.003 eV could be realized. 
+%
+Table~\ref{table:vacuumdata} below indicates for each of the data sets the number of data files, 
+the energy loss range, maximum recorded intensity and FWHM. 
+%
+These four data sets have been used to construct a ML-based
+multidimensional model of the ZLP which can be inter- and extrapolated
+to other operation conditions of the microscope.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{table}[h]
+  \caption{Properties of the zero loss peaks acquired in vacuum, used as inputs for training the multidimensional neural network model.}
+  \begin{tabular}{@{}llllllllll}
+\br
+Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm beam}$ {(}keV{)} & $N_{\rm files}$ & $N_{dat} / file$ & $\Delta E_{\rm min}$  & $\Delta E_{\rm max}$  & $I_{\rm max}$ & FWHM  \\ 
+\mr
+1        & 100                 & 200                  & 15          & 2048               & -0.96              & +8.51               & 739770       & 0.025         \\
+2        & 100                 & 60                   & 7           & 2048               & -0.54              & +5.59               & 326483       & 0.022         \\
+3        & 10                  & 200                  & 12          & 2048               & -0.18              & +2.97               & 70913        & 0.003         \\
+4        & 10                  & 60                   & 6           & 2048               & -0.40              & +4.78               & 30793        & 0.017         \\ 
+\br
+\end{tabular}
+\label{table:vacuumdata}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+
 
 \subsection{High-dimensional ZLP prediction}
 Thanks to the model independence of our approach, we have been able to assemble a high-dimensionality ML model
