@@ -1,9 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Methodology}
+\section{Machine learning description of the ZLP}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:methodology}
 
-\subsection{Feedforward neural network}
+In this section we present the methodology that will be
+used in this work.
+
+\subsection{Feed-forward neural network}
 
 One of the reasons for the widespread success of machine learning 
 is the growing availability of high processing capabilities 
@@ -12,7 +15,7 @@ and the large amounts of data at disposal~\cite{LeCun:2015}.
 Typical machine learning algorithms are divided into three classes:
 supervised learning, unsupervised learning and reinforcement learning.
 %
-A supervised learning regression tool of a feedforward neural network 
+A supervised learning regression tool of a feed-forward neural network 
 was chosen for the purpose of this study. This is the simplest type 
 in the group of neural networks and it was selected for its ability
 to it accomodate multidimensional input data and 
@@ -36,7 +39,7 @@ Input data consists of intensities in the low-loss region,
 where we drop all nonrelevant data (zero intensity). As unscaled input variables
 can result in a slow or unstable learning process,
 energy loss is scaled between [-1,1] and spectrum intensities between [0.1, 0.9]
-in order to eaze the optimization~\cite{Ball:2008by}.
+in order to ease the optimization~\cite{Ball:2008by}.
 %
 For the second part of this study, the prediction of the ZLP for in-sample data,
 the same neural network graph was used but now only for a 1D input, the energy loss. 

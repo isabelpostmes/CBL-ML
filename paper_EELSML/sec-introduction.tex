@@ -119,54 +119,49 @@ the first time that neural networks are used as
 background removal interpolators, and combined with Monte Carlo sampling to construct a faithful estimate
 of the ML model uncertainties.
 
-Our study is composed of two main parts.
+Our work is composed of two main parts.
 %
-In the first one, we construct a ML model of the ZLP spectra taken
+In the first one, we construct a ML model of ZLP spectra taken
 in vacuum which accommodates an  arbitrary number of input
-variables corresponding to different operation conditions of the TEM.
+variables, corresponding to a range of operation conditions of the TEM.
 %
-We demonstrate how the model describes successfully all the
+We demonstrate how the model describes successfully all
 input spectra and assess its extrapolation for other operation
 conditions.
 %
-In the second part, we apply the same techniques to
-the parametrisation of the ZLP from spectra taken on sample specimens.
+In the second part, we construct a one-dimensional model
+of the ZLP as a function of the energy loss $\Delta E$ from EEL spectra taken on
+tungsten disulfide (WS$_2$) nanoflowers.
 %
-Here one has to be careful to define the fitting ranges
-in an automated way while avoiding contamination from
-the signal associated to inelastic scatterings.
+WS$_2$ is a two-dimensional material member of the transition metal dichalcogenide (TMD) family,
+which exhibits many remarkable structural and electric properties.
 %
-We carefully validate our fitting methodology by means of closure tests, were
-artificial pseudo-data based on a known underlying model is generated
-to compare with the model output.
-
-As a proof of concept, we apply the machine learning ZLP removal technique
-developed here to map the local electronic properties
-from a low-loss region analysis of EELS taken on
-MoS$_2$ nanostructures~\cite{soniamos2}.
+This ML model of the in-sample ZLP is then used to subtract its contribution
+from the WS$_2$ EEL spectra, allowing us determine the value of the bandgap $E_{\rm BG}$
+and the local character of the band structure for different regions of the nanoflowers.
 %
-MoS$_2$ is a highly promising material exhibiting a wide range of possible applications for electronic and optical devices.
+Thanks to this strategy  we demonstrate that bilayer WS$_2$ exhibits a direct bandgap
+with value $E_{\rm BG}= 2.05 \pm 0.12$ eV.
 %
-In particular, we study the possible metallic character and
-determine the value of its
-bandgap in different regions of the nanostructures.
-%
-We will also quantify the statistical significance of the inelastic
-scattering signals in the low-loss region following the ZLP
-background subtraction.
+This results are consistent with other determinations of the bandgap of bilayer WS$_2$.
 
 The paper is organized as follows.
 %
-First of all in Sect.~\ref{sec:dataset}
-summarize the main features of the experimental data.
+First of all in Sect.~\ref{sec:eels}
+we describe the main features of EELS, focusing on the low-loss region.
 %
-In Sect.~\ref{sec:methodology} we describe our methodology
+In Sect.~\ref{sec:tmd} we summarise relevant properties of TMD materials,
+with emphasis on WS$_2$.
+%
+Then in Sect.~\ref{sec:methodology} we describe our machine learning methodology
 and discuss its application to the in-vacuum and in-sample
 ZLP parametrisations.
 %
-In Sect.~\ref{sec:results} we present the main results
-of this work and the corresponding physical interpretation
-of the ZLP-subtracted low-loss EEL spectra.
+In Sects.~\ref{sec:results_vacuum} and~\ref{sec:results_sample}
+we present our results for the ZLP parametrisation
+in-vacuum and in-sample respectively, which in the latter
+case is used to probe the local band structure properties
+of WS$_2$ nanostructures.
 %
 Finally in Sect.~\ref{sec:summary} we summarise
 and outline possible future developments.
