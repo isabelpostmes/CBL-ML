@@ -13,7 +13,7 @@ is the growing availability of high processing capabilities
 and the large amounts of data at disposal~\cite{LeCun:2015}.
 %
 Typical machine learning algorithms are divided into three classes:
-supervised learning, unsupervised learning and reinforcement learning.
+supervised learning, unsupervised learning and reinforcement learning~\cite{Kotsiantis:2007}.
 %
 A supervised learning regression tool of a feed-forward neural network 
 was chosen for the purpose of this study. This is the simplest type 
@@ -23,6 +23,7 @@ incorporate non-linear interactions, within reasonable computation times.
 %
 For predicting the properties of the ZLP in vacuum, we construct an multidimensional
 input neural network, a schematic of which can be observed in figure~\ref{fig:architecture}.
+%
 The choice to use a redundant architecture is motivated by the flexibility of the network 
 to overlearn, which is necessary for post-selecting the optimal parameters.
 This way, one excludes a priori the bias that an underlearning model would bring forth. 
@@ -44,11 +45,11 @@ in order to ease the optimization~\cite{Ball:2008by}.
 For the second part of this study, the prediction of the ZLP for in-sample data,
 the same neural network graph was used but now only for a 1D input, the energy loss. 
 %
-Input data for training the NN still consists of intensities in the low-loss region, 
+Input data for training the neural network still consists of intensities in the low-loss region, 
 but now on ZLP data recorded on a specimen. Using the same feedforward neural network,
 we predict the shape of the ZLP and subtract it from the data.
 %
-We use Adam backpropagation~\cite{Adam} to optimize the learning parameters in the network. 
+We use Adam backpropagation~\cite{Kingma:2017} to optimize the learning parameters in the network. 
 The network is trained to minimize the uncorrelated $\chi^2$ per data point:
 
 \begin{equation}\label{eq:chi2}
@@ -66,9 +67,10 @@ an intuitively reasonable measure of how well the predictions fit the data.
 In general, if $\chi^2/N_{dat}$ is of the order 1, we can say that the fit is a 
 good approximation to the real data. \\
 %
-Look-back stopping was used to determine a posteriori the optimal stopping point before 
-overlearning set in. These optimal network parameters were collected and retrieved for 
-making predictions\cite{hi(desktop)}.
+The stopping condition is implemented through look-back stopping which stores 
+the neural network weights and biasesat the minimum of the validation error function,  
+which can be afterwards retrieved for 
+making predictions.
 %
 
 \subsection{Uncertainty propagation}
@@ -79,7 +81,8 @@ the experimental data and a faithful estimate of the ML model uncertainties.
 This sampled ZLP prediction can be applied to subtract to the EEL spectra while
 keeping full track of all uncertainties associated to the data, model and parametrisation.
 %
-Error propagation from experimental data to the fit is performed by the Monte Carlo (MC)
+Based on the NNPDF approach~\cite{Ball:2008by,Ball:2012cx,Ball:2014uwa,Ball:2017nwa}, 
+error propagation from experimental data to the fit is performed by the Monte Carlo (MC)
 replica method. 
 %
 In the MC approach, any statistical property of the ZLP can be derived from a 
