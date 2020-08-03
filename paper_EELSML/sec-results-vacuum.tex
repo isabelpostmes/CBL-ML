@@ -51,6 +51,9 @@ Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm beam}$ {(}keV{)} & $N_{\rm files}$ & $N_{
 
 
 
+
+
+
 \subsection{High-dimensional ZLP prediction}
 Thanks to the model independence of our approach, we have been able to assemble a high-dimensionality ML model
 with multiple inputs to model the ZLP spectra. Extrapolating them 
@@ -59,25 +62,6 @@ in the training dataset yields reliable results, as to be discussed in this sect
 The key feature of this new ZLP modeling method is that it strives to reveal the true dynamics of the situation: it takes in data and returns the predictions that describe the underlying physics. \\
 
 After training the neural network $N_{rep}$ times on correspondingly many MC pseudo data sets, the best network parametrizations were retrieved to make predictions while interpolating and extrapolating on the training inputs. 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}[h]
-  \renewcommand{\arraystretch}{1.40}
-\begin{tabular}{|l|l|l|l|}
-\toprule
-Section  & Energy range & Exposure time & Beam energy \\ \hline
-~\ref{sec:eloss} & Variable     & Fixed         & Fixed       \\
-~\ref{sec:texp} & Fixed        & Variable      & Fixed       \\
-~\ref{sec:ebeam} & Fixed        & Fixed         & Variable    \\
-~\ref{sec:both} & Fixed        & Variable      & Variable    \\ \bottomrule
-\end{tabular}
-\vspace{0.4cm}
-\caption{The extrapolations performed for the in vacuum recorded zero loss peaks used for this part of the analysis. We show the flexibility of the network with respect to the input dimensions in the corresponding sections.}
-\label{table:vacuum}
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-
 
 \subsubsection{Energy loss}
 \label{sec:eloss}
