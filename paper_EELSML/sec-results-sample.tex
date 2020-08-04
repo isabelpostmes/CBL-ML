@@ -14,7 +14,7 @@ WS$_2$ is a highly promising material exhibiting a wide range of
 possible applications for electronic and optical devices.
 %
 When WS$_2$ is thinned down to a single monolayer, its 
-indirect band gap switches to a direct band gap of around 2 eV~\ref{table:bgvalues}.
+indirect band gap switches to a direct band gap of approximately 2 eV~\ref{table:bgvalues}.
 
 
 \begin{table}[h]
@@ -33,17 +33,23 @@ Entry {[}reference{]}                       & Type & Band gap energy (eV) \\
 \br                                         
 \end{tabular}
 \end{indented}
-\label{table:vacuumdata}
+\label{table:bgvalues}
 \end{table}
 
 
-
-
+\begin{figure}[h]
+\begin{centering}
+\includegraphics[width=0.2\linewidth]{plots/spectrumpositions.pdf} 
+\caption{A specimen image of the WS$_2$ nanostructures. 
+Marked are the positions at which energy loss data were obtained.}
+\label{fig:ws2positions}
+\end{centering}
+\end{figure}
 %
 A collection of electron loss spectra acquired at different positions 
 at the specimen is used to construct the neural network training inputs. 
 %
-These sets of data were obtained directly from the work of (... ref to Sonia).
+These sets of data were obtained directly from~\cite{SabryaWS2}.
 %
 A specimen image of the positions can be observed in figure~\ref{fig:ws2positions}.  
 This nanostructure exhibits flat layers with different thicknesses, which 
@@ -51,6 +57,25 @@ can be distinguished from the picture as color differences.
 %
 Energy loss spectra obtained at positions 1-3 are vacuum recordings, 
 positions 4-13 represent in-sample data.
+%
+One layer (S-W-S) WS$_2$ has a thickness of around 0.9 nm. 
+The thickness of the specimen at location 5 is 2.11 nm ($\sim$2 layers).
+%
+\begin{figure}[ht]
+\begin{centering}
+\includegraphics[width=0.6\linewidth]{plots/bvalues.pdf} 
+\caption{Values for b at different positions}
+\label{fig:bvalues}
+\end{centering}
+\end{figure}
+
+\begin{figure}[ht]
+\begin{centering}
+\includegraphics[width=0.6\linewidth]{plots/bgvalues.pdf} 
+\caption{Values for E$_{BG}$ at different positions}
+\label{fig:bvalues}
+\end{centering}
+\end{figure}
 
 
 
