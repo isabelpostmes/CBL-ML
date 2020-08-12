@@ -1,22 +1,110 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Machine learning description of the ZLP}
+\section{A neural-network parametrisation of the zero-loss peak}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:methodology}
 
 In this section we present the methodology that will be
-used in this work.
-
-\subsection{Feed-forward neural network}
-
-One of the reasons for the widespread success of machine learning 
-is the growing availability of high processing capabilities 
-and the large amounts of data at disposal~\cite{LeCun:2015}.
+used in this work to parametrise and subtract in a model-independent manner
+the zero-loss peak present in the low-loss region of EEL spectra.
 %
-Typical machine learning algorithms are divided into three classes:
-supervised learning, unsupervised learning and reinforcement learning~\cite{Kotsiantis:2007}.
+As mentioned in the introduction, our strategy will be inspired in the successful
+NNPDF approach used in high-energy physics for the determination of unpolarised
+and polarised parton distributions functions (PDFs) of protons, the nuclear
+parton distributions, and the fragmentation functions of partons into hadrons.
+
+\subsection{ZLP parametrisation}
+
+The basic idea of our approach is to note that, without any loss of generality, the intensity profile
+associated to a given EEL spectrum can be decomposed as
+\be
+I_{\rm EEL}(\Delta E) =I_{\rm ZLP}(\Delta E) + I_{\rm inel}(\Delta E) \, ,
+\ee
+where $\Delta E$ is the measured electron energy loss, $I_{\rm ZLP}$ is the ZLP that includes
+both instrumental contributions and elastic scatterings of the fast electrons with the
+nuclei of the sample, and  $I_{\rm inel}(\Delta E)$ contains the contribution from
+inelastic scattering off the electrons of the studied sample.
 %
-A supervised learning regression tool of a feed-forward neural network 
-was chosen for the purpose of this study. This is the simplest type 
+In certain limits it is easy to disentangle the two contributions: for large $\Delta E$
+we know that $I_{\rm ZLP}$ vanishes, while for $\Delta E\simeq 0$ then all emission comes
+from the ZLP peak.
+%
+In this work we are interested in the low-loss region, where $I_{\rm ZLP}$ and $I_{\rm inel}$
+are of the same order and thus great care is required to separate them.
+
+Our goal is to construct a parametrisation of $I_{\rm ZLP}$ based on artificial
+neural networks, whereby we can extract the relevant inelastic contribution by subtracting the
+ZLP background
+\be
+I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E) - I_{\rm ZLP}^{\rm (NN)}(\Delta E) \, .
+\ee
+Further, we want to estimate and propagate all the relevant sources of uncertainty associated
+both to the input data and to the subtraction procedure.
+%
+Since as discussed in Sect.~\ref{sec:eels} the ZLP in EELS depends on the operation
+parameters of the microscope, such as the electron beam energy $E_b$ and the exposure time
+$t_{\rm exp}$, we want to have in general a multidimensional model which takes all relevant
+variables as input, e.g.
+\be
+I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E, E_{b},t_{\rm exp}, \ldots) - I_{\rm ZLP}^{\rm (NN)}(\Delta E, E_{b},t_{\rm exp}, \ldots) \, ,
+\ee
+where note that by construction the subtracted spectra depends only on $\Delta E$ but not on the microscope
+operation parameters.
+
+
+Following the NNPDF methodology, here we parametrise $I_{\rm ZLP}$ by means of
+multi-layer feed-forward artificial neural networks,
+\be
+I_{\rm ZLP}^{\rm (NN)}(\Delta E, E_{b},t_{\rm exp}, \ldots)  = \xi^{(n_l)}_1(\Delta E, E_{b},t_{\rm exp}, \ldots)
+\ee
+where $\xi^{(n_l)}_1$ denotes the activation state of the single neuron in the last
+of the $n_l$ layers of the network, when the $n_I$ inputs $\{ \Delta E, E_{b},t_{\rm exp}, \ldots \}$
+are used.
+%
+The weights and thresholds of this neural network model are then determined
+by supervised learning regression from a suitable training dataset, as
+detailed below.
+%
+Multi-layer feed forward neural networks benefit from the ability
+to parametrise multidimensional input data with arbitrarily
+non-linear dependences.
+%
+An schematic representation of our model
+is shown in Fig.~\ref{fig:architecture}.
+%
+ The input is an $n_I$ array containing $\Delta E$ and all other relevant
+      operation variables of the microscope such as $E_b$ and $t_{\rm exp}$.
+      %
+      The output is the value of the intensity of the zero-loss peak
+      expected for an EEL spectrum with the chosen input variables.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=90mm]{plots/architecture.jpg}
+    \caption{Schematic representation of the NN-based model of the ZLP used
+      in this work.
+      %
+      The input is an $n_I$ array containing $\Delta E$ and all other relevant
+      operation variables of the microscope such as $E_b$ and $t_{\rm exp}$.
+      %
+      The output is the value of the intensity of the zero-loss peak
+      expected for an EEL spectrum with the chosen input variables.
+    }
+    \label{fig:architecture}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%One of the reasons for the widespread success of machine learning 
+%is the growing availability of high processing capabilities 
+%and the large amounts of data at disposal~\cite{LeCun:2015}.
+%
+%Typical machine learning algorithms are divided into three classes:
+%supervised learning, unsupervised learning and reinforcement learning~\cite{Kotsiantis:2007}.
+%
+%A supervised learning regression tool of a feed-forward neural network 
+%was chosen for the purpose of this study. This is the simplest type 
 in the group of neural networks and it was selected for its ability
 to it accomodate multidimensional input data and 
 incorporate non-linear interactions, within reasonable computation times. 
@@ -28,12 +116,7 @@ The choice to use a redundant architecture is motivated by the flexibility of th
 to overlearn, which is necessary for post-selecting the optimal parameters.
 This way, one excludes a priori the bias that an underlearning model would bring forth. 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=90mm]{plots/architecture.jpg}
-    \caption{Schematic graph of the neural network used for the prediction of zero loss peak properties in vacuum. The input spectrum is a three-dimensional vector containing the energy loss, exposure time and beam energy. The input is passed through three successive fully connected layers before a one-dimensional output of the intensity is produced.}
-    \label{fig:architecture}
-\end{figure}
+
 
 %
 Input data consists of intensities in the low-loss region, 
@@ -46,7 +129,7 @@ For the second part of this study, the prediction of the ZLP for in-sample data,
 the same neural network graph was used but now only for a 1D input, the energy loss. 
 %
 Input data for training the neural network still consists of intensities in the low-loss region, 
-but now on ZLP data recorded on a specimen. Using the same feedforward neural network,
+but now on ZLP data recorded on a specimen. Using the same feed-forward neural network,
 we predict the shape of the ZLP and subtract it from the data.
 %
 We use Adam backpropagation~\cite{Kingma:2017} to optimize the learning parameters in the network. 
@@ -68,7 +151,7 @@ In general, if $\chi^2/N_{dat}$ is of the order 1, we can say that the fit is a
 good approximation to the real data. \\
 %
 The stopping condition is implemented through look-back stopping which stores 
-the neural network weights and biasesat the minimum of the validation error function,  
+the neural network weights and biases the minimum of the validation error function,  
 which can be afterwards retrieved for 
 making predictions.
 %
@@ -197,7 +280,7 @@ is the bandgap energy.For an indirect bandgap, the power of $(1/2)$ changes to $
 Therefore, the bandgap nature (direct or indirect) can be extracted by 
 least-squares fitting of each k-th replica subtracted spectrum to equation~\ref{eq:I1}.
 %
-By summating over all replicas, one can determine $\textless{b}\textgreater{}$, 
+By averaging over all replicas, one can determine $\textless{b}\textgreater{}$, 
 $\textless{E_{BG}}\textgreater{}$ 
 and their uncertainties, while keeping track of how the free parameter
 E$_{BG}$ is sensitive to the choice of $\Delta$E$_1$, which marks the onset
