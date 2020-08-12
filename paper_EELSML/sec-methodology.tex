@@ -50,14 +50,14 @@ I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E, E_{b},t_{\rm exp}, \ldots) - I_{\
 where note that by construction the subtracted spectra depends only on $\Delta E$ but not on the microscope
 operation parameters.
 
-
-Following the NNPDF methodology, here we parametrise $I_{\rm ZLP}$ by means of
+Following the NNPDF approach, here we parametrise $I_{\rm ZLP}$ by means of
 multi-layer feed-forward artificial neural networks,
 \be
+\label{eq:ZLPmodelNN}
 I_{\rm ZLP}^{\rm (NN)}(\Delta E, E_{b},t_{\rm exp}, \ldots)  = \xi^{(n_l)}_1(\Delta E, E_{b},t_{\rm exp}, \ldots)
 \ee
 where $\xi^{(n_l)}_1$ denotes the activation state of the single neuron in the last
-of the $n_l$ layers of the network, when the $n_I$ inputs $\{ \Delta E, E_{b},t_{\rm exp}, \ldots \}$
+of the $n_l$ layers of the network when the $n_I$ inputs $\{ \Delta E, E_{b},t_{\rm exp}, \ldots \}$
 are used.
 %
 The weights and thresholds of this neural network model are then determined
@@ -66,35 +66,45 @@ detailed below.
 %
 Multi-layer feed forward neural networks benefit from the ability
 to parametrise multidimensional input data with arbitrarily
-non-linear dependences.
-%
+non-linear dependencies.
+
 An schematic representation of our model
 is shown in Fig.~\ref{fig:architecture}.
 %
- The input is an $n_I$ array containing $\Delta E$ and all other relevant
-      operation variables of the microscope such as $E_b$ and $t_{\rm exp}$.
-      %
-      The output is the value of the intensity of the zero-loss peak
-      expected for an EEL spectrum with the chosen input variables.
-
+ The input is an $n_I$ array containing $\Delta E$ and the
+ operation variables of the microscope, and
+ the output is the value of the intensity of the zero-loss peak
+ expected for an EEL spectrum for the chosen input variables.
+ %
+ We adopt an $n_I$-10-15-5-1 architecture with three hidden layers, for a total
+ number of 1000 free parameters to be adjusted by the optimisation process.
+ %
+ We use a sigmoid activation function for the three hidden layers and a ReLU
+ for the final one.
+ %
+ The choice of ReLU for the final layer guarantees that our model for the ZLP
+ is positive-definite, which is an important physical requirement.
+ %
+ We have adopted a redundant architecture  to ensure that the ZLP parametrisation
+ is sufficiently flexible, and we avoid over-fitting by means of
+ a suitable regularisation procedure.
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[h]
+\begin{figure}[t]
     \centering
     \includegraphics[width=90mm]{plots/architecture.jpg}
     \caption{Schematic representation of the NN-based model of the ZLP used
-      in this work.
+      in this work, Eq.~(\ref{eq:ZLPmodelNN})
       %
-      The input is an $n_I$ array containing $\Delta E$ and all other relevant
+      The input is an $n_I$-dimensional array containing $\Delta E$ and all other relevant
       operation variables of the microscope such as $E_b$ and $t_{\rm exp}$.
       %
-      The output is the value of the intensity of the zero-loss peak
-      expected for an EEL spectrum with the chosen input variables.
+      The output is the predicted value of the intensity of the zero-loss peak
+      expected for an EEL spectrum with those specific input variables.
     }
     \label{fig:architecture}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 
 %One of the reasons for the widespread success of machine learning 
 %is the growing availability of high processing capabilities 
@@ -105,16 +115,12 @@ is shown in Fig.~\ref{fig:architecture}.
 %
 %A supervised learning regression tool of a feed-forward neural network 
 %was chosen for the purpose of this study. This is the simplest type 
-in the group of neural networks and it was selected for its ability
-to it accomodate multidimensional input data and 
-incorporate non-linear interactions, within reasonable computation times. 
+%in the group of neural networks and it was selected for its ability
+%to it accomodate multidimensional input data and 
+%incorporate non-linear interactions, within reasonable computation times. 
 %
-For predicting the properties of the ZLP in vacuum, we construct an multidimensional
-input neural network, a schematic of which can be observed in figure~\ref{fig:architecture}.
-%
-The choice to use a redundant architecture is motivated by the flexibility of the network 
-to overlearn, which is necessary for post-selecting the optimal parameters.
-This way, one excludes a priori the bias that an underlearning model would bring forth. 
+%For predicting the properties of the ZLP in vacuum, we construct an multidimensional
+%input neural network, a schematic of which can be observed in figure~\ref{fig:architecture}.
 
 
 
