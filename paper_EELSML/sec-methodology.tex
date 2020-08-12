@@ -8,7 +8,8 @@ used in this work to parametrise and subtract in a model-independent manner
 the zero-loss peak present in the low-loss region of EEL spectra.
 %
 As mentioned in the introduction, our strategy will be inspired in the successful
-NNPDF approach used in high-energy physics for the determination of unpolarised
+NNPDF approach used in high-energy physics for the determination of
+unpolarised~\cite{Ball:2008by,Ball:2012cx,Ball:2014uwa,Ball:2017nwa}
 and polarised parton distributions functions (PDFs) of protons, the nuclear
 parton distributions, and the fragmentation functions of partons into hadrons.
 
@@ -35,6 +36,7 @@ Our goal is to construct a parametrisation of $I_{\rm ZLP}$ based on artificial
 neural networks, whereby we can extract the relevant inelastic contribution by subtracting the
 ZLP background
 \be
+\label{eq:ZLPseparation}
 I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E) - I_{\rm ZLP}^{\rm (NN)}(\Delta E) \, .
 \ee
 Further, we want to estimate and propagate all the relevant sources of uncertainty associated
@@ -49,6 +51,8 @@ I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E, E_{b},t_{\rm exp}, \ldots) - I_{\
 \ee
 where note that by construction the subtracted spectra depends only on $\Delta E$ but not on the microscope
 operation parameters.
+
+
 
 Following the NNPDF approach, here we parametrise $I_{\rm ZLP}$ by means of
 multi-layer feed-forward artificial neural networks,
@@ -122,7 +126,143 @@ is shown in Fig.~\ref{fig:architecture}.
 %For predicting the properties of the ZLP in vacuum, we construct an multidimensional
 %input neural network, a schematic of which can be observed in figure~\ref{fig:architecture}.
 
+\subsection{Uncertainty propagation}
 
+Even for EEL spectra taken at identical operation conditions of the microscope,
+in general the resulting ZLP intensities will be different.
+%
+Further, there exist in general a large number of different NN configurations, each
+representing a different functional form for $I_{\rm ZLP}^{(\rm NN)}$ which provide
+an equally valid description of the input data.
+%
+Using the notation of~\cite{Ball:2014uwa} we denote these two types of uncertainties
+as the ``experimental'' and ``parametrization'' components.
+%
+To faithfully estimate these uncertainties and to propagate them to our final predictions
+for the ZLP-subtracted spectra without the need of any kind of approximation,
+we adopt the Monte Carlo replica method.
+%
+The basic idea of the method is to use the available information
+on experimental measurements (central values, uncertainties, and correlations)
+to construct a sampling of the probability density in the space of 
+the data, which following the neural network training is propagated
+to the probability density in the space of $I_{\rm ZLP}$ models.
+
+%With artificial neural networks as unbiased interpolators to describe the ZLP, 
+%it is possible to construct a probability distribution in the space of 
+%the experimental data and a faithful estimate of the ML model uncertainties.
+%
+%This sampled ZLP prediction can be applied to subtract to the EEL spectra while
+%keeping full track of all uncertainties associated to the data, model and parametrisation.
+%
+%Based on the NNPDF approach, 
+%error propagation from experimental data to the fit is performed by the Monte Carlo (MC)
+%replica method. 
+%
+%In the MC approach, any statistical property of the ZLP can be derived from a 
+%sample of replicas of the function.
+
+Let us assume that we have $n_{\rm dat}$ independent measurements of the ZLP intensity, for
+different or the same values of the input parameters collectively denoted as $\omega_i$:
+\be
+I^{\rm (exp)}_{{\rm ZLP},i}\lp \{ z_i  \}\rp = I^{\rm (exp)}_{{\rm ZLP},i}\lp  \Delta E_i, E_{b,i}, t_{\rm exp,i},\ldots \rp
+\,, \quad i=1,\ldots,n_{\rm dat} \, .
+\ee
+The Monte Carlo method is based on the generation
+of a large number $N_{\rm rep}$ of Monte Carlo replicas of these original data points
+by means of a multi-Gaussian distribution with the central values and covariance matrices
+taken from the data,
+\be
+\label{eq:MCreplicaGen}
+  I_{{\rm ZLP},i}^{{\rm (art)}(k)}  =  I^{\rm (exp)}_{{\rm ZLP},i} + r_i^{({\rm stat},k)}\sigma_i^{\rm (stat)}
+  + \sum_{j=1}^{n_{\rm sys}} r_{i,j}^{({\rm sys},k)} \sigma_{i,j}^{\rm (\rm sys)} \,, \quad \forall i
+  \,, \quad k=1,\ldots,N_{\rm rep} \,.\,\, \,
+  \ee
+  where $\sigma_i^{\rm (stat)}$ and $\sigma_{i,j}^{\rm (\rm sys)}$ represent the statistical
+  and systematic uncertainties (the latter divided into  $n_{\rm sys}$ fully point-to-point correlated
+  sources) and $\{r_i^{(k)}\}$ are Gaussianly distributed random numbers, generated
+  with a suitable correlation pattern to ensure
+  in a way that averages over the whole set of Monte Carlo
+  replicas reproduce the original experimental covariance matrix
+  \bea
+  \la  \lp I_{{\rm ZLP},i}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},i}^{{\rm (art)}(k)}\ra_{\rm rep}\rp
+  \lp I_{{\rm ZLP},j}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},j}^{{\rm (art)}(k)}\ra_{\rm rep}\rp\ra_{\rm rep} \nonumber \\ \qquad\qquad = {\rm cov}^{(\rm exp)}\lp I_{{\rm ZLP},i},I_{{\rm ZLP},j}\rp \qquad \, .
+  \eea
+We thus note that each $k$-th replica contains 
+as many data points as the original set.
+
+correlations
+
+
+The value of $N_{\rm rep}$ should be chosen such that the set of replicas 
+models the probability distribution of original training data faithfully.
+%
+Fig.~\ref{fig:MC} displays a comparison between the original experimental central values
+      $I_{\rm ZLP,i}^{\rm exp}$ (left panel) and the corresponding statistical
+      uncertainties $\sigma_i^{(\rm stat)}$ with the results of averaging over
+      a sample of $N_{\rm rep}$ Monte Carlo replicas generated by means of
+      Eq.~(\ref{eq:MCreplicaGen}), for different values of
+      $N_{\rm rep}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.99\textwidth]{plots/MC.png}
+    \caption{Comparison between the original experimental central values
+      $I_{\rm ZLP,i}^{\rm exp}$ (left panel) and the corresponding statistical
+      uncertainties $\sigma_i^{(\rm stat)}$ with the results of averaging over
+      a sample of $N_{\rm rep}$ Monte Carlo replicas generated by means of
+      Eq.~(\ref{eq:MCreplicaGen}), for different values of
+      $N_{\rm rep}$.
+      }
+    \label{fig:MC}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
+
+
+
+After construction of the $N_{rep}$ sets of MC replicas, a neural network is
+trained on each replica and from the ensemble of predictions, expectation values
+and uncertainties are calculated. \newline
+%
+A basic requirement for a successful methodology is the ability of generalization, 
+which means that the model works on widely different datasets without 
+the need for manual fine-tuning.
+%
+In order to check for generalizability, we have validated by means of 
+closure testing\cite{Ball:2015oha} if the computed error 
+associated to each training point is reasonable. 
+%
+A closure test ensures that uncertainties introduced by methodology are small 
+compared to the generic experimental errors of the data. 
+%
+
+
+\subsection{Training strategy}
+
+The training of the NN model for the ZLP peak differs between
+the cases of EEL spectra taken on vacuum, where $I_{\rm EEL}(\Delta E) =I_{\rm ZLP}^{\rm (NN)}(\Delta E)$,
+and for spectra taken on sample.\footnote{Actually EEL spectra taken in the vacuum but close
+  to the sample might still receive inelastic contributions due to processes such as .... Here
+  when we use vacuum spectra we consider exclusively those taken reasonably far from the surface
+of the analysed nanostructures.}
+%
+In the latter case, as indicated by Eq.~(\ref{eq:ZLPseparation}), it is
+important to ensure that the model is trained only on the region of the spectra
+where the ZLP dominates over the inelastic scatterings, else one would be biasing
+the model.
+%
+We now describe the training strategy in both cases.
+
+\paragraph{Vacuum spectra.}
+%
+
+\begin{equation}\label{eq:chi2}
+\begin{centering}
+    E = \frac{1}{N_{dat}}\sum_{i=1}^{N_{dat}}\left(\frac{D_i - D_i^{pred}}{\sigma_i}\right)^2, 
+\end{centering}
+\end{equation}
 
 %
 Input data consists of intensities in the low-loss region, 
@@ -141,11 +281,7 @@ we predict the shape of the ZLP and subtract it from the data.
 We use Adam backpropagation~\cite{Kingma:2017} to optimize the learning parameters in the network. 
 The network is trained to minimize the uncorrelated $\chi^2$ per data point:
 
-\begin{equation}\label{eq:chi2}
-\begin{centering}
-    E = \frac{1}{N_{dat}}\sum_{i=1}^{N_{dat}}\left(\frac{D_i - D_i^{pred}}{\sigma_i}\right)^2, 
-\end{centering}
-\end{equation}
+
 
 where $D_i, D_i^{pred(k)}$ are the input intensity and the predicted 
 intensity respectively,
@@ -162,52 +298,6 @@ which can be afterwards retrieved for
 making predictions.
 %
 
-\subsection{Uncertainty propagation}
-With artificial neural networks as unbiased interpolators to describe the ZLP, 
-it is possible to construct a probability distribution in the space of 
-the experimental data and a faithful estimate of the ML model uncertainties.
-%
-This sampled ZLP prediction can be applied to subtract to the EEL spectra while
-keeping full track of all uncertainties associated to the data, model and parametrisation.
-%
-Based on the NNPDF approach~\cite{Ball:2008by,Ball:2012cx,Ball:2014uwa,Ball:2017nwa}, 
-error propagation from experimental data to the fit is performed by the Monte Carlo (MC)
-replica method. 
-%
-In the MC approach, any statistical property of the ZLP can be derived from a 
-sample of replicas of the function. By the generation of $N_{rep}$ replicas 
-of the individual training points, a multi-Gaussian distribution is obtained 
-centered at $D_i$ with an uncertainty equal to the corresponding error $\sigma_i$. 
-%
-Given a training data point, a set of $k= 1,2,..,N_{rep}$ pseudo points 
-is generated by adding a stochastic noise signal on top of the data: 
-\begin{equation}
-    Y = Y(\Delta E, D_i,\sigma_i) \rightarrow  Y^{(k)} = Y(\Delta E, D_i,\sigma_i) + r^{(k)}\sigma_i.
-\end{equation} 
-
-The variables $r^{(k)}$ are normally distributed random numbers, 
-such that each element in the Monte Carlo set is a fluctuation around 
-the central value of the experimental data: each replica $k$ contains 
-as many data points as the original set. 
-%
-The value of $N_{rep}$ should be chosen such that the set of replicas 
-models the probability distribution of original training data faithfully.
-%
-After construction of the $N_{rep}$ sets of MC replicas, a neural network is
-trained on each replica and from the ensemble of predictions, expectation values
-and uncertainties are calculated. \newline
-%
-A basic requirement for a successful methodology is the ability of generalization, 
-which means that the model works on widely different datasets without 
-the need for manual fine-tuning.
-%
-In order to check for generalizability, we have validated by means of 
-closure testing\cite{Ball:2015oha} if the computed error 
-associated to each training point is reasonable. 
-%
-A closure test ensures that uncertainties introduced by methodology are small 
-compared to the generic experimental errors of the data. 
-%
 
 \subsection{ZLP subtraction and band gap determination}
 Abovementioned methods will be implemented for both vacuum and on-sample 
