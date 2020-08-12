@@ -11,52 +11,70 @@ As mentioned in the introduction, our strategy will be inspired in the successfu
 NNPDF approach used in high-energy physics for the determination of
 unpolarised~\cite{Ball:2008by,Ball:2012cx,Ball:2014uwa,Ball:2017nwa}
 and polarised parton distributions functions (PDFs) of protons, the nuclear
-parton distributions, and the fragmentation functions of partons into hadrons.
+parton distributions~\cite{AbdulKhalek:2020yuc}, and the fragmentation functions of partons into hadrons.
+%
+First of add we discuss the parametrisation of the ZLP in terms of neural networks.
+%
+We then review the estimate and propagation of uncertainties using the MC replica method.
+%
+Afterwards we present our training strategy both in case of vacuum and of sample spectra,
+and finally we validate our fitting methodology by means of closure tests.
 
 \subsection{ZLP parametrisation}
+\label{sec:parametrisation}
 
-The basic idea of our approach is to note that, without any loss of generality, the intensity profile
+The starting point of our approach is based on noting that, without any loss of generality, the intensity profile
 associated to a given EEL spectrum can be decomposed as
 \be
 I_{\rm EEL}(\Delta E) =I_{\rm ZLP}(\Delta E) + I_{\rm inel}(\Delta E) \, ,
 \ee
-where $\Delta E$ is the measured electron energy loss, $I_{\rm ZLP}$ is the ZLP that includes
-both instrumental contributions and elastic scatterings of the fast electrons with the
+where $\Delta E$ is the measured electron energy loss, $I_{\rm ZLP}$ is the zero-loss peak that receives
+contributions both instrumental origin  and from elastic scatterings of the fast electrons with the
 nuclei of the sample, and  $I_{\rm inel}(\Delta E)$ contains the contribution from
-inelastic scattering off the electrons of the studied sample.
+inelastic scatterings off the electrons of the studied sample.
 %
-In certain limits it is easy to disentangle the two contributions: for large $\Delta E$
-we know that $I_{\rm ZLP}$ vanishes, while for $\Delta E\simeq 0$ then all emission comes
-from the ZLP peak.
+In certain limits it is easy to cleanly disentangle the two contributions: for large $\Delta E$
+we know that $I_{\rm ZLP}$ vanishes, while for $\Delta E\simeq 0$ then all emission can be associated to
+ the ZLP peak.
 %
 In this work we are interested in the low-loss region, where $I_{\rm ZLP}$ and $I_{\rm inel}$
-are of the same order and thus great care is required to separate them.
+are of the same order and thus  care is required to separate them.
 
 Our goal is to construct a parametrisation of $I_{\rm ZLP}$ based on artificial
 neural networks, whereby we can extract the relevant inelastic contribution by subtracting the
-ZLP background
+ZLP background to the measured intensity spectra,
 \be
 \label{eq:ZLPseparation}
-I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E) - I_{\rm ZLP}^{\rm (NN)}(\Delta E) \, .
+I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E) - I_{\rm ZLP}^{\rm mod)}(\Delta E) \, ,
 \ee
+and thus be able to exploit the physical information contained in $I_{\rm inel}$ for small $\Delta E$.
+%
 Further, we want to estimate and propagate all the relevant sources of uncertainty associated
 both to the input data and to the subtraction procedure.
-%
-Since as discussed in Sect.~\ref{sec:eels} the ZLP in EELS depends on the operation
+
+
+As discussed in Sect.~\ref{sec:eels}, the ZLP in EELS depends both
+on the value of the electron energy loss $\Delta E$ as well as on the operation
 parameters of the microscope, such as the electron beam energy $E_b$ and the exposure time
-$t_{\rm exp}$, we want to have in general a multidimensional model which takes all relevant
-variables as input, e.g.
+$t_{\rm exp}$.
+%
+Therefore we want to construct a multidimensional model which takes all relevant
+variables as input.
+%
+This means that in general Eq.~(\ref{eq:ZLPseparation}) must be expressed as
 \be
-I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E, E_{b},t_{\rm exp}, \ldots) - I_{\rm ZLP}^{\rm (NN)}(\Delta E, E_{b},t_{\rm exp}, \ldots) \, ,
+I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E, E_{b},t_{\rm exp}, \ldots) - I_{\rm ZLP}^{\rm mod)}(\Delta E, E_{b},t_{\rm exp}, \ldots) \, ,
 \ee
-where note that by construction the subtracted spectra depends only on $\Delta E$ but not on the microscope
+where we note that by construction the subtracted spectra depends only on $\Delta E$ but not on the microscope
 operation parameters.
+%
+Ideally, the ZLP model should be able to accomodate as many input variables as possible.
 
 Following the NNPDF approach, here we parametrise $I_{\rm ZLP}$ by means of
-multi-layer feed-forward artificial neural networks,
+multi-layer feed-forward artificial neural networks, that is, we express our ZLP model as
 \be
 \label{eq:ZLPmodelNN}
-I_{\rm ZLP}^{\rm (NN)}(\Delta E, E_{b},t_{\rm exp}, \ldots)  = \xi^{(n_l)}_1(\Delta E, E_{b},t_{\rm exp}, \ldots)
+I_{\rm ZLP}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp}, \ldots)  = \xi^{(n_l)}_1(\Delta E, E_{b},t_{\rm exp}, \ldots) \, ,
 \ee
 where $\xi^{(n_l)}_1$ denotes the activation state of the single neuron in the last
 of the $n_l$ layers of the network when the $n_I$ inputs $\{ \Delta E, E_{b},t_{\rm exp}, \ldots \}$
@@ -68,10 +86,12 @@ detailed below.
 %
 Multi-layer feed forward neural networks benefit from the ability
 to parametrise multidimensional input data with arbitrarily
-non-linear dependencies.
+non-linear dependencies: even with a single hidden layer, neural networks
+can reproduce general functional dependencies provided one has a large enough
+number of neurons.
 
 An schematic representation of our model
-is shown in Fig.~\ref{fig:architecture}.
+is displayed in Fig.~\ref{fig:architecture}.
 %
  The input is an $n_I$ array containing $\Delta E$ and the
  operation variables of the microscope, and
@@ -79,24 +99,24 @@ is shown in Fig.~\ref{fig:architecture}.
  expected for an EEL spectrum for the chosen input variables.
  %
  We adopt an $n_I$-10-15-5-1 architecture with three hidden layers, for a total
- number of 1000 free parameters to be adjusted by the optimisation process.
+ number of 289~(271) free parameters for $n_i=3$~($n_I=1$) to be adjusted by the optimisation procedure.
  %
  We use a sigmoid activation function for the three hidden layers and a ReLU
  for the final one.
  %
  The choice of ReLU for the final layer guarantees that our model for the ZLP
- is positive-definite, which is an important physical requirement.
+ is positive-definite, as required by general physical considerations.
  %
  We have adopted a redundant architecture  to ensure that the ZLP parametrisation
  is sufficiently flexible, and we avoid over-fitting by means of
- a suitable regularisation procedure.
+ a suitable regularisation strategy, see Sect.~\ref{sec:training}.
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
     \centering
     \includegraphics[width=90mm]{plots/architecture.jpg}
     \caption{Schematic representation of the NN-based model of the ZLP used
-      in this work, Eq.~(\ref{eq:ZLPmodelNN})
+      in this work, Eq.~(\ref{eq:ZLPmodelNN}).
       %
       The input is an $n_I$-dimensional array containing $\Delta E$ and all other relevant
       operation variables of the microscope such as $E_b$ and $t_{\rm exp}$.
@@ -127,20 +147,21 @@ is shown in Fig.~\ref{fig:architecture}.
 \subsection{Uncertainty propagation}
 
 Even for EEL spectra taken at identical operation conditions of the microscope,
-in general the resulting ZLP intensities will be different.
+in general the resulting ZLP intensities will be different as discussed
+in Sect.~\ref{sec:eels}.
 %
-Further, there exist in general a large number of different NN configurations, each
-representing a different functional form for $I_{\rm ZLP}^{(\rm NN)}$ which provide
+Further, there exist a large number of different NN configurations, each
+representing a different functional form for $I_{\rm ZLP}^{(\rm mod)}$ which provide
 an equally valid description of the input data.
 %
 Using the notation of~\cite{Ball:2014uwa} we denote these two types of uncertainties
 as the ``experimental'' and ``parametrization'' components.
 %
-To faithfully estimate these uncertainties and to propagate them to our final predictions
+To faithfully estimate these uncertainties and to propagate them to our  predictions
 for the ZLP-subtracted spectra without the need of any kind of approximation,
-we adopt the Monte Carlo replica method.
+we adopt here the Monte Carlo replica method.
 %
-The basic idea of the method is to use the available information
+The basic idea of this method is to exploit the available information
 on experimental measurements (central values, uncertainties, and correlations)
 to construct a sampling of the probability density in the space of 
 the data, which following the neural network training is propagated
@@ -161,7 +182,7 @@ to the probability density in the space of $I_{\rm ZLP}$ models.
 %sample of replicas of the function.
 
 Let us assume that we have $n_{\rm dat}$ independent measurements of the ZLP intensity, for
-different or the same values of the input parameters collectively denoted as $\omega_i$:
+different or the same values of the input parameters collectively denoted as $\{z_i\}$:
 \be
 I^{\rm (exp)}_{{\rm ZLP},i}\lp \{ z_i  \}\rp = I^{\rm (exp)}_{{\rm ZLP},i}\lp  \Delta E_i, E_{b,i}, t_{\rm exp,i},\ldots \rp
 \,, \quad i=1,\ldots,n_{\rm dat} \, .
@@ -178,10 +199,12 @@ taken from the data,
   \ee
   where $\sigma_i^{\rm (stat)}$ and $\sigma_{i,j}^{\rm (\rm sys)}$ represent the statistical
   and systematic uncertainties (the latter divided into  $n_{\rm sys}$ fully point-to-point correlated
-  sources) and $\{r_i^{(k)}\}$ are Gaussianly distributed random numbers, generated
-  with a suitable correlation pattern to ensure
-  in a way that averages over the whole set of Monte Carlo
-  replicas reproduce the original experimental covariance matrix
+  sources) and $\{r_i^{(k)}\}$ are Gaussianly distributed random numbers.
+  %
+  The values of $\{r_i^{(k)}\}$ are
+  generated with a suitable correlation pattern to ensure
+  that averages over the set of Monte Carlo
+  replicas reproduce the original experimental covariance matrix,
   \bea
   \la  \lp I_{{\rm ZLP},i}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},i}^{{\rm (art)}(k)}\ra_{\rm rep}\rp
   \lp I_{{\rm ZLP},j}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},j}^{{\rm (art)}(k)}\ra_{\rm rep}\rp\ra_{\rm rep} \nonumber \\ \label{eq:expcovariance} \qquad\qquad = {\rm cov}^{(\rm exp)}\lp I_{{\rm ZLP},i},I_{{\rm ZLP},j}\rp \qquad \, .
@@ -189,19 +212,19 @@ taken from the data,
 We thus note that each $k$-th replica contains 
 as many data points as the original set.
 
-In the present case, the information on experimental correlations is not accessible
+In the present case, the information on experimental correlations is not accessible and
 thus we assume that there is a single source of point-by-point uncorrelated systematic
-uncertainty, denotes as $\sigma_i^{\rm (exp)}$, which is estimated as follows.
+uncertainty, denoted as $\sigma_i^{\rm (exp)}$, which is estimated as follows.
 %
-The input measurements will consist in general on
+The input measurements will be composed in general on subsets of EEL
 spectra taken with identical operation conditions.
 %
-Assume that for a given set of operation conditions we have $N_{\rm sp}$ on such spectra.
+Assume that for a specific set of operation conditions we have $N_{\rm sp}$ of such spectra.
 %
 Since the values of $\Delta E$ will be different in each case, first of all
 we uniformise a common binning in $\Delta E$ with $n_{\rm dat}$ entries.
 %
-The we evaluate the total experimental uncertainty in one of these bins as
+Then we evaluate the total experimental uncertainty in one of these bins as
 \be
 \sigma_i^{\rm (exp)} = \lp \frac{1}{N_{\rm sp}-1} \sum_{l=1}^{N_{\rm sp}}
 \lp I_{{\rm ZLP},i}^{ ({\rm exp}),l}  - \la I_{{\rm ZLP},i}^{ ({\rm exp})}\ra \rp \rp^{1/2} \, ,
@@ -212,7 +235,7 @@ that is, as the standard deviation over the $N_{\rm sp}$ spectra.
 This uncertainty is separately evaluated for each set of microscope operation conditions
 for which spectra are available.
 %
-Then Eqns.~(\ref{eq:MCreplicaGen}) and~(\ref{eq:expcovariance}) reduce to
+In this case, Eqns.~(\ref{eq:MCreplicaGen}) and~(\ref{eq:expcovariance}) reduce to
 \be
  I_{{\rm ZLP},i}^{{\rm (art)}(k)}  =  I^{\rm (exp)}_{{\rm ZLP},i} + r_i^{({\rm tot},k)}\sigma_i^{\rm (exp)}
  \,, \quad \forall i
@@ -224,19 +247,17 @@ and
   \lp I_{{\rm ZLP},j}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},j}^{{\rm (art)}(k)}\ra\rp\ra_{\rm rep} =
   \sigma_i^{\rm (exp)}\sigma_j^{\rm (exp)}\delta_{ij}
   \eea
-since the experimental covariance matrix is diagonal.  
+given that the experimental covariance matrix is diagonal.  
 
-
-The value of $N_{\rm rep}$ should be chosen such that the set of replicas 
-models the probability distribution of original training data faithfully.
+The value of the number of generated MC replicas, $N_{\rm rep}$, should be chosen such that the set of replicas 
+models accurately the probability distribution of original training data.
 %
 To verify that this is the case,
 Fig.~\ref{fig:MC} displays a comparison between the original experimental central values
-$I_{{\rm ZLP},i}^{\rm exp}$ (left panel) and the corresponding total
-uncertainties $\sigma_i^{(\rm total)}$ with the results of averaging over
+$I_{{\rm ZLP},i}^{\rm (exp)}$ (left panel) and the corresponding 
+uncertainties $\sigma_i^{(\rm exp)}$ with the results of averaging over
 a sample of $N_{\rm rep}$ Monte Carlo replicas generated by means of
-Eq.~(\ref{eq:MCreplicaGen}), for different values of
-$N_{\rm rep}$.
+Eq.~(\ref{eq:MCreplicaGen}) for different number of replicas.
 %
 We find that $N_{\rm rep}=500$ is a value that ensures that both
 the central values and uncertainties are reasonably well reproduced,
@@ -257,66 +278,128 @@ and we adopt it in what follows.
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
-
 \subsection{Training strategy}
+\label{sec:training}
 
-The training of the NN model for the ZLP peak differs between
-the cases of EEL spectra taken on vacuum, where $I_{\rm EEL}(\Delta E) =I_{\rm ZLP}^{\rm (NN)}(\Delta E)$,
+The training of the neural-network model for the ZLP peak differs between
+the cases of EEL spectra taken on vacuum, where by construction $I_{\rm EEL}(\Delta E) =I_{\rm ZLP}^{\rm (mod)}(\Delta E)$,
 and for spectra taken on sample.\footnote{Actually EEL spectra taken in the vacuum but close
   to the sample might still receive inelastic contributions due to processes such as .... Here
   when we use vacuum spectra we consider exclusively those taken reasonably far from the surface
 of the analysed nanostructures.}
 %
-In the latter case, as indicated by Eq.~(\ref{eq:ZLPseparation}), it is
+In the latter case, as indicated by Eq.~(\ref{eq:ZLPseparation}), in order to avoid
+biasing the results it is
 important to ensure that the model is trained only on the region of the spectra
-where the ZLP dominates over the inelastic scatterings, else one would be biasing
-the model.
+where the ZLP dominates over the inelastic scatterings.
 %
-We now describe the training strategy in both cases.
+We now describe the training strategy that is adopted in both cases.
 
 \paragraph{Training of vacuum spectra.}
 %
-
-\begin{equation}\label{eq:chi2}
+For each of the $N_{\rm rep}$ generated Monte Carlo replicas, we train an independent
+neural network as described in Sect.~\ref{sec:parametrisation}.
+%
+The parameters of the neural network are determined from the minimisation of a figure of merit
+defined as
+\begin{equation}
+  \label{eq:chi2}
 \begin{centering}
-    E = \frac{1}{N_{dat}}\sum_{i=1}^{N_{dat}}\left(\frac{D_i - D_i^{pred}}{\sigma_i}\right)^2, 
+  E^{(k)}\lp \{\theta^{(k)}\}\rp = \frac{1}{n_{\rm dat}}\sum_{i=1}^{n_{dat}}\left(\frac{ I_{{\rm ZLP},i}^{{\rm (art)}(k)} -
+  I_{{\rm ZLP},i}^{{\rm (mod)}}\lp \{\theta^{(k)}\}\rp }{\sigma_i^{(\rm exp)}}\right)^2, 
 \end{centering}
 \end{equation}
+which is the $\chi^2$ per data point comparing the $k$-th replica for the ZLP
+intensity with the corresponding model prediction for the values
+$\{\theta^{(k)}\}$ of its weights and thresholds.
+%
+In order to speed up the neural network training process, prior to the optimisation
+all inputs and outputs are scaled to lie between $[0.1, 0.9]$ before
+being feed to the network.
+%
+This preprocessing facilitates that
+ the neuron activation states will typically
+lie close to the linear region of the sigmoid activation function.
 
+The contribution to the figure of merit from the input experimental data, Eq.~(\ref{eq:chi2}),
+needs in general to be complemented with that of theoretical constraints on the model.
 %
-Input data consists of intensities in the low-loss region, 
-where we drop all nonrelevant data (zero intensity). As unscaled input variables
-can result in a slow or unstable learning process,
-energy loss is scaled between [-1,1] and spectrum intensities between [0.1, 0.9]
-in order to ease the optimization~\cite{Ball:2008by}.
+For instance, when determining nuclear parton distributions~\cite{AbdulKhalek:2020yuc}, one needs to
+extend Eq.~(\ref{eq:chi2}) with Lagrange multipliers to ensure that both the $A=1$ proton boundary
+condition and the cross-section positivity are satisfied.
 %
-For the second part of this study, the prediction of the ZLP for in-sample data,
-the same neural network graph was used but now only for a 1D input, the energy loss. 
+In the case at hand, our model for the ZLP should implement the property that $I_{\rm ZLP}(\Delta E)\to 0$
+when $|\Delta E| \to \infty$, since far from $\Delta E\simeq 0$ the contribution from elastic scatterings
+and instrumental broadening is completely negligible.
 %
-Input data for training the neural network still consists of intensities in the low-loss region, 
-but now on ZLP data recorded on a specimen. Using the same feed-forward neural network,
-we predict the shape of the ZLP and subtract it from the data.
-%
-We use Adam backpropagation~\cite{Kingma:2017} to optimize the learning parameters in the network. 
-The network is trained to minimize the uncorrelated $\chi^2$ per data point:
+In order to implement this constraint, we add $n_{pd}$ pseudo-data points to the training dataset and modify
+the figure of merit Eq.~(\ref{eq:chi2}) as follows
+\be
+\label{eq:chi2modified}
+E^{(k)}\lp \{\theta^{(k)}\}\rp \to E^{(k)}\lp \{\theta^{(k)}\}\rp +
+\lambda \sum_{i'=1}^{n_{pd}}\left(
+  I_{{\rm ZLP},i'}^{{\rm (mod)}}\lp \{\theta^{(k)}\}\rp \right)^2, 
+  \ee
+  where $\lambda$ is a Lagrange multiplier whose value is tuned to ensure that the $I_{\rm ZLP}(\Delta E)\to 0$
+  condition
+  is satisfied without affecting the description of the training dataset.
+  %
+  The pseudo-data points are chosen to lie in the region $\lc \Delta E_{\rm pd}^{\rm (min)},
+  \Delta E_{\rm pd}^{\rm (max)}\rc$ (and symmetrically for negative energy losses),
+  which is determined automatically via ...
+  %u
+We note that another important physical condition on the ZLP model, namely its positivity
+(since in EEL spectra the intensity is just a measure of the number of counts in the
+detector for a given value of the energy loss) is automatically satisfied since
+we use a ReLU activation function for the last layer.
 
-
-
-where $D_i, D_i^{pred(k)}$ are the input intensity and the predicted 
-intensity respectively,
-$\sigma_i$ is the standard error associated to the data point. 
+In this work we adopt the {\tt TensorFlow} neural-net libraries to assemble
+the architecture illustrated in  Fig.~\ref{fig:architecture}.
 %
-The chi-squared method is the cornerstone of almost all fitting, as it is 
-an intuitively reasonable measure of how well the predictions fit the data.
-In general, if $\chi^2/N_{dat}$ is of the order 1, we can say that the fit is a 
-good approximation to the real data. \\
+The optimisation of the figure of merit Eq.~(\ref{eq:chi2modified}) is carried
+out by means of  stochastic gradient descent combined with backpropagation,
+in particular by means of the Adam algorithm.
 %
-The stopping condition is implemented through look-back stopping which stores 
-the neural network weights and biases the minimum of the validation error function,  
-which can be afterwards retrieved for 
-making predictions.
-%
+The hyper-parameters of the optimisation algorithm such as the learning rate
+have been adjusted to ensure proper learning is reached in the shortest amount
+of time possible.
 
+Given that we have a extremely flexible parametrisation, one should be careful
+to avoid overlearning the input data.
+%
+Here over-fitting is avoided by means of a cross-validation stopping criterion.
+%
+We separate the input data into training a validation subsets, with a 80\%/20\% splitting
+which varies randomly for each Monte Carlo replica.
+%
+We then run the optimiser for a very large number of iterations and store both
+the state of the network and the value
+of the figure of merit Eq.~(\ref{eq:chi2}) restricted to the validation
+dataset, $E^{(k)}_{\rm val}$ (which is not used for the training).
+%
+The optimal stopping point is then determined {\it a posteriori} for each replica
+as the specific network configuration that leads to the deepest minimum of $E^{(k)}_{\rm val}$.
+
+Once the training of all the $N_{\rm rep}$ neural network models for the ZLP has been carried
+out as specified above, we gauge the overal fit quality of the model by computing the
+$\chi^2$ defined as
+\begin{equation}
+  \label{eq:chi2_final}
+\begin{centering}
+  \chi^2 = \frac{1}{n_{\rm dat}}\sum_{i=1}^{n_{dat}}\left(\frac{ I_{{\rm ZLP},i}^{{\rm (exp)}} -
+ \la I_{{\rm ZLP},i}^{{\rm (mod)}}\ra_{\rm rep} }{\sigma_i^{(\rm exp)}}\right)^2, 
+\end{centering}
+\end{equation}
+which is the analog of Eq.~(\ref{eq:chi2_final}) now comparing the average model prediction
+to the original experimental data values.
+%
+A value $\chi^2 \simeq 1$ indicates that a satisfactory description of the experimental data,
+within the corresponding uncertainties, has been achieved.
+%
+Note that in realistic scenarios $\chi^2$ can deviate from unity, for instance when
+some source of correlation between the experimental uncertainties has been neglected.
+
+\paragraph{Training of sample spectra.}
 
 \subsection{ZLP subtraction and band gap determination}
 Abovementioned methods will be implemented for both vacuum and on-sample 
