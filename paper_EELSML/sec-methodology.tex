@@ -18,7 +18,7 @@ First of add we discuss the parametrisation of the ZLP in terms of neural networ
 We then review the estimate and propagation of uncertainties using the MC replica method.
 %
 Afterwards we present our training strategy both in case of vacuum and of sample spectra,
-and finally we validate our fitting methodology by means of closure tests.
+and discuss how to select the hyper-parameters that appear in the model.
 
 \subsection{ZLP parametrisation}
 \label{sec:parametrisation}
@@ -26,6 +26,7 @@ and finally we validate our fitting methodology by means of closure tests.
 The starting point of our approach is based on noting that, without any loss of generality, the intensity profile
 associated to a given EEL spectrum can be decomposed as
 \be
+\label{eq:IeelTot}
 I_{\rm EEL}(\Delta E) =I_{\rm ZLP}(\Delta E) + I_{\rm inel}(\Delta E) \, ,
 \ee
 where $\Delta E$ is the measured electron energy loss, $I_{\rm ZLP}$ is the zero-loss peak that receives
@@ -401,102 +402,113 @@ some source of correlation between the experimental uncertainties has been negle
 
 \paragraph{Training of sample spectra.}
 
-\subsection{ZLP subtraction and band gap determination}
-Abovementioned methods will be implemented for both vacuum and on-sample 
-recorded ZLP data. For the subtraction of the ZLP in sample, 
-we compare with the vacuum results, we modify the training region to make sure
-we don't fit the signal from the sample before subtracting the ZLP predictions
-and looking for the right band gap determination of the specimen.
+The training strategy in the case of EEL spectra taken on samples (rather than on vacuum) must be adjusted
+to account for the fact that the input data set, Eq.~(\ref{eq:IeelTot}), receives contributions
+both from the ZLP and from inelastic scatterings.
 %
-Before training, a window is to be applied to the training inputs 
-to an upper boundary $\Delta$E$_1$, to ensure the network trains 
-on data of the ZLP solely. 
+To avoid biasing the ZLP model, only the former contributions should be
+included in the training dataset.
+
+We can illustrate the situation here with the help of a toy model for the low-loss
+region of EEL spectra, represented in
+Fig.~\ref{fig:EELS_toy}.
 %
-In order to attain a model that meets log(I$_{ZLP}$) $\rightarrow $0 
-as $\Delta$E$\rightarrow \infty$, 
-pseudo data is to be added for E $>\Delta$E$_2$ 
-where the ZLP contribution becomes negligible. 
+Let us assume that the ZLP is described by a Gaussian distribution with a standard deviation of $\sigma_{\rm ZLP}=0.3$ eV,
+and that the contribution from the
+inelastic scatterings arising from the sample can be approximated in the low-loss
+region by $I_{\rm inel}(\Delta E)\propto \lp \Delta E - E_{\rm bg}\rp^b$ with $E_{\rm bg}=1.5$
+and $b=0.5$ -- the motivation for this
+choice will be spelled out in Sect.~\ref{sec:results_sample}.
 %
-The model is trained on data for E$<\Delta$E$_1$ and E$>\Delta$E$_2$, 
-the interpolation region $\Delta$E$_1<$E$<\Delta$E$_2$ contains 
-the predictions of interest, as it entails the low-loss features 
-of the sample. \newline
-%
-It is possible to determine automatically the right values for $\Delta$E$_1$
-and $\Delta$E$_2$ by using the first derivative of the spectrum intensity (dI/dE).
-%
-In an ideal microscope the electron beam would be perfectly monochromatic, 
-correspondingly the ZLP would appear as a delta function in an EEL spectrum~\cite{Rafferty:2000}.
-%
-In practice the ZLP has a finite width defining the energy resolution of the system. 
-At some energy loss the contribution to the sample kicks in and the intensity profile, 
-earlier monotonically decreasing, will have its first local minimum.
-%
-At this point the ZLP and sample contribution are of the same order of magnitude
-and we will use this as the ultimate value of $\Delta$E$_1$ to end our
-ZLP regime.
-%
-The value of $\Delta$E$_1$ to be used as upper boundary of the training data
-can be lower, but not higher than this limit.\newline
-%
-The first derivatives of the vacuum spectra provide insight 
-on the energy loss for which the ZLP intensity becomes negligible. For high
-energy loss the dI/dE approaches zero gradually, and $\Delta$E$_2$ marks the
-point at which the derivative crosses zero.
-%
-After the choice on $\Delta$E$_1$ and $\Delta$E$_2$, the set of experimental 
-training data (TD) will be prepared taking the following steps:
+We display the separate contributions from $I_{\rm ZLP}$
+and $I_{\rm inel}$, as well as their sum, 
+with the inset showing the values of the corresponding derivatives, $dI/d\Delta E$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.89\textwidth]{plots/EELS_toy.pdf}
+    \caption{A toy model for the EEL spectrum and its
+      derivative (in the inset).
+      %
+      We display the separate contributions from $I_{\rm ZLP}$
+      and $I_{\rm inel}$ as well as their sum.
+      %
+      We indicate the two regions used for the model training ($I$ and $III$),
+      while as discussed in the text the trained model is then
+      extrapolated to region $II$, defined for $\Delta E_I \le \Delta E \le \Delta E_{II}$.
+    }
+    \label{fig:EELS_toy}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The toy model of Fig.~\ref{fig:EELS_toy} is general enough so that one can draw
+a number of useful considerations concerning the relation between $I_{\rm ZLP}$ and $I_{\rm inel}$
+in realistic spectra:
+
+\begin{itemize}
+
+\item The ZLP intensity, $I_{\rm ZLP}(\Delta E)$, is a monotonically decreasing function
+  and thus its derivative is always negative.
+
+\item  The first local minimum of the total spectrum, $dI_{\rm EELS}/d\Delta E|_{\Delta E_{\rm min}}=0$, corresponds
+  to a value of $\Delta E$ for which the contribution from the inelastic emissions is already
+  sizable.
+
+\item The value of $\Delta E$ for which $I_{\rm inel}$ starts to contribute to the total spectrum
+  corresponds to the position where the intensity derivatives in-sample and in-vacuum  start to differ.
+  %
+  We note that a direct comparison between the overal magnitude of the sample and vacuum ZLP
+  spectra is in general not possible, as explained in Sect.~\ref{sec:eels}. 
+\end{itemize}
+
+These considerations suggest that when training the ML model on EEL spectra taken on samples,
+the following categorisation should de adopted:
+
 \begin{enumerate}
-    \item Keep only sample data (SD) inside the window [$dE_{min}, dE_1$]
-    \item Create pseudo data (PD) with $log(I)$=0 in range [$dE_2, dE_{max}$]
-    \item TD = SD + PD
+
+\item For energy losses such that $\Delta E \le \Delta E_I$ (region $I$),
+  the model training  proceeds in the same way as for the vacuum case
+  via the minimisation of Eq.~(\ref{eq:chi2})
+
+\item  
+  For $\Delta E \ge \Delta E_{II}$ (region $III$), we use instead Eq.~(\ref{eq:chi2modified})
+  without the contribution from the input data, since for such values
+  of $\Delta E$ one has that $I_{\rm inel}\gg I_{\rm ZLP}$.
+  %
+  In other words, the only information that the region $III$ provides
+  on the model is the one arising from the implementation
+  of the constraint that $I_{\rm ZLP}(\Delta E\to \infty)\to 0$.
+
+\item The EELS data  in region $II$, defined by  $\Delta E_I \le \Delta E \le \Delta E_{II}$,
+  is excluded from the training dataset, given that in this region the contribution to $I_{\rm EEL}$
+  coming from $I_{\rm inel}$ is significant.
+  %
+  There the model predictions are obtained from an interpolation
+  of the predictions obtained in regions $I$ and $III$.
+
 \end{enumerate}
-%
-For each replica, the predicted ZLP is subtracted from the individual 
-experimental spectra to obtain one set of subtractions. 
-Repeating this procedure yields a collection of $N_{rep}$ subtractions 
-for each original spectrum, over which statistical properties such as 
-median and variance can be calculated.\newline
-%
-From these subtractions, which contain the 'pure' sample data, 
-it is possible estimate the band gap. To a first approximation,
-this can be done as the inflection point of the rising intensity.
-%
-The value can also be roughly estimated from the onset of the absorption 
-or from a linear fit to the maximum positive slope in the 
-EELS spectrum~\cite{Schamm:2003}. 
-%
-However, a more accurate and reliable determination is based on the work of 
-Rafferty and Brown~\cite{Rafferty:2000}. The onset of the subtracted spectrum 
-for a a material with a direct bandgap is expected to follow a function of the type
-\begin{equation}\label{eq:I1}
-    I(E) = I_0 + c\cdot(dE-E_{BG})^{(b)}
-\end{equation}
-where I$_0$ and c are constants, b equals 0.5, $\Delta$E is the energy loss and E$_{BG}$ 
-is the bandgap energy.For an indirect bandgap, the power of $(1/2)$ changes to $(3/2)$. 
-%
-Therefore, the bandgap nature (direct or indirect) can be extracted by 
-least-squares fitting of each k-th replica subtracted spectrum to equation~\ref{eq:I1}.
-%
-By averaging over all replicas, one can determine $\textless{b}\textgreater{}$, 
-$\textless{E_{BG}}\textgreater{}$ 
-and their uncertainties, while keeping track of how the free parameter
-E$_{BG}$ is sensitive to the choice of $\Delta$E$_1$, which marks the onset
-of the subtracted spectrum intensity.
-%
 
+This classification introduces two new hyper-parameters of our model, $\Delta E_I$ and
+$\Delta E_{II}$, that need to be specified before the training.
+%
+They should satisfy $\Delta E_I \le \Delta E_{\rm min}$ and $\Delta E_I \ge \Delta E_{\rm min}$,
+with $\Delta E_{\rm min}$ being the position of the first local minimum of $I_{\rm EEL}$.
+%
+As indicated by the toy spectra of Fig.~\ref{fig:EELS_toy}, a suitable value for $\Delta E_{I}$
+would be somewhat above the onset of the inelastic contributions, to maximise
+the amount of training data while ensuring that $I_{\rm EEL}$ is dominated
+by $I_{\rm ZLP}$.
 
-\subsection{Closure testing}
+We can use the derivatives of the spectra, $dI_{\rm EEL}/d\Delta E$, to select suitable values
+of these two parameters.
+%
+Concerning $\Delta E_I$, it is selected as the value where the derivate taken on the sample
+data start to different significantly as compared to those spectra taken on vacuum.
+%
+Concerning $\Delta E_{II}$ .....
 
+Another important difference as compared to the training of the vacuum spectra is that each of the sample
+spectra will have different values of $\Delta E_{\rm min}$ and thus of $\Delta E_I$ and $\Delta E_{II}$.
 %
-A basic requirement for a successful methodology is the ability of generalization, 
-which means that the model works on widely different datasets without 
-the need for manual fine-tuning.
-%
-In order to check for generalizability, we have validated by means of 
-closure testing\cite{Ball:2015oha} if the computed error 
-associated to each training point is reasonable. 
-%
-A closure test ensures that uncertainties introduced by methodology are small 
-compared to the generic experimental errors of the data. 
-%
+For this reason what we do here is .....
