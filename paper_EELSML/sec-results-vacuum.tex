@@ -15,27 +15,14 @@ Such calibration is necessary since, as explained in Sect.~\ref{sec:training}, s
 hyper-parameters are determined by the comparison of the intensity derivatives
 between spectra taken in vacuum and those in sample.
 
-%
-For the ML model of the ZLP, four different sets of vacuum recordings
-have been used, each measured under a different setting of exposure time 
-and beam current. 
-%
-The data sets were recorded with a Titan TEM, equipped with a Skottky field emitter.
-A maximum energy resolution (FWHM) of 0.003 eV could be realized. 
-%
-Table~\ref{table:vacuumdata} below indicates for each of the data sets the number of data files, 
-the energy loss range, maximum recorded intensity and FWHM. 
-%
-These four data sets have been used to construct a ML-based
-multidimensional model of the ZLP which can be inter- and extrapolated
-to other operation conditions of the microscope.
-
 In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spectra acquired in vacuum to train the neural
     network model.  For each set of spectra, we indicate the exposure time $t_{\rm exp}$, the beam energy
     $E_b$, the number of spectra $N_{\rm sp}$ corresponding to these operation conditions, the number $N_{\rm dat}$ of
     bins in each spectrum, the range in electron energy loss $\Delta E$,
     and the average full width at half maximum (FWHM)
     evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
+    %
+    The data sets were recorded with a Titan TEM equipped with a Skottky field emitter.
     %
     Since we are interested in the low-loss region, $\Delta E_{\rm max}$ does not need
     to be too large, and in any case the large $|\Delta E|$ behaviour of the model is fixed
@@ -46,6 +33,9 @@ In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spect
     %
     A total of 81920 independent measurements will be thus used for the ZLP model
     training on the vacuum spectra.
+    %
+    As we show below, one of the advantages of our model is that it can extrapolate the ZLP predictions
+    for other operation conditions of the microscope beyond those used for the training.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,19 +64,77 @@ Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm b}$ {(}keV{)} & $N_{\rm sp}$ & $N_{\rm da
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Following the strategy presented in Sect.~\ref{sec:methodology}, first of all we combine the $N_{\rm sp}$ spectra
+corresponding to each of the four sets of operation conditions and determine the statistical uncertainty
+associated to each energy loss bin by means of Eq.~(\ref{eq:sigmaiexp}).
+%
+We use this information to generate a sample of $N_{\rm rep}=500$ Monte Carlo replicas of the input data listed
+in Table~\ref{table:vacuumdata} and train an individual neural network model to each of these replicas.
+%
+The end result of the procedure is a set of model replicas, $I_{\rm ZLP}^{\rm (mod)(k)}(\Delta E, E_{b},t_{\rm exp})$,
+which can be used to provide a prediction for the intensity of the ZLP
+for arbitrary values of $\Delta E$,  $E_{b}$, and $t_{\rm exp}$.
+%
+This sample provides a representation of the probability density in the space of $I_{\rm ZLP}$ models, from which
+statistical estimators such as averages, variances, and correlations can be evaluated by means of
+the standard MC expressions, namely
+\be
+\la I_{\rm ZLP}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp}) \ra = \frac{1}{N_{\rm rep}}\sum_{k=1}^{N_{\rm rep}}
+I_{\rm ZLP}^{\rm (mod)(k)}(\Delta E, E_{b},t_{\rm exp}) \, ,
+\ee
+\be
+\sigma_{I_{\rm ZLP}}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp})  = \lp \frac{1}{N_{\rm rep}-1} \sum_{k=1}^{N_{\rm rep}}
+\lp  I_{\rm ZLP}^{\rm (mod)(k)}  - \la I_{\rm ZLP}^{\rm (mod)}  \ra   \rp \rp^{1/2} \, ,
+\ee
+\be
+\rho \lp \{z_1\},\{z_2\}\rp = \frac{ \la I_{\rm ZLP}^{\rm (mod)}( \{z_1\} ) I_{\rm ZLP}^{\rm (mod)}( \{z_2\} ) \ra
+- \la I_{\rm ZLP}^{\rm (mod)}( \{z_1\} )\ra \la I_{\rm ZLP}^{\rm (mod)}( \{z_2\} ) \ra}{\sigma_{I_{\rm ZLP}}^{\rm (mod)}( \{z_1\} )\sigma_{I_{\rm ZLP}}^{\rm (mod)}( \{z_2\} )}
+\ee
+where as in the previous section $\{z_l\}$ denotes a possible set of input variables for the model.
+We now discuss some of features of this ZLP vacuum model.
 
+\paragraph{Fit quality.}
+%
+To begin with we would like to quantify the overall fit quality of the model and demonstrate that it is flexible enough
+to describe all the available input datasets.
+%
+In Table~\ref{table:chi2summary} we indicate the values of the final $\chi^2$ per data point,
+    Eq.~(\ref{eq:chi2_final}), as well as the average values of the error Eq.~(\ref{eq:chi2})
+    over the training and validation subsets, for each of the four sets of spectra listed in
+    Table~\ref{table:vacuumdata} as well as for the total dataset.
+    %
+    We recall that for a satisfactory training one expects $\chi^2 \simeq 1$
+    and $\la E_{\rm tr}\ra \simeq \la E_{\rm val}\ra \simeq 2 $~\cite{Forte:2002fg}.
+    %
+    From the results of this table we can see that ....
 
-
-
-
-\subsection{High-dimensional ZLP prediction}
-Thanks to the model independence of our approach, we have been able to assemble a high-dimensionality ML model
-with multiple inputs to model the ZLP spectra. Extrapolating them 
-to other operation conditions of the microscope beyond those included
-in the training dataset yields reliable results, as to be discussed in this section.
-The key feature of this new ZLP modeling method is that it strives to reveal the true dynamics of the situation: it takes in data and returns the predictions that describe the underlying physics. \\
-
-After training the neural network $N_{rep}$ times on correspondingly many MC pseudo data sets, the best network parametrizations were retrieved to make predictions while interpolating and extrapolating on the training inputs. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[t]
+  \begin{center}
+            \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{@{}cccc}
+\br
+Set & $\chi^2$  &  $\la E_{\rm tr}\ra$   &  $\la E_{\rm val}\ra$ \\
+\mr
+1        &                 &                  &    \\
+2        &                  &                   &      \\
+3        &                   &                   &     \\
+4        &                   &                    &      \\
+\mr
+Total    &                     &                      &      \\
+\br
+  \end{tabular}
+    \end{center}
+  \caption{\small The values of the final $\chi^2$ per data point,
+    Eq.~(\ref{eq:chi2_final}), as well as the average values of the error Eq.~(\ref{eq:chi2})
+    over the training and validation subsets, for each of the four sets of spectra listed in
+    Table~\ref{table:vacuumdata} as well as for the total dataset.
+  }
+   \label{table:chi2summary}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Energy loss}
 \label{sec:eloss}
