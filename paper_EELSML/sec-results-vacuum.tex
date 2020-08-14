@@ -1,20 +1,20 @@
-\section{Results vaccuum}
+\section{Application to vacuum spectra}
 \label{sec:results_vacuum}
 
-In this section we present the main results of this work.
-
-In this section we present the experimental data used
-in the present analysis.
+Now we move to present the application of the strategy presented in the previous
+section to the parametrisation of the ZLP spectra taken in vacuum.
 %
-It is divided into EEL spectra taken in vacuum, for calibration
-purposes, and spectra taken in sample, for the physics interpretation.
+Applying our model to this case has a two-fold motivation.
 %
-As it is well known, the ZLP will in general be different
-in the two cases: for in-sample spectra, one expects a broadening
-arising from elastic electron-sample interactions that is missing in
-the vacuum spectra.
+First of all, we aim to demonstrate that our model is flexible enough to effectively reproduce the
+input EELS measurements for a range of variations of the operation parameters of the microscope.
+%
+Second, it will allow us to provide a calibration prediction for the case of the in-sample measurements.
+%
+Such calibration is necessary since, as explained in Sect.~\ref{sec:training}, some of the model
+hyper-parameters are determined by the comparison of the intensity derivatives
+between spectra taken in vacuum and those in sample.
 
-\paragraph{Vacuum spectra}
 %
 For the ML model of the ZLP, four different sets of vacuum recordings
 have been used, each measured under a different setting of exposure time 
@@ -30,24 +30,49 @@ These four data sets have been used to construct a ML-based
 multidimensional model of the ZLP which can be inter- and extrapolated
 to other operation conditions of the microscope.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spectra acquired in vacuum to train the neural
+    network model.  For each set of spectra, we indicate the exposure time $t_{\rm exp}$, the beam energy
+    $E_b$, the number of spectra $N_{\rm sp}$ corresponding to these operation conditions, the number $N_{\rm dat}$ of
+    bins in each spectrum, the range in electron energy loss $\Delta E$,
+    and the average full width at half maximum (FWHM)
+    evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
+    %
+    Since we are interested in the low-loss region, $\Delta E_{\rm max}$ does not need
+    to be too large, and in any case the large $|\Delta E|$ behaviour of the model is fixed
+    by the constraint implemented by means of Eq.~(\ref{eq:chi2modified}).
+    %
+    The energy resolution of these spectra, quantified by the value of the FWHM, ranges
+    from 3 eV to 25 eV depending on the specific operation conditions of the microscope.
+    %
+    A total of 81920 independent measurements will be thus used for the ZLP model
+    training on the vacuum spectra.
 
-
-\begin{table}[h]
-  \caption{Properties of the zero loss peaks acquired in vacuum, used as inputs for training the multidimensional neural network model.}
-  \begin{tabular}{@{}llllllllll}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[t]
+  \begin{center}
+            \renewcommand{\arraystretch}{1.50}
+  \begin{tabular}{@{}ccccccccc}
 \br
-Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm beam}$ {(}keV{)} & $N_{\rm files}$ & $N_{dat} / file$ & $\Delta E_{\rm min}$  & $\Delta E_{\rm max}$  & $I_{\rm max}$ & FWHM  \\ 
+Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm b}$ {(}keV{)} & $N_{\rm sp}$ & $N_{\rm dat}$ & $\Delta E_{\rm min}$~(eV)  & $\Delta E_{\rm max}$~(eV)  & FWHM~(eV)  \\ 
 \mr
-1        & 100                 & 200                  & 15          & 2048               & -0.96              & +8.51               & 739770       & 0.025         \\
-2        & 100                 & 60                   & 7           & 2048               & -0.54              & +5.59               & 326483       & 0.022         \\
-3        & 10                  & 200                  & 12          & 2048               & -0.18              & +2.97               & 70913        & 0.003         \\
-4        & 10                  & 60                   & 6           & 2048               & -0.40              & +4.78               & 30793        & 0.017         \\ 
+1        & 100                 & 200                  & 15          & 2048               & -0.96              & 8.51     & $0.025\pm$         \\
+2        & 100                 & 60                   & 7           & 2048               & -0.54              & 5.59    & $ 0.022\pm$         \\
+3        & 10                  & 200                  & 12          & 2048               & -0.18              & 2.97      & $0.003\pm$         \\
+4        & 10                  & 60                   & 6           & 2048               & -0.40              & 4.78       & $0.017\pm$         \\ 
 \br
-\end{tabular}
-\label{table:vacuumdata}
+  \end{tabular}
+    \end{center}
+  \caption{\small Summary of the main properties of the EELS spectra acquired in vacuum to train the neural
+    network model.  For each set of spectra, we indicate the exposure time $t_{\rm exp}$, the beam energy
+    $E_b$, the number of spectra $N_{\rm sp}$ corresponding to these operation conditions, the number $N_{\rm dat}$ of
+    bins in each spectrum, the range in electron energy loss $\Delta E$,
+    and the average FWHM evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
+  }
+   \label{table:vacuumdata}
 \end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
