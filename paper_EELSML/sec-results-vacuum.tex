@@ -22,7 +22,7 @@ In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spect
     and the average full width at half maximum (FWHM)
     evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
     %
-    The data sets were recorded with a Titan TEM equipped with a Skottky field emitter.
+    The data sets were recorded with a Titan TEM equipped with a Schottky field emitter.
     %
     Since we are interested in the low-loss region, $\Delta E_{\rm max}$ does not need
     to be too large, and in any case the large $|\Delta E|$ behaviour of the model is fixed
@@ -198,27 +198,67 @@ this would not be the case had one one a simple functional fit to model the ZLP.
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The goodness of our prediction can be quantified by means of $\chi^2$. So one can separate the parameter space (in Texp and Ebeam for example) into "training" and "prediction" regions, and use one to predict the other. If our error estimate is good, we should find chi2/ndat $\simeq$ 1 also for the predicted datasets
-
-
-\subsubsection{Beam energy}
-\label{sec:ebeam}
-The training data contained only two recorded beam energies of 60 and 200 keV. Interpolation and extrapolation predictions have been retrieved on a continuous set of beam energies between 0 and 300 keV. In Fig.~\ref{fig:extrapolbeam} one can observe the mean predicted intensity and mean prediction error, where the average is taken over the energy loss range. The dashed lines indicate the beam energies for which we have data: correspondingly, the errors in these points are small, as the model can make an accurate prediction. The more the beam energy deviates from the known values, the bigger the uncertainties in the predictions become. 
-
-\begin{figure}[H]
+\paragraph{Dependence on the beam energy $E_b$.}
+%
+As indicated in Table~\ref{table:vacuumdata}, the training dataset contains
+spectra taken at two values of the electron beam energy, $E_b=60$ keV and 300 keV.
+%
+Fig.~\ref{fig:extrapolbeam} displays  model predictions for the FWHM of the zero loss peak
+      (and its corresponding uncertainty) as a function of the beam energy $E_b$
+      for two values of the exposure time, $t_{\rm exp}=10$ ns and 100 ms.
+      %
+      The vertical dashed lines indicate the values of $E_b$ for which training data is available.
+      %
+      This comparison illustrates how the model uncertainty vary in the data region
+      (near $E_b=60$ keV and 200 keV), the interpolation region (for $E_b$ between 60 and 200 keV),
+      and the extrapolation regions (for $E_b$ below 60 keV and above 200 keV).
+      
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
     \centering
-    \includegraphics[width=120mm]{plots/Extrapolate_beamenergy.png}
-    \caption{Predictions on a continuous set of beam energies, while inputs for energy loss and exposure time are the same as for the training data. The dashed lines indicate the beam energies that are known to the network by training.}
+    \includegraphics[width=130mm]{plots/Extrapolate_beamenergy.png}
+    \caption{The model predictions for the FWHM of the zero loss peak
+      (and its corresponding uncertainty) as a function of the beam energy $E_b$
+      for two values of the exposure time, $t_{\rm exp}=10$ ns and 100 ms.
+      %
+      The vertical dashed lines indicate the values of $E_b$ for which training data is available,
+      namely $E_b=60$ keV and 200 keV. {\bf ToDo}
+    }
     \label{fig:extrapolbeam}
 \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{Exposure time}
-\label{sec:texp}
+For this comparison one can observe that as expected the uncertainty in the  prediction for FWHM
+of the ZLP is the smallest close to the values of $E_b$ for which one has training data.
+%
+The uncertainties increase but only in a moderate way in in the interpolation region, indicating that
+the model can be reliable applied to predict the features of the ZLP other values of the electron
+energy beam (assuming that all other operation conditions of the microscope are unchanged).
+%
+The errors increase rapidly in the extrapolation region, which is a characteristic feature of
+these neural network models.
+%
+Indeed, as soon as the model departs from the data region there exist a very large
+number of different functional form models for $I_{\rm ZLP}(\Delta E)$ that can describe equally well
+the training dataset, and hence a blow up of the extrapolation uncertainties is generically expected.
+
+\paragraph{Dependence on the exposure time $t_{\rm exp}$.}
+%
 The network was trained on data with exposure times of $10$ and $100$ ms, so interpolation and extrapolation is possible. Similar to the predictions for varying beam energy, also for exposure time the uncertainties grow bigger as the value deviates more from the training inputs.
+%
+In Fig.~\ref{fig:extrapotime} we display a similar comparison as in
+as Fig.~\ref{fig:extrapolbeam} now for the model
+      predictions as a function of the exposure time $t_{\rm exp}$
+for two values of the electron beam energy, $E_b=$ 60 keV and 200 keV.
 
-\begin{figure}[H]
-    \centering
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+  \centering
     \includegraphics[width=120mm]{plots/Extrapolate_exposuretime.png}
-    \caption{Predictions on a continuous set of exposure time, while inputs for energy loss and beam energy are the same as for the training data. The dashed lines indicate the exposure times known to the network by training.}
-    \label{fig:extrapolbeam}
+    \caption{Same as Fig.~\ref{fig:extrapolbeam} now displaying the model
+      predictions as a function of the exposure time $t_{\rm exp}$
+for two values of the electron beam energy, $E_b=$ 60 keV and 200 keV.
+      {\bf ToDo}}
+    \label{fig:extrapotime}
 \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
