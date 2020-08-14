@@ -3,9 +3,53 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:summary}
 
-Other applications of machine learning to
-electron microscopy data analysis.
+In this work we have presented a novel strategy to parametrise
+the zero-loss peak present in electron energy loss spectroscopy
+by applying machine learning techniques developed
+in the context of high-energy physics.
+%
+We have demonstrated how, in the case of vacuum spectra, the model
+is flexible enough to accomodate several input variables without
+imposing any {\it ad-hoc} functional form.
+%
+Once applied to the parametrization of the ZLP in EEL spectra taken
+on samples, our approach allows for a robust subtraction of its contribution
+from the very low-loss region of the spectra with a faithful
+estimate of all relevant uncertainties.
 
+As a proof of concept we have applied our novel ZLP subtraction
+strategy to spectra recorded in different regions of WS$_2$ nanostructures.
+%
+The subtracted spectra have then been used to extract the value
+of the bandgap $E_{\rm bg}$ and to estimate the type of bandgap,
+either direct or indirect.
+%
+Our findings demonstrate that ....
+
+The approach presented in this work could be extended
+in several directions.
+%
+To begin with, it could be applied to study the bandgap
+and local electronic properties of other types
+of nanostructures built upon layered materials.
+%
+It would also be interested to  further exploit the subtracted EEL spectra
+in order to determine the complex dielectric function and its associated
+uncertainties by means of the Kramers-Kronig relation.
+%
+Another possible application would be the study of spectral TEM images,
+where each pixel in the image contains an individual EEL spectrum.
+%
+Here machine learning methods would also be useful in order
+to  automatically identify relevant features (peaks, edges, shoulders)
+without having to process each spectrum individually and assess
+how these features vary as we move along different regions of the
+nanostructure.
 
 \subsection*{Acknowledgments}
-This work has been supported by ....
+%
+The work of J.~R. has been partially supported by the
+Dutch Research Council (NWO).
+%
+We are grateful to Emanuele R. Nocera and Jake Ethier for
+assistance in installing the code in the Nikhef cluster.
