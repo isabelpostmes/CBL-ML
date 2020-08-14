@@ -79,10 +79,12 @@ This sample provides a representation of the probability density in the space of
 statistical estimators such as averages, variances, and correlations can be evaluated by means of
 the standard MC expressions, namely
 \be
+\label{eq:average}
 \la I_{\rm ZLP}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp}) \ra = \frac{1}{N_{\rm rep}}\sum_{k=1}^{N_{\rm rep}}
 I_{\rm ZLP}^{\rm (mod)(k)}(\Delta E, E_{b},t_{\rm exp}) \, ,
 \ee
 \be
+\label{eq:standarddev}
 \sigma_{I_{\rm ZLP}}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp})  = \lp \frac{1}{N_{\rm rep}-1} \sum_{k=1}^{N_{\rm rep}}
 \lp  I_{\rm ZLP}^{\rm (mod)(k)}  - \la I_{\rm ZLP}^{\rm (mod)}  \ra   \rp \rp^{1/2} \, ,
 \ee
@@ -136,17 +138,65 @@ Total    &                     &                      &      \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{Energy loss}
-\label{sec:eloss}
+\paragraph{Dependence on the electron energy loss $\Delta E$.}
+%
+Having demonstrated that our neural network model provides a satisfactory description
+of all the input EEL spectra, we now present predictions for specific input parameters.
+%
+First of all, we investigate the dependence of the results as a function of the
+electron energy loss $\Delta E$.
+%
+In the left panel of Fig.~\ref{fig:EELS_vacuum_DeltaE} we show the central value and 68\% confidence level uncertainty band of the ZLP model as a function
+of $\Delta E$,
+evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}), for $t_{\rm exp}=100$ ms
+and $E_{b}=60$ and 200 keV.
+%
+The inset displays the relative model uncertainty as a function of $\Delta E$.
+%
+We can observe the differences in the ZLP predictions as the electron beam energy $E_b$ is varied.
+%
+The relative uncertainties in the model turn out to be around 20\%, more or less independent
+of the electron energy loss.
 
-The full energy range of the vacuum recorded peaks covers an interval varying from -1 to +9 eV. In order to test the flexibility of the network with respect to extrapolation on the energy interval, a window was applied to restrict the training loss values to [-0.2, 0.05] eV. Prediction inputs for exposure time and beam energy were kept the same as training values; the energy loss was extrapolated between [-0.5, 0.5] eV. After training the neural network on each MC replica, the best network parametrization was stored and used later for the prediction, such that from the ensemble of predictions the central values and uncertainties could be calculated. The results for the four different vacuum peaks can be observed in Fig.~\ref{fig:extrapoleloss} below. 
+It is interesting to assess how the model results are modified once a subset of the data points
+are excluded from the fit.
+%
+As illustrated in Fig.~\ref{fig:EELS_toy}, when training the model on sample spectra, a region
+with $\Delta E_I \le \Delta E \le \Delta E_{II}$ will be removed from the training dataset to avoid the
+contamination from the inelastic contributions.
+%
+To emulate the effects of such cut, in the right panel of Fig.~\ref{fig:EELS_vacuum_DeltaE} we
+display the same comparison of the left one but now
+for the case in which the input data bins with $\Delta E \ge 50$ meV are excluded from the fit.
+%
+In this way we test the extrapolation properties of the model between the data region ($\Delta E < 50$ meV)
+and the region where $I_{\rm ZLP}(\Delta E)$ is forced to vanish.
+%
+If we compare the relative model uncertainties between the two cases, one can observe the expected
+increase in the errors where a fraction of the input data has been cut away.
+%
+The same qualitative behaviour appears for the two values of $E_b$ considered here.
+%
+The comparisons of Fig.~\ref{fig:EELS_vacuum_DeltaE} indicate that our model uncertainties
+indeed translate in an appropriate way the information contained in the training dataset -- note that
+this would not be the case had one one a simple functional fit to model the ZLP.
 
-\begin{figure}[H]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h]
     \centering
     \includegraphics[width=120mm]{plots/extrapolate_energyloss.png}
-    \caption{Energy loss extrapolation on vacuum peaks under four different recording settings (exposure time, beam energy). The data within the energy region [-.2, 0.05] eV is known to the network by training. Extrapolation predictions are shown outside this region, marked by the dashed lines.}
-    \label{fig:extrapoleloss}
+    \caption{Left panel: the central value and 68\% confidence level uncertainty band of the ZLP model as a function
+      of $\Delta E$,
+      evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}), for $t_{\rm exp}=100$ ms
+      and $E_{b}=60$ and 200 keV.
+      %
+      The inset displays the relative model uncertainty as a function of $\Delta E$.
+      %
+      Right panel: same now for the case where the input data with $\Delta E \ge 50$ meV is excluded from the fit.
+      {\bf  ToDo}}
+    \label{fig:EELS_vacuum_DeltaE}
 \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The goodness of our prediction can be quantified by means of $\chi^2$. So one can separate the parameter space (in Texp and Ebeam for example) into "training" and "prediction" regions, and use one to predict the other. If our error estimate is good, we should find chi2/ndat $\simeq$ 1 also for the predicted datasets
 
