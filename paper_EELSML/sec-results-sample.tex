@@ -19,19 +19,112 @@ The parametrisation of the ZLP for these in-sample spectra will then be used
 to subtract the ZLP contribution and extract the bandgap from
 the behaviour of $I_{\rm inel}(\Delta E)$ in the very low-loss region.
 
-\paragraph{Sample spectra}
+\paragraph{Training dataset.}
 %
+Fig.~\ref{fig:ws2positions} displays
+low-magnification TEM images of two different regions of
+the WS$_2$ nanoflowers, denoted by A and B in the following.
+%
+In each image we indicate with numbers the specific positions where
+EEL spectra have been recorded, both in the sample and in vacuum for
+reference purposes.
+%
+In the upper image the difference in contract is correlated to the material
+thickness, with higher contrast corresponding to thinner regions.
+%
+Here our ZLP parametrisation strategy will be applied separately
+to samples A and B, since in each case the measurements have
+been obtained with different electron microscopes and
+operation settings.
 
-
-
-\begin{figure}[h]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
 \begin{centering}
-\includegraphics[width=0.2\linewidth]{plots/spectrumpositions.pdf} 
-\caption{A specimen image of the WS$_2$ nanostructures. 
-Marked are the positions at which energy loss data were obtained.}
+  \includegraphics[width=0.87\linewidth]{plots/Spectra_location.pdf}
+  \caption{Low-magnification TEM images of two different regions of
+    the WS$_2$ nanoflowers, denoted by A and B in the following.
+    %
+    In each image we indicate with numbers the specific positions where
+    EEL spectra have been recorded, both in the sample and in vacuum for
+    reference purposes.
+    %
+    In the upper image the difference in contract is correlated to the material
+    thickness, with higher contrast corresponding to thinner regions.
+  }
 \label{fig:ws2positions}
 \end{centering}
 \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In Table~\ref{table:sampledata} we collect the most relevant properties of the spectra collected
+in the locations indicated in Fig.~\ref{fig:ws2positions} using the same convention as
+in Table~\ref{table:sampledata}.
+%
+As mentioned above the A and B sets of spectra have been acquired with different microscopes and thus are
+not directly comparable.
+%
+Then in Table~\ref{table:sampledata_summary} we display
+the mean value and uncertainty of the first local minima $\Delta E_{\rm min}$
+    of the spectra in sets A and B, as well as the corresponding values of the hyper-parameters
+    $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy}.
+    %
+    Recall that only data with $\Delta E \le \Delta E_I$ is used for the training
+    of the neural network model.
+    %
+    We find that the location of the first minima is relatively stable
+    among all the spectra belonging to given set.
+    %
+    For $\Delta E \ge \Delta E_{II}$ instead the training set includes only the pseudo-data
+    that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[t]
+  \begin{center}
+            \renewcommand{\arraystretch}{1.50}
+  \begin{tabular}{@{}ccccccccc}
+\br
+Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm b}$ {(}keV{)} & $N_{\rm sp}$ & $N_{\rm dat}$ & $\Delta E_{\rm min}$~(eV)  & $\Delta E_{\rm max}$~(eV)  & FWHM~(eV)  \\ 
+\mr
+A        &                   &                   &           &                &               &      & $\pm$         \\
+B        &                   &                     &            &                &              &     & $ \pm$         \\
+\br
+  \end{tabular}
+    \end{center}
+  \caption{\small Same as Table~\ref{table:vacuumdata} now for the EEL spectra taken on WS$_2$ nanostructures.
+  }
+   \label{table:sampledata}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[t]
+  \begin{center}
+            \renewcommand{\arraystretch}{1.50}
+  \begin{tabular}{@{}ccccccccc}
+\br
+Set & $\Delta E_{\rm min}$~(eV)  &  $\Delta E_I$~(eV)  &  $\Delta E_{II}$~(eV)   \\
+\mr
+A        &    $\pm$                &                   &              \\
+B        &    $\pm$               &                     &               \\
+\br
+  \end{tabular}
+    \end{center}
+  \caption{\small The mean value and uncertainty of the first local minima, $\Delta E_{\rm min}$
+    of the spectra in sets A and B as well as the corresponding values of the hyper-parameters
+    $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy}.
+    %
+    Recall that only EELS data with $\Delta E \le \Delta E_I$ is included in the training dataset.
+  }
+   \label{table:sampledata_summary}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 %
 A collection of electron loss spectra acquired at different positions 
 at the specimen is used to construct the neural network training inputs. 
