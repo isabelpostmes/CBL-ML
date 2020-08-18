@@ -11,8 +11,8 @@ presented in~\cite{SabryaWS2} and reviewed in Sect.~\ref{sec:tmd}.
 These nanostructures exhibit a flower-like configuration where different layers
 of material combine to form the petals and the stem of the flowers.
 %
-Their geometrical configuration is such that depending on the region
-of the nanostructure that one is imaging the spectra will be sensitive
+Their geometrical configuration is such that, depending on the specific region
+of the nanostructure that one is imaging, the spectra will be sensitive
 to different thicknesses and orientations of the material.
 
 The parametrisation of these in-sample EEL spectra will then be used
@@ -24,16 +24,15 @@ from subtracted EEL spectra, such as by means of the inflection point of the ris
 a linear fit to the maximum positive slope~\cite{Schamm:2003}.
 %
 Here we will adopt the approach of~\cite{Rafferty:2000} whereby the behaviour
-of $I_{\rm inel}(\Delta E)$ in the onset region is expected to be modeled
-by
+of $I_{\rm inel}(\Delta E)$ in the onset region is  modeled by
 \begin{equation}
   \label{eq:I1}
     I_{\rm inel}(\Delta E) \simeq  A \lp \Delta E-E_{\rm BG} \rp^{b} \, , \quad \Delta E \ge E_{\rm BG} \, ,
 \end{equation}
-and vanish for $E < E_{\rm BG}$, where $A$ and $b$ are constants extracted from the fit.
+and vanishes for $E < E_{\rm BG}$, where $A$ and $b$ are constants extracted from the fit.
 %
-The power exponent $b$ is expected to be $b\simeq 1/2$ for a material characterised
-by a direct bandgap, and $b\simeq 3/2$ for the case of an indirect bandgap.
+The power exponent $b$ is expected to be $b\simeq 1/2$ for a semiconductor material characterised
+by a direct bandgap, and $b\simeq 3/2$ for the case instead of an indirect bandgap.
 
 \subsection{Training dataset}
 %
@@ -41,17 +40,18 @@ Fig.~\ref{fig:ws2positions} displays
 low-magnification TEM images of two different regions of
 the WS$_2$ nanoflowers, denoted as sample A and sample B in the following.
 %
-In each image we indicate with numbers the specific positions where
-EEL spectra have been recorded, both in the sample and in vacuum for
-reference purposes.
+In each image we indicate the specific locations where
+EEL spectra have been recorded, including in-vacuum measurements taken
+for calibration purposes.
 %
-In the upper image the difference in contract is correlated to the material
+In the upper image, the differences in contrast are correlated to the material
 thickness, with higher contrast corresponding to thinner regions.
 %
-Here our ZLP parametrisation strategy will be applied separately
-to samples A and B, since in each case the measurements have
+Here the ZLP parametrisation strategy will be applied separately
+to samples A and B, since in each case the EELS measurements have
 been obtained with different electron microscopes and
-operation settings.
+operation settings, which thus as explained in Sect.~\ref{sec:eels}
+must be analysed independently.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
@@ -64,7 +64,7 @@ operation settings.
     EEL spectra have been recorded, including the in-vacuum measurements taken
     for calibration purposes.
     %
-    In sample A the difference in contract is correlated to the material
+    In sample A the difference in contrast is correlated to the material
     thickness, with higher contrast corresponding to thinner regions of the nanostructure.
   }
 \label{fig:ws2positions}
@@ -76,22 +76,14 @@ In Table~\ref{table:sampledata} we collect the most relevant properties of the s
 in the locations indicated in Fig.~\ref{fig:ws2positions} using the same convention as
 in Table~\ref{table:sampledata}.
 %
-As mentioned above the A and B sets of spectra have been acquired with different microscopes and thus are
+As mentioned, the sets of spectra from samples A and B
+have been acquired with different microscopes and thus are
 not directly comparable.
 %
-Then in Table~\ref{table:sampledata_summary} we display
-the mean value and uncertainty of the first local minima $\Delta E_{\rm min}$
-    of the spectra in sets A and B, as well as the corresponding values of the hyper-parameters
-    $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy}.
-    %
-    Recall that only data with $\Delta E \le \Delta E_I$ is used for the training
-    of the neural network model.
-    %
-    We find that the location of the first minima is relatively stable
-    among all the spectra belonging to given set.
-    %
-    For $\Delta E \ge \Delta E_{II}$ instead the training set includes only the pseudo-data
-    that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
+The full width at half maximum is averaged over all spectra of a given sample,
+including those acquired on vacuum.
+%
+From this table one can observe that ....
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,7 +106,30 @@ B        &       ?       &        ?         &   6      &    1918    &     -4.054
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+In the following we will focus on representative spectra, specifically spectra \#4 and \#5 in sample
+A and spectra \#14 and \#15 in sample B.
+%
+The full set of original spectra are made available together with the code used to
+analyse them as described in this work, whose installation
+and usage instructions are summarised in~\ref{sec:installation}
+
+
+
 \subsection{ZLP subtraction}
+
+In Table~\ref{table:sampledata_summary} we display
+the mean value and uncertainty of the first local minima, $\Delta E_{\rm min}$,
+   averaged over the spectra corresponding to samples A and B from
+    Fig.~\ref{fig:ws2positions},
+as well as the corresponding values of the hyper-parameters
+    $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy}.
+    %
+Recall that as discussed in Sect.~\ref{sec:methodology} only
+the data with $\Delta E \le \Delta E_I$ is used for the training
+    of the neural network model.
+    %
+    For $\Delta E \ge \Delta E_{II}$ instead the training set includes only the pseudo-data
+    that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,21 +145,38 @@ B        &    $\pm$               &                     &               \\
 \br
   \end{tabular}
     \end{center}
-  \caption{\small The mean value and uncertainty of the first local minima, $\Delta E_{\rm min}$
-    of the spectra in sets A and B as well as the corresponding values of the hyper-parameters
-    $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy}.
+  \caption{\small The mean value and uncertainty of the first local minima, $\Delta E_{\rm min}$,
+    averaged over the spectra corresponding to samples A and B from
+    Fig.~\ref{fig:ws2positions}.
     %
-    Recall that only EELS data with $\Delta E \le \Delta E_I$ is included in the training dataset.
+    We also indicate
+     the corresponding values of the hyper-parameters
+     $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy} used for the training
+     of the neural network model.
+    %
   }
    \label{table:sampledata_summary}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+ We find that the location of the first minima is relatively stable
+ among all the spectra belonging to given set.
+ %
+ The neural network training is performed for a wide range of $\Delta E_I$ values
+ subject to the condition that $\Delta E_I \le \Delta E_{\rm min} $,
+ and the optimal value listed  in Table~\ref{table:sampledata_summary} are selected
+ by means of comparing the intensity derivatives in the sample with those
+ of the vacuum, as we discuss below.
 
+ Upon completion of the neural network training, one ends up with $N_{\rm rep}=500$ replicas
+ of the zero-loss peak associated to each sample, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
+ 
+ Spectra subtracted over replicas
 
+ Matching at very low energy lossess
 
-
+ Fit procedure over replicas
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
