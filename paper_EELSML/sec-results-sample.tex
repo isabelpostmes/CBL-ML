@@ -118,17 +118,17 @@ and usage instructions are summarised in~\ref{sec:installation}
 \subsection{ZLP subtraction}
 
 In Table~\ref{table:sampledata_summary} we display
-the mean value and uncertainty of the first local minima, $\Delta E_{\rm min}$,
+the mean value and uncertainty of the first local minima, $\Delta E|_{\rm min}$,
    averaged over the spectra corresponding to samples A and B from
     Fig.~\ref{fig:ws2positions},
 as well as the corresponding values of the hyper-parameters
-    $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy}.
+    $\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ defined in Fig.~\ref{fig:EELS_toy}.
     %
-Recall that as discussed in Sect.~\ref{sec:methodology} only
-the data with $\Delta E \le \Delta E_I$ is used for the training
+Recall that as explained in Sect.~\ref{sec:methodology} only
+the data with $\Delta E \le \Delta E_{\rm I}$ is used for the training
     of the neural network model.
     %
-    For $\Delta E \ge \Delta E_{II}$ instead the training set includes only the pseudo-data
+    For $\Delta E \ge \Delta E_{\rm II}$ instead, the training set includes only the pseudo-data
     that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,20 +138,20 @@ the data with $\Delta E \le \Delta E_I$ is used for the training
             \renewcommand{\arraystretch}{1.50}
   \begin{tabular}{@{}ccccccccc}
 \br
-Set & $\Delta E_{\rm min}$~(eV)  &  $\Delta E_I$~(eV)  &  $\Delta E_{II}$~(eV)   \\
+Set & $\Delta E|_{\rm min}$~(eV)  &  $\Delta E_{\rm I}$~(eV)  &  $\Delta E_{\rm II}$~(eV)   \\
 \mr
 A        &    $\pm$                &                   &              \\
 B        &    $\pm$               &                     &               \\
 \br
   \end{tabular}
     \end{center}
-  \caption{\small The mean value and uncertainty of the first local minima, $\Delta E_{\rm min}$,
+  \caption{\small The mean value and uncertainty of the first local minima, $\Delta E|_{\rm min}$,
     averaged over the spectra corresponding to samples A and B from
     Fig.~\ref{fig:ws2positions}.
     %
     We also indicate
      the corresponding values of the hyper-parameters
-     $\Delta E_I$ and $\Delta E_{II}$ defined in Fig.~\ref{fig:EELS_toy} used for the training
+     $\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ defined in Fig.~\ref{fig:EELS_toy} used for the training
      of the neural network model.
     %
   }
@@ -163,64 +163,79 @@ B        &    $\pm$               &                     &               \\
  We find that the location of the first minima is relatively stable
  among all the spectra belonging to given set.
  %
- The neural network training is performed for a wide range of $\Delta E_I$ values
- subject to the condition that $\Delta E_I \le \Delta E_{\rm min} $,
- and the optimal value listed  in Table~\ref{table:sampledata_summary} are selected
- by means of comparing the intensity derivatives in the sample with those
- of the vacuum, as we discuss below.
-
- Upon completion of the neural network training, one ends up with $N_{\rm rep}=500$ replicas
- of the zero-loss peak associated to each sample, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
+ The neural network training is performed for a wide range of $\Delta E_{\rm I}$ values
+ subject to the condition that $\Delta E_{\rm I} \le \Delta E_{\rm min}$.
  %
- Assuming that we have $N_{\rm sp}$ spectra, then subtraction is performed individually
+ The optimal values listed  in Table~\ref{table:sampledata_summary} are selected
+ by means of comparing the intensity derivatives in the sample with those
+ of the vacuum combined with a stability analysis, as we discuss below.
+
+ Upon completion of the neural network training, one ends up
+ for each of the independent samples with
+ a set $N_{\rm rep}=500$ replicas
+ of the zero-loss peak parametrisation, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
+ %
+ Assuming that we have $N_{\rm sp}$ spectra in each sample, then the zero-loss peak
+ subtraction is performed individually
  for each Monte Carlo replica,
  \be
- I_{\rm inel}^{(\rm mod)(j,k)}(\Delta E) \equiv I_{\rm EELS}^{(j)}(\Delta E) - I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)\, ,
- \quad \forall N_{\rm rep} \, ,\quad j=1,\ldots,N_{\rm sp} \, ,
+ \label{eq:subtractedModelPrediction}
+ I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E) \equiv I_{\rm EELS}^{(j)}(\Delta E) - I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)\, ,
+ \quad \forall~N_{\rm rep} \, ,\quad j=1,\ldots,N_{\rm sp} \, ,
  \ee
- for which statistical estimators can be evaluated as usual.
+ from which statistical estimators can be evaluated as usual.
  %
  For instance, the mean value for our model prediction for the $j$-th spectrum
- is evaluated by averaging over the set of replicas,
+ can be evaluated by averaging over the set of replicas,
  \be
- \label{eq:subtractedModelPrediction}
- \la  I_{\rm inel}^{(\rm mod)(j)}\ra (\Delta E)
- = \frac{1}{N_{\rm rep}} \sum_{k=1}^{N_{\rm rep}}  I_{\rm inel}^{(\rm mod)(j,k)}(\Delta E) \, ,
+ \la  I_{\rm inel}^{({\rm mod})(j)}\ra (\Delta E)
+ = \frac{1}{N_{\rm rep}} \sum_{k=1}^{N_{\rm rep}}  I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E) \, ,
+ \quad j=1,\ldots,N_{\rm sp} \, ,
  \ee
- and likewise for the corresponding uncertainties. We note that for large $\Delta E$
- our model prediction reduces to the original spectrum, since in that region
+ and likewise for the corresponding uncertainties.
+%
+ We note that for large values of $\Delta E$
+ the model prediction reduces to the original spectra, since in that region
  the ZLP contribution vanishes by construction,
  \be
- I_{\rm inel}^{(\rm mod)(j,k)}(\Delta E \gg \Delta E_{II}) \to  I_{\rm EELS}^{(j)}(\Delta E) \, .
+ I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E \gg \Delta E_{\rm II}) \to  I_{\rm EELS}^{(j)}(\Delta E) \, ,\quad
+ \forall~j,k \, .
  \ee
  
- For very small values of $\Delta E$ the contribution from inelastic scatterings is negligible
+ For very small values of the energy loss $\Delta E$, the contribution to the total
+ spectra from inelastic scatterings is negligible
  and thus the subtracted model prediction Eq.~(\ref{eq:subtractedModelPrediction}) should
  vanish.
  %
- However this will not be the case in practice since the neural-net model is trained on
- the $N_{\rm sp}$ ensemble of spectra, rather in just a single one, and thus the correct
- $\Delta E \to 0$ limit will only be achieved within uncertainties rather than also for central
- values.
+ However, this will not be the case in practice since the neural-net model is trained on
+ the $N_{\rm sp}$ ensemble of spectra, rather that just on individual ones, and thus the expected
+ $\Delta E \to 0$ behaviour will only be achieved within uncertainties rather than at the level of
+ central values.
  %
  To achieve the desired $\Delta E \to 0$ limit, we apply a matching procedure
- to ensure a smooth interpolator.
+ as follows.
  %
  We introduce another hyper-parameter, $\Delta E_0 < \Delta E_1$, such that
- one has for the $j$-th spectrum
+ one has for the $k$-th ZLP replica associated to the $j$-th spectrum the following
+ behaviour:
  \bea
- I_{\rm ZLP}^{({\rm mod})(k)} &=& I_{\rm EELS}^{(j)} \, ,\quad \Delta E < \Delta E_0  \, ,\\
- I_{\rm ZLP}^{({\rm mod})(k)} &=& I_{\rm EELS}^{(j)} + \lp \xi_1^{(n_l)}(\Delta E) - I_{\rm EELS}^{(j)}\rp  \times \mathcal{F} \, , \nonumber \quad 
+ \nonumber
+ I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{(j)}(\Delta E) \, ,\quad \Delta E < \Delta E_0  \, ,\\
+ I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{(j)} + \lp \xi_1^{(n_l)(k)}(\Delta E) - I_{\rm EELS}^{(j)}(\Delta E)\rp  \times \mathcal{F} \, , \nonumber \quad 
  \Delta E_0 < \Delta E \le \Delta E_1 \, ,\\
- &&\mathcal{F} = \exp\lp -\frac{\lp \Delta E - \Delta E_1 \rp^2 }{\lp \Delta E_0 - \Delta E_1 \rp^2 \delta^2} \, , \rp  \nonumber  \\
- I_{\rm ZLP}^{({\rm mod})(k)} &=& \xi_1^{(n_l)} \, , \quad \Delta E > \Delta E_1 \nonumber \, ,
+ &&\mathcal{F} = \exp\lp -\frac{\lp \Delta E - \Delta E_1 \rp^2 }{\lp \Delta E_0 - \Delta E_1 \rp^2 \delta^2} \rp  \, , \label{eq:mathcing} \\
+ I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& \xi_1^{(n_l)(k)}(\Delta E) \, , \quad \Delta E > \Delta E_1 \nonumber \, ,
  \eea
- where $\delta$ is a dimensionless tunable parameter and $\mathcal{F}(\Delta E)$ is a matching factor
- that ensures that the model prediction of the zero loss peak smoothly interpolates
- between $\Delta E=\Delta E_0$ (where $\mathcal{F}\ll 1$) and $\Delta E=\Delta E_1$
- (where $\mathcal{F}=1 1$).
+ where $\xi_1^{(n_l)(k)}$ indicates the output of the $k$-th neural network that parametrises
+ the ZLP and $\delta$ is a dimensionless tunable parameter.
  %
- In  this work we assume that $\Delta E_0 = \Delta E_1 -0.5\,{\rm eV}$, though we have verified
+ In Eq.~(\ref{eq:mathcing}), $\mathcal{F}(\Delta E)$ represents a matching factor
+ that ensures that the model prediction of the zero loss peak smoothly interpolates
+ between $\Delta E=\Delta E_0$ (where $\mathcal{F}\ll 1$ and the original spectrum should
+ be reproduced) and $\Delta E=\Delta E_1$
+ (where $\mathcal{F}=1$ leaving the neural net output unmodified).
+ %
+ In  this work we choose $\Delta E_0 = \Delta E_1 -0.5\,{\rm eV}$, though we have verified
  that results are fairly independent of this choice.
  
 
