@@ -171,10 +171,58 @@ B        &    $\pm$               &                     &               \\
 
  Upon completion of the neural network training, one ends up with $N_{\rm rep}=500$ replicas
  of the zero-loss peak associated to each sample, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
+ %
+ Assuming that we have $N_{\rm sp}$ spectra, then subtraction is performed individually
+ for each Monte Carlo replica,
+ \be
+ I_{\rm inel}^{(\rm mod)(j,k)}(\Delta E) \equiv I_{\rm EELS}^{(j)}(\Delta E) - I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)\, ,
+ \quad \forall N_{\rm rep} \, ,\quad j=1,\ldots,N_{\rm sp} \, ,
+ \ee
+ for which statistical estimators can be evaluated as usual.
+ %
+ For instance, the mean value for our model prediction for the $j$-th spectrum
+ is evaluated by averaging over the set of replicas,
+ \be
+ \label{eq:subtractedModelPrediction}
+ \la  I_{\rm inel}^{(\rm mod)(j)}\ra (\Delta E)
+ = \frac{1}{N_{\rm rep}} \sum_{k=1}^{N_{\rm rep}}  I_{\rm inel}^{(\rm mod)(j,k)}(\Delta E) \, ,
+ \ee
+ and likewise for the corresponding uncertainties. We note that for large $\Delta E$
+ our model prediction reduces to the original spectrum, since in that region
+ the ZLP contribution vanishes by construction,
+ \be
+ I_{\rm inel}^{(\rm mod)(j,k)}(\Delta E \gg \Delta E_{II}) \to  I_{\rm EELS}^{(j)}(\Delta E) \, .
+ \ee
  
- Spectra subtracted over replicas
-
- Matching at very low energy lossess
+ For very small values of $\Delta E$ the contribution from inelastic scatterings is negligible
+ and thus the subtracted model prediction Eq.~(\ref{eq:subtractedModelPrediction}) should
+ vanish.
+ %
+ However this will not be the case in practice since the neural-net model is trained on
+ the $N_{\rm sp}$ ensemble of spectra, rather in just a single one, and thus the correct
+ $\Delta E \to 0$ limit will only be achieved within uncertainties rather than also for central
+ values.
+ %
+ To achieve the desired $\Delta E \to 0$ limit, we apply a matching procedure
+ to ensure a smooth interpolator.
+ %
+ We introduce another hyper-parameter, $\Delta E_0 < \Delta E_1$, such that
+ one has for the $j$-th spectrum
+ \bea
+ I_{\rm ZLP}^{({\rm mod})(k)} &=& I_{\rm EELS}^{(j)} \, ,\quad \Delta E < \Delta E_0  \, ,\\
+ I_{\rm ZLP}^{({\rm mod})(k)} &=& I_{\rm EELS}^{(j)} + \lp \xi_1^{(n_l)}(\Delta E) - I_{\rm EELS}^{(j)}\rp  \times \mathcal{F} \, , \nonumber \quad 
+ \Delta E_0 < \Delta E \le \Delta E_1 \, ,\\
+ &&\mathcal{F} = \exp\lp -\frac{\lp \Delta E - \Delta E_1 \rp^2 }{\lp \Delta E_0 - \Delta E_1 \rp^2 \delta^2} \, , \rp  \nonumber  \\
+ I_{\rm ZLP}^{({\rm mod})(k)} &=& \xi_1^{(n_l)} \, , \quad \Delta E > \Delta E_1 \nonumber \, ,
+ \eea
+ where $\delta$ is a dimensionless tunable parameter and $\mathcal{F}(\Delta E)$ is a matching factor
+ that ensures that the model prediction of the zero loss peak smoothly interpolates
+ between $\Delta E=\Delta E_0$ (where $\mathcal{F}\ll 1$) and $\Delta E=\Delta E_1$
+ (where $\mathcal{F}=1 1$).
+ %
+ In  this work we assume that $\Delta E_0 = \Delta E_1 -0.5\,{\rm eV}$, though we have verified
+ that results are fairly independent of this choice.
+ 
 
  Fit procedure over replicas
 

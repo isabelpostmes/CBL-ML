@@ -1,5 +1,5 @@
-%\documentclass[11pt,a4paper]{article}
-\documentclass[11pt]{iopart}
+\documentclass[12pt,a4paper]{article}
+%\documentclass[11pt]{iopart}
 
 \usepackage[colorlinks=true, linkcolor=black!50!blue, urlcolor=blue, citecolor=blue, anchorcolor=blue]{hyperref}
 \usepackage[font=small,labelfont=bf,margin=0mm,labelsep=period,tableposition=top]{caption}
@@ -10,7 +10,7 @@
 \usepackage{afterpage}
 \usepackage{epsfig,cite}
 \usepackage{amssymb}
-%\usepackage{amsmath}
+\usepackage{amsmath}
 \usepackage{bm}
 \usepackage{dsfont}
 \usepackage{multirow}
@@ -25,7 +25,8 @@
 
 \usepackage{multirow,booktabs,multirow}
 
-\bibliographystyle{iopart-num}
+%\bibliographystyle{iopart-num}
+\bibliographystyle{JHEP}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -40,6 +41,9 @@
 \newcommand{\la}{\left\langle}
 \newcommand{\ra}{\right\rangle}
 \newcommand{\lc}{\left[}
+  \newcommand{\tr}{\toprule}
+  \newcommand{\mr}{\midrule}
+  \newcommand{\br}{\bottomrule}
 \newcommand{\rc}{\right]}
 \newcommand{\lp}{\left(}
 \newcommand{\rp}{\right)}
@@ -128,28 +132,57 @@
 \usepackage{tabularx}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \begin{document}
-%\newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
+\newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
 
-\title[Charting Electron Energy Loss Spectroscopy with machine learning]{Charting the low-loss region in Electron Energy Loss Spectroscopy with machine learning}
+%\title[Charting Electron Energy Loss Spectroscopy with machine learning]{Charting the low-loss region in Electron Energy Loss Spectroscopy with machine learning}
 
-\author{Laurien Roest$^{1,2}$, Sabrya van Heijst$^{1}$,
+%\author{}
+%\address{}
+
+%\ead{s.conesaboj@tudelft.nl}
+%\vspace{10pt}
+%\begin{indented}
+%\item[]September 2020
+%\end{indented}
+
+
+\begin{flushright}
+CERN-TH-2020-073\\
+IPPP/20/17\\
+Nikhef/2020-001\\
+TIF-UNIMI-2020-3\\
+ZU-TH 15/20\\
+\end{flushright}
+\vspace{0.3cm}
+
+\begin{center}
+  {\Large \bf Charting the low-loss region in Electron Energy Loss Spectroscopy with machine learning}
+\vspace{1.4cm}
+
+Laurien Roest$^{1,2}$, Sabrya van Heijst$^{1}$,
   Luigi Maduro$^{1}$,
-  Juan Rojo$^{2,3}$, and Sonia Conesa-Boj$^{1}$}
-\address{$^{1}$Kavli Institute of Nanoscience, Delft University of Technology, 2628CJ Delft, The
+  Juan Rojo$^{2,3}$, and Sonia Conesa-Boj$^{1}$
+
+\vspace{1.0cm}
+ 
+{\it \small
+
+$^{1}$Kavli Institute of Nanoscience, Delft University of Technology, 2628CJ Delft, The
   Netherlands\\
 $^{2}$Nikhef Theory Group, Science Park 105, 1098 XG Amsterdam, The
   Netherlands \\$^{3}$Department of Physics and Astronomy, VU,
-  1081 HV Amsterdam, The Netherlands}
+    1081 HV Amsterdam, The Netherlands
 
-\ead{s.conesaboj@tudelft.nl}
-\vspace{10pt}
-\begin{indented}
-\item[]September 2020
-\end{indented}
+  
 
+}
 
+\vspace{1.0cm}
 
-\begin{abstract}
+{\bf \large Abstract}
+
+\end{center}
+
   Electron energy-loss spectroscopy (EELS) within the
   transmission electron microscope (TEM) provides valuable information on the structural, chemical, and electronic properties of materials at the nanoscale.
 %
@@ -177,21 +210,19 @@ As a proof of concept of our  method, ZLP-subtracted
 spectra are used to characterise the local electronic properties of
 WS$_2$ nanostructures, where we demonstrate that bilayer WS$_2$ exhibits a direct bandgap
 with $E_{\rm BG}= 2.05 \pm 0.12$ eV.
-\end{abstract}
+%\\end{abstract}
 
 \noindent{\it Keywords:} {\small Transmission Electron Microscopy,
 Electron Energy Loss Spectroscopy, Neural Networks, Bandgap, Transition
 Metal Dichalcogenides.}\\
 
-\noindent
-\submitto{Mach. Learn.: Sci. Technol.}
-\maketitle
+
 
 %% The words table and figure should be written in full and not abbreviaged to tab. and fig. Do not include ‘eq.’, ‘equation’ etc before an equation number or ‘ref.’ ‘reference’ etc before a reference number.
 
 % Table of contents
-%\tableofcontents
-%\clearpage
+\clearpage
+\tableofcontents
 
 % General introduction
 \input{sec-introduction.tex}
