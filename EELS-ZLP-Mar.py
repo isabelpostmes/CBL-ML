@@ -443,12 +443,12 @@ window_width = 100
 
 # Spectrum1, read the intensity
 
-ZLP_10_y1 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum1_m0p3961eV_2p7361eV.txt")
+ZLP_10_y1 = np.loadtxt("Data/Vacuum/sp1-ZLP-200keV-10ms_m0d7478eV-to-5d1884[1].txt")
 ndat=int(len(ZLP_10_y1))
 # Energy loss values
 ZLP_10_x1 = np.zeros(ndat)
-Eloss_min = -0.3961 # eV
-Eloss_max = +2.7361 # eV
+Eloss_min = -0.7478# eV
+Eloss_max = +5.1884 # eV
 i=0
 while(i<ndat):
     ZLP_10_x1[i]= Eloss_min +\
@@ -457,12 +457,12 @@ while(i<ndat):
 
 
 # Spectrum2, read the intensity
-ZLP_10_y2 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum2_m0p3901eV_2p6711eV.txt")
+ZLP_10_y2 = np.loadtxt("Data/Vacuum/sp2-ZLP-200keV-10ms_m0d7109eV-to-4d8889[1].txt")
 ndat=int(len(ZLP_10_y2))
 # Energy loss values
 ZLP_10_x2 = np.zeros(ndat)
-Eloss_min = -0.3901 # eV
-Eloss_max = +2.6711 # eV
+Eloss_min = -0.7109 # eV
+Eloss_max = +4.8889 # eV
 i=0
 while(i<ndat):
     ZLP_10_x2[i]= Eloss_min +\
@@ -472,12 +472,12 @@ while(i<ndat):
 
 
 # Spectrum3, read the intensity
-ZLP_10_y3 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum3_m0p3825eV_2p9789eV.txt")
+ZLP_10_y3 = np.loadtxt("Data/Vacuum/sp3-ZLP-200keV-10ms_m0d6763eV-to-4d59eV[1].txt")
 ndat=int(len(ZLP_10_y3))
 # Energy loss values
 ZLP_10_x3 = np.zeros(ndat)
-Eloss_min = -0.3825 # eV
-Eloss_max = +2.9789 # eV
+Eloss_min = -0.6763# eV
+Eloss_max = +4.59 # eV
 i=0
 while(i<ndat):
     ZLP_10_x3[i]= Eloss_min +\
@@ -485,12 +485,12 @@ while(i<ndat):
     i = i + 1
 
 # Spectrum4, read the intensity
-ZLP_10_y4 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum4_m0p383eV_2p6339eV.txt")
+ZLP_10_y4 = np.loadtxt("Data/Vacuum/sp4-ZLP-200keV-10ms_m0d696eV-to-4d7448eV[1].txt")
 ndat=int(len(ZLP_10_y4))
 # Energy loss values
 ZLP_10_x4 = np.zeros(ndat)
-Eloss_min = -0.383 # eV
-Eloss_max = +2.6339 # eV
+Eloss_min = -0.696 # eV
+Eloss_max = +4.7448 # eV
 i=0
 while(i<ndat):
     ZLP_10_x4[i]= Eloss_min +\
@@ -498,202 +498,19 @@ while(i<ndat):
     i = i + 1
 
 # Spectrum5, read the intensity
-ZLP_10_y5 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum5_m0p3749eV_2p5672eV.txt")
+ZLP_10_y5 = np.loadtxt("Data/Vacuum/sp5-ZLP-200keV-10ms_m0d6747eV-to-4d5591eV[1].txt")
 ndat=int(len(ZLP_10_y5))
 # Energy loss values
 ZLP_10_x5 = np.zeros(ndat)
-Eloss_min = -0.3749 # eV
-Eloss_max = +2.5672# eV
+Eloss_min = -0.6747 # eV
+Eloss_max = +4.5591# eV
 i=0
 while(i<ndat):
     ZLP_10_x5[i]= Eloss_min +\
         ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
     
-# Spectrum6, read the intensity
-ZLP_10_y6 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum6_m0p4334eV_3p0336eV.txt")
-ndat=int(len(ZLP_10_y6))
-# Energy loss values
-ZLP_10_x6 = np.zeros(ndat)
-Eloss_min = -0.4334 # eV
-Eloss_max = +3.0336# eV
-i=0
-while(i<ndat):
-    ZLP_10_x6[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
 
-# Spectrum7, read the intensity
-ZLP_10_y7 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum7_m0p10948eV_0p73658eV.txt")
-ndat=int(len(ZLP_10_y7))
-# Energy loss values
-ZLP_10_x7 = np.zeros(ndat)
-Eloss_min = -0.10948 # eV
-Eloss_max = +0.73658 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x7[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-
-# Spectrum8, read the intensity
-ZLP_10_y8 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum8_m0p109eV_0p73979eV.txt")
-ndat=int(len(ZLP_10_y8))
-# Energy loss values
-ZLP_10_x8 = np.zeros(ndat)
-Eloss_min = -0.109 # eV
-Eloss_max = +0.7397 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x8[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-
-# Spectrum9, read the intensity
-ZLP_10_y9 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum9_m0p11821eV_0p81652eV.txt")
-ndat=int(len(ZLP_10_y9))
-# Energy loss values
-ZLP_10_x9 = np.zeros(ndat)
-Eloss_min = -0.11821 # eV
-Eloss_max = +0.81652 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x9[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-    
-# Spectrum10, read the intensity
-ZLP_10_y10 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum10_m0p118eV_0p79739eV.txt")
-ndat=int(len(ZLP_10_y10))
-# Energy loss values
-ZLP_10_x10 = np.zeros(ndat)
-Eloss_min = -0.118 # eV
-Eloss_max = +0.79739 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x10[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-    
-# Spectrum11, read the intensity
-ZLP_10_y11 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum11_m0p118eV_0p81148eV.txt")
-ndat=int(len(ZLP_10_y11))
-# Energy loss values
-ZLP_10_x11 = np.zeros(ndat)
-Eloss_min = -0.118 # eV
-Eloss_max = +0.81148 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x11[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-# Spectrum12, read the intensity
-ZLP_10_y12 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum12_m0p118eV_0p81148eV.txt")
-ndat=int(len(ZLP_10_y12))
-# Energy loss values
-ZLP_10_x12 = np.zeros(ndat)
-Eloss_min = -0.118 # eV
-Eloss_max = +0.81148 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x12[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-# Spectrum13, read the intensity
-ZLP_10_y13 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum13_m0p14111eV_0p99667eV.txt")
-ndat=int(len(ZLP_10_y13))
-# Energy loss values
-ZLP_10_x13 = np.zeros(ndat)
-Eloss_min = -0.14111 # eV
-Eloss_max = +0.99667 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x13[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-# Spectrum14, read the intensity
-ZLP_10_y14 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum14_m0p141eV_0p96117eV.txt")
-ndat=int(len(ZLP_10_y14))
-# Energy loss values
-ZLP_10_x14 = np.zeros(ndat)
-Eloss_min = -0.141 # eV
-Eloss_max = +0.96117 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x14[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-# Spectrum15, read the intensity
-ZLP_10_y15 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum16_m0p18768eV_1p29638eV.txt")
-ndat=int(len(ZLP_10_y15))
-# Energy loss values
-ZLP_10_x15 = np.zeros(ndat)
-Eloss_min = -0.18768 # eV
-Eloss_max = +1.29638# eV
-i=0
-while(i<ndat):
-    ZLP_10_x15[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-# Spectrum6, read the intensity
-ZLP_10_y16 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum17_m0p188eV_1p28719eV.txt")
-ndat=int(len(ZLP_10_y16))
-# Energy loss values
-ZLP_10_x16 = np.zeros(ndat)
-Eloss_min = -0.188 # eV
-Eloss_max = +1.28719# eV
-i=0
-while(i<ndat):
-    ZLP_10_x16[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-
-# Spectrum7, read the intensity
-ZLP_10_y17 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum18_m0p188eV_1p28156eV.txt")
-ndat=int(len(ZLP_10_y17))
-# Energy loss values
-ZLP_10_x17 = np.zeros(ndat)
-Eloss_min = -0.188 # eV
-Eloss_max = +1.28156 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x17[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-    
-
-# Spectrum18, read the intensity
-ZLP_10_y18 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum19_m0p188eV_1p29286eV.txt")
-ndat=int(len(ZLP_10_y18))
-# Energy loss values
-ZLP_10_x18 = np.zeros(ndat)
-Eloss_min = -0.188 # eV
-Eloss_max = +1.29286 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x18[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
-
-# Spectrum19, read the intensity
-ZLP_10_y19 = np.loadtxt("Data/Vacuum/ZLP_200keV_10ms_Spectrum20_m0p188eV_1p29858eV.txt")
-ndat=int(len(ZLP_10_y19))
-# Energy loss values
-ZLP_10_x19 = np.zeros(ndat)
-Eloss_min = -0.188 # eV
-Eloss_max = +1.29858 # eV
-i=0
-while(i<ndat):
-    ZLP_10_x19[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
-    i = i + 1
     
 ### Aperture files
     
@@ -859,18 +676,12 @@ while(i<ndat):
 
     
 plt.xlim([-.1, .1])
-plt.plot(ZLP_10_x8, ZLP_10_y8,color="maroon",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x9, ZLP_10_y9,color="red",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="200 keV")
-plt.plot(ZLP_10_x10, ZLP_10_y10,color="chocolate",ls="dotted",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x11, ZLP_10_y11,color="gold",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x12, ZLP_10_y12,color="peru",ls="dashed",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x13, ZLP_10_y13,color="orange",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x14, ZLP_10_y14,color="khaki",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x15, ZLP_10_y15 ,color="salmon",ls="dashed",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x16, ZLP_10_y16 ,color="khaki",ls="dotted",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x17, ZLP_10_y17,color="darkorange",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x18, ZLP_10_y18,color="crimson",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
-plt.plot(ZLP_10_x19, ZLP_10_y19,color="palevioletred",ls="dashed",linewidth=2.0,marker="D",markersize=0.0)
+bla=10
+plt.plot(ZLP_10_x1, ZLP_10_y1/bla,color="gold",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
+plt.plot(ZLP_10_x2, ZLP_10_y2/bla,color="peru",ls="dashed",linewidth=2.0,marker="D",markersize=0.0)
+plt.plot(ZLP_10_x3, ZLP_10_y3/bla,color="orange",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
+plt.plot(ZLP_10_x4, ZLP_10_y4/bla,color="khaki",ls="solid",linewidth=2.0,marker="D",markersize=0.0)
+plt.plot(ZLP_10_x5, ZLP_10_y5/bla ,color="salmon",ls="dashed",linewidth=2.0,marker="D",markersize=0.0)
 
 plt.plot(ZLP_10_x201, ZLP_10_y201,color="forestgreen",ls="dashed",linewidth=2.0,marker="D",markersize=0.0,label="60 keV")
 plt.plot(ZLP_10_x202, ZLP_10_y202,color="limegreen",ls="dashed",linewidth=2.0,marker="D",markersize=0.0)
@@ -884,10 +695,10 @@ plt.plot(ZLP_10_x206, ZLP_10_y206,color="lightblue",ls="dashed",linewidth=2.0,ma
 file10_200 = pd.DataFrame()
 file10_60 = pd.DataFrame()
 
-for i, j in enumerate([ZLP_10_x8, ZLP_10_x9, ZLP_10_x10, ZLP_10_x11, ZLP_10_x12, ZLP_10_x13, ZLP_10_x14, ZLP_10_x15, ZLP_10_x16, ZLP_10_x17, ZLP_10_x18, ZLP_10_x19]):
+for i, j in enumerate([ZLP_10_x1, ZLP_10_x2, ZLP_10_x3, ZLP_10_x4, ZLP_10_x5]):
     file10_200['x%(i)s'%{"i":i}] = j
     
-for i, j in enumerate([ZLP_10_y8, ZLP_10_y9, ZLP_10_y10, ZLP_10_y11, ZLP_10_y12, ZLP_10_y13, ZLP_10_y14, ZLP_10_y15, ZLP_10_x16, ZLP_10_x17, ZLP_10_x18, ZLP_10_x19]):            
+for i, j in enumerate([ZLP_10_y1, ZLP_10_y2, ZLP_10_y3, ZLP_10_y4, ZLP_10_y5]):            
     file10_200['y%(i)s'%{"i":i}] = j
                 
 file10_200['time'] = 10
