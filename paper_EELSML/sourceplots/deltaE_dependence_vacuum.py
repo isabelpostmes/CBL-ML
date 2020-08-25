@@ -27,7 +27,7 @@ groups = energy_file.groupby(['time', 'energy'])
 ncols, nrows = 2,1
 gs = matplotlib.gridspec.GridSpec(nrows,ncols)
 
-plt.figure(figsize=(ncols*9,nrows*7))
+plt.figure(figsize=(ncols*5,nrows*3.5))
 
 
 
@@ -39,27 +39,31 @@ for name, group in groups:
     if group['time'].max() == .1:
         i = 0
         ax = plt.subplot(gs[i])
-        ax.set_title('10 ms exposure time', fontsize = 18)
-        ax.set_ylabel('Intensity (a.u.)', fontsize = 18)
+        ax.set_title(r'$t_{\rm exp}=10~{\rm ms}$', fontsize = 15)
+        ax.set_ylabel('Intensity (a.u.)', fontsize = 15)
         ax.set_ylim([0, 1])
-        ax.plot(group.x*1000, (mean_prediction), label=int(name[1] * 100))
+        lab = r"$E_b=$"+str(int(name[1] * 100))+" keV"
+        ax.plot(group.x*1000, (mean_prediction), label=lab)
         ax.fill_between(group.x*1000, mean_prediction + std_prediction, mean_prediction - std_prediction, alpha=.3)
     if group['time'].max() == 1:
         i = 1
         ax = plt.subplot(gs[i])
-        ax.set_title('100 ms exposure time', fontsize = 18)
-        ax.plot(group.x*1000, (mean_prediction),  label=int(name[1] * 100))
+        ax.set_title(r'$t_{\rm exp}=100~{\rm ms}$', fontsize = 15)
+        lab = r"$E_b=$"+str(int(name[1] * 100))+" keV"
+        ax.plot(group.x*1000, (mean_prediction),  label=lab)
         ax.set_ylim([0, 1.2])
+        
         ax.fill_between(group.x*1000, mean_prediction + std_prediction, mean_prediction - std_prediction, alpha=.3)
     ax.set_xlim([-90, 90])
     ax.set_yticks([])
     ax.set_xticks([-80, -40, 0, 40, 80])
-    ax.set_xlabel('Energy loss (meV)', fontsize = 18)
+    ax.set_xlabel('Energy loss (meV)', fontsize = 15)
    
     #ax.set_yticklabels(fontsize=1)
-    ax.tick_params(which='major',direction='in',length=10, labelsize=16)
-    ax.tick_params(which='minor',length=10, labelsize=14)
+    ax.tick_params(which='major',direction='in',length=10, labelsize=11)
+    ax.tick_params(which='minor',length=10, labelsize=11)
 
-    ax.legend(fontsize = 14)
+    ax.legend(fontsize = 12)
 plt.tight_layout()
-plt.savefig('120keV.pdf')
+plt.savefig('../plots/deltaE_dependence_vacuum.pdf')
+print("Saved figure = ../plots/deltaE_dependence_vacuum.pdf")

@@ -54,21 +54,28 @@ gs = matplotlib.gridspec.GridSpec(nrows,ncols)
 wl = 4
 color1 = 'red'
 color2 = 'orange'
-plt.figure(figsize=(ncols*9,nrows*7))
+
+rescolors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+plt.figure(figsize=(ncols*5,nrows*3.5))
+
 ax = plt.subplot(gs[0])
-ax.plot(np.linspace(0,200,21), smooth(fwhmvalues_mean_200 * 1000, wl), color = color2, label = '200 keV')
-ax.fill_between(np.linspace(0,200,21), smooth(up200 * 1000, wl), smooth(low200 * 1000, wl), color = color2, alpha=.2, label = '200 keV')
-ax.plot(np.linspace(0,200,21), smooth(fwhmvalues_mean_60 * 1000, wl*2), color=color1, label = '60 keV')
-ax.fill_between(np.linspace(0,200,21), smooth(up60 * 1000, wl*2), smooth(low60 * 1000, wl), color=color1, alpha=.2, label = '60 keV')
-ax.axvline(x=10, linestyle='--', color='gray')
-ax.axvline(x=100, linestyle='--', color='gray')
-ax.tick_params(which='major',direction='in',length=7, labelsize=14)
-ax.tick_params(which='minor',length=8, labelsize=14)
+ax.plot(np.linspace(0,200,21), smooth(fwhmvalues_mean_60 * 1000, wl*2), color=rescolors[1], label = r'$E_b=60$ keV',ls="dashed")
+ax.fill_between(np.linspace(0,200,21), smooth(up60 * 1000, wl*2), smooth(low60 * 1000, wl), color=rescolors[1], alpha=.2, label = r'$E_b=60$ keV',ls="dashed")
+ax.plot(np.linspace(0,200,21), smooth(fwhmvalues_mean_200 * 1000, wl), color = rescolors[0], label  = r'$E_b=200$ keV')
+ax.fill_between(np.linspace(0,200,21), smooth(up200 * 1000, wl), smooth(low200 * 1000, wl), color = rescolors[0], alpha=.2, label = r'$E_b=200$ keV')
+ax.axvline(x=10, linestyle='dotted', color='k')
+ax.axvline(x=100, linestyle='dotted', color='k')
+ax.tick_params(which='major',direction='in',length=7, labelsize=11)
+ax.tick_params(which='minor',length=8, labelsize=11)
 ax.set_yticks([ 15, 20, 25, 30, 35, 40])
-ax.set_ylabel('FWHM (meV)', fontsize = 18)
+ax.set_ylabel('FWHM (meV)', fontsize = 15)
 ax.set_xlim([0, 200])
-ax.set_xlabel('t (ms)', fontsize = 18)
+ax.set_ylim([10,44])
+ax.set_xlabel(r'$t_{\rm exp}$ (ms)', fontsize = 15)
 lables, handles = ax.get_legend_handles_labels() 
-ax.legend([(lables[0], lables[2]), (lables[1], lables[3])], [(handles[0]), handles[1]], loc='upper right', fontsize=16)
-ax.set_title('Time extrapolation', fontsize=18)
-plt.savefig('Time_extrapolation.pdf')
+ax.legend([(lables[0], lables[2]), (lables[1], lables[3])], [(handles[0]), handles[1]], loc='lower right', fontsize=13)
+
+plt.tight_layout()
+plt.savefig('../plots/time_extrapolation.pdf')
+print("Saved fig = ../plots/time_extrapolation.pdf")

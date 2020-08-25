@@ -1,4 +1,4 @@
-\section{Application to vacuum spectra}
+\section{ZLP parametrisation for vacuum spectra}
 \label{sec:results_vacuum}
 
 Now we move to present the application of the strategy presented in the previous
@@ -17,25 +17,14 @@ between spectra taken in vacuum and those in sample.
 
 In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spectra acquired in vacuum to train the neural
     network model.  For each set of spectra, we indicate the exposure time $t_{\rm exp}$, the beam energy
-    $E_b$, the number of spectra $N_{\rm sp}$ corresponding to these operation conditions, the number $N_{\rm dat}$ of
+    $E_b$, the number of spectra $N_{\rm sp}$ recorded for these operation conditions, the number $N_{\rm dat}$ of
     bins in each spectrum, the range in electron energy loss $\Delta E$,
     and the average full width at half maximum (FWHM)
     evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
     %
-    The data sets were recorded with a Titan TEM equipped with a Schottky field emitter.
-    %
-    Since we are interested in the low-loss region, $\Delta E_{\rm max}$ does not need
-    to be too large, and in any case the large $|\Delta E|$ behaviour of the model is fixed
-    by the constraint implemented by means of Eq.~(\ref{eq:chi2modified}).
-    %
-    The energy resolution of these spectra, quantified by the value of the FWHM, ranges
-    from 3 eV to 25 eV depending on the specific operation conditions of the microscope.
-    %
-    A total of 81920 independent measurements will be thus used for the ZLP model
-    training on the vacuum spectra.
-    %
-    As we show below, one of the advantages of our model is that it can extrapolate the ZLP predictions
-    for other operation conditions of the microscope beyond those used for the training.
+    All the spectra listed were acquired with a Titan TEM equipped with a Schottky field emitter.
+
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,23 +35,38 @@ In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spect
 \br
 Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm b}$ {(}keV{)} & $N_{\rm sp}$ & $N_{\rm dat}$ & $\Delta E_{\rm min}$~(eV)  & $\Delta E_{\rm max}$~(eV)  & FWHM~(meV)  \\ 
 \mr
-1        & 100                 & 200                  & 15          & 2048               & -0.96              & 8.51     & $23.36\pm3.42$         \\
-2        & 100                 & 60                   & 7           & 2048               & -0.54              & 5.59    & $ 25.25\pm1.97$         \\
-3        & 10                  & 200                  & 12          & 2048               & -0.18              & 2.97      & $6.69\pm3.96$         \\
-4        & 10                  & 60                   & 6           & 2048               & -0.40              & 4.78       & $17.28\pm1.59$         \\ 
+1        & 100                 & 200                  & 15          & 2048               & -0.96              & 8.51     & $23\pm3 $         \\
+2        & 100                 & 60                   & 7           & 2048               & -0.54              & 5.59    & $ 25 \pm 2$         \\
+3        & 10                  & 200                  & 12          & 2048               & -0.18              & 2.97      & $ ~7 \pm 4$         \\
+4        & 10                  & 60                   & 6           & 2048               & -0.40              & 4.78       & $17 \pm 2$         \\ 
 \br
   \end{tabular}
     \end{center}
   \caption{\small Summary of the main properties of the EELS spectra acquired in vacuum to train the neural
     network model.  For each set of spectra, we indicate the exposure time $t_{\rm exp}$, the beam energy
-    $E_b$, the number of spectra $N_{\rm sp}$ corresponding to these operation conditions, the number $N_{\rm dat}$ of
+    $E_b$, the number of spectra $N_{\rm sp}$ recorded for these operation conditions, the number $N_{\rm dat}$ of
     bins in each spectrum, the range in electron energy loss $\Delta E$,
-    and the average FWHM evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
+    and the average FWHM evaluated over the $N_{\rm sp}$ spectra with the corresponding standard deviation
   }
    \label{table:vacuumdata}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+ We point out that since here we are interested in the low-loss region, $\Delta E_{\rm max}$ does not need
+    to be too large, and in any case the large $|\Delta E|$ behaviour of the model is fixed
+    by the constraint implemented by means of Eq.~(\ref{eq:chi2modified}).
+    %
+    The energy resolution of these spectra, quantified by the value of the FWHM, ranges
+    from 7 eV to 25 eV depending on the specific operation conditions of the microscope,
+    with an standard deviation between 2 and 4 eV.
+    %
+    A total of 81920 independent measurements will be thus used for the ZLP model
+    training on the vacuum spectra.
+    %
+    As we show below, one of the advantages of our model is that it can extrapolate the ZLP predictions
+    for other operation conditions of the microscope beyond those used for the training.
 
 Following the strategy presented in Sect.~\ref{sec:methodology}, first of all we combine the $N_{\rm sp}$ spectra
 corresponding to each of the four sets of operation conditions and determine the statistical uncertainty
@@ -71,21 +75,29 @@ associated to each energy loss bin by means of Eq.~(\ref{eq:sigmaiexp}).
 We use this information to generate a sample of $N_{\rm rep}=500$ Monte Carlo replicas of the input data listed
 in Table~\ref{table:vacuumdata} and train an individual neural network model to each of these replicas.
 %
-The end result of the procedure is a set of model replicas, $I_{\rm ZLP}^{\rm (mod)(k)}(\Delta E, E_{b},t_{\rm exp})$,
+The end result of the procedure is a set of model replicas,
+\be
+\label{eq:modelreplicas}
+I_{\rm ZLP}^{\rm (mod)(k)}(\Delta E, E_{b},t_{\rm exp}) \, , \quad k=1,\ldots,N_{\rm rep} \, ,
+\ee
 which can be used to provide a prediction for the intensity of the ZLP
 for arbitrary values of $\Delta E$,  $E_{b}$, and $t_{\rm exp}$.
 %
-This sample provides a representation of the probability density in the space of $I_{\rm ZLP}$ models, from which
-statistical estimators such as averages, variances, and correlations can be evaluated by means of
-the standard MC expressions, namely
+Eq~(\ref{eq:modelreplicas})
+provides the sought-for representation of the probability density in the space of ZLP models.
+%
+For this sample of replicas one can evaluate
+statistical estimators such as averages, variances, and correlations (as well
+as higher moments) by means of
+the usual expressions, for instance
 \be
 \label{eq:average}
-\la I_{\rm ZLP}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp}) \ra = \frac{1}{N_{\rm rep}}\sum_{k=1}^{N_{\rm rep}}
-I_{\rm ZLP}^{\rm (mod)(k)}(\Delta E, E_{b},t_{\rm exp}) \, ,
+\la I_{\rm ZLP}^{\rm (mod)}( \{z_1\}) \ra = \frac{1}{N_{\rm rep}}\sum_{k=1}^{N_{\rm rep}}
+I_{\rm ZLP}^{\rm (mod)(k)}( \{z_1\}) \, ,
 \ee
 \be
 \label{eq:standarddev}
-\sigma_{I_{\rm ZLP}}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp})  = \lp \frac{1}{N_{\rm rep}-1} \sum_{k=1}^{N_{\rm rep}}
+\sigma_{I_{\rm ZLP}}^{\rm (mod)}( \{z_1\})  = \lp \frac{1}{N_{\rm rep}-1} \sum_{k=1}^{N_{\rm rep}}
 \lp  I_{\rm ZLP}^{\rm (mod)(k)}  - \la I_{\rm ZLP}^{\rm (mod)}  \ra   \rp \rp^{1/2} \, ,
 \ee
 \be
@@ -93,11 +105,11 @@ I_{\rm ZLP}^{\rm (mod)(k)}(\Delta E, E_{b},t_{\rm exp}) \, ,
 - \la I_{\rm ZLP}^{\rm (mod)}( \{z_1\} )\ra \la I_{\rm ZLP}^{\rm (mod)}( \{z_2\} ) \ra}{\sigma_{I_{\rm ZLP}}^{\rm (mod)}( \{z_1\} )\sigma_{I_{\rm ZLP}}^{\rm (mod)}( \{z_2\} )}
 \ee
 where as in the previous section $\{z_l\}$ denotes a possible set of input variables for the model.
-We now discuss some of features of this ZLP vacuum model.
+We now discuss some of features of this ZLP vacuum model, here $\{z_l\}=\lp \Delta E, E_{b},t_{\rm exp}\rp$.
 
 \paragraph{Fit quality.}
 %
-To begin with we would like to quantify the overall fit quality of the model and demonstrate that it is flexible enough
+To begin with, we would like to quantify the overall fit quality of the model and demonstrate that it is flexible enough
 to describe all the available input datasets.
 %
 In Table~\ref{table:chi2summary} we indicate the values of the final $\chi^2$ per data point,
@@ -108,7 +120,40 @@ In Table~\ref{table:chi2summary} we indicate the values of the final $\chi^2$ pe
     We recall that for a satisfactory training one expects $\chi^2 \simeq 1$
     and $\la E_{\rm tr}\ra \simeq \la E_{\rm val}\ra \simeq 2 $~\cite{Forte:2002fg}.
     %
-    From the results of this table we can see that ....
+    From the results of this table we can see that indeed this expectation is satisfied,
+    both for the individual sets and for the total dataset.
+
+    Then Fig.~\ref{fig:chi2_distributions} displays  the $\chi^2$  distributions
+    evaluated for the training and validation sets
+      of the $N_{\rm rep}=500$ replicas of the sample trained on the spectra
+      listed in Table~\ref{table:vacuumdata}.
+      %
+      Note that the training/validation partition differs at random for each replica.
+      %
+      The $\chi^2_{\rm tr}$ distribution peaks at $\simeq 1$, indicating that a satisfactory model training
+      has been achieved.
+      %
+      We emphasize that the stopping criterion for the neural net training adopted here never considers
+      the numerical values of the error function and determines proper learning entirely from
+      the global minima of $E_{\rm val}^{(k)}$.
+      %
+      From Fig.~\ref{fig:chi2_distributions}  we also observed that  $\chi^2_{\rm tr}$ distribution peaks at
+      a slighter higher value, $\simeq 1.3$, and is broader that its corresponding training counterpart.
+      %
+      These results confirm both that a satisfactory model training that prevents overlearning
+      has been achieved as well as an appropriate estimate of the statistical uncertainties
+      affecting the original EEL spectra.
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=120mm]{plots/chi2_distributions.pdf}
+    \caption{The $\chi^2$ (per data point) distribution evaluated for the training and validation sets
+      of the $N_{\rm rep}=500$ replicas of the sample trained on the spectra
+      listed in Table~\ref{table:vacuumdata}.}
+    \label{fig:chi2_distributions}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -141,7 +186,8 @@ Total    &                     &                      &      \\
 \paragraph{Dependence on the electron energy loss $\Delta E$.}
 %
 Having demonstrated that our neural network model provides a satisfactory description
-of all the input EEL spectra, we now present predictions for specific input parameters.
+of all the input EEL spectra, we now present its  predictions for specific
+choices of the input parameters.
 %
 First of all, we investigate the dependence of the results as a function of the
 electron energy loss $\Delta E$.
@@ -182,28 +228,24 @@ indeed translate in an appropriate way the information contained in the training
 this would not be the case had one one a simple functional fit to model the ZLP.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[h]
+\begin{figure}[t]
     \centering
-    \includegraphics[width=120mm]{plots/120keV.pdf}
+    \includegraphics[width=170mm]{plots/deltaE_dependence_vacuum.pdf}
     \caption{Left panel: the central value and 68\% confidence level uncertainty band of the ZLP model as a function
-      of $\Delta E$,
-      evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}), for $t_{\rm exp}=100$ ms
-      and $E_{b}=60$ and 200 keV.
-      %
-      The inset displays the relative model uncertainty as a function of $\Delta E$.
-      %
-      Right panel: same now for the case where the input data with $\Delta E \ge 50$ meV is excluded from the fit.
-      {\bf  ToDo: normalize w.r.t. 60keV}}
-    \label{fig:EELS_vacuum_DeltaE}
+      of electron energy loss $\Delta E$,
+      evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}), for
+      the three different values of $E_b$ considered and for both
+      $t_{\rm exp}=10$ ms (left)  and $t_{\rm exp}=100$ ms (right panel).
+      \label{fig:EELS_vacuum_DeltaE}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Dependence on the beam energy $E_b$.}
 %
 As indicated in Table~\ref{table:vacuumdata}, the training dataset contains
-spectra taken at two values of the electron beam energy, $E_b=60$ keV and 300 keV.
+spectra taken at two values of the electron beam energy, $E_b=60$ keV and 200 keV.
 %
-Fig.~\ref{fig:extrapolbeam} displays  model predictions for the FWHM of the zero loss peak
+The left panel of Fig.~\ref{fig:extrapolbeam} displays  model predictions for the FWHM of the zero loss peak
       (and its corresponding uncertainty) as a function of the beam energy $E_b$
       for two values of the exposure time, $t_{\rm exp}=10$ ns and 100 ms.
       %
@@ -212,17 +254,23 @@ Fig.~\ref{fig:extrapolbeam} displays  model predictions for the FWHM of the zero
       This comparison illustrates how the model uncertainty vary in the data region
       (near $E_b=60$ keV and 200 keV), the interpolation region (for $E_b$ between 60 and 200 keV),
       and the extrapolation regions (for $E_b$ below 60 keV and above 200 keV).
+      %
+      For $t_{\rm exp}=100$ ms, we observe that the model interpolates reasonably well
+      between the measured values of $E_b$ and then uncertainties increase
+      markedly in the extrapolation region above $E_b=200$ keV.
       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
     \centering
-    \includegraphics[width=130mm]{plots/Ebeam_extrapolation.pdf}
+    \includegraphics[width=0.49\textwidth]{plots/Ebeam_extrapolation.pdf}
+    \includegraphics[width=0.49\textwidth]{plots/time_extrapolation.pdf}
     \caption{The model predictions for the FWHM of the zero loss peak
       (and its corresponding uncertainty) as a function of the beam energy $E_b$
-      for two values of the exposure time, $t_{\rm exp}=10$ ns and 100 ms.
+      for two values of the exposure time (left panel)
+      and as a function of $t_{\rm exp}$ for two values of $E_b$ (right panel).
       %
-      The vertical dashed lines indicate the values of $E_b$ for which training data is available,
-      namely $E_b=60$ keV and 200 keV. {\bf ToDo}
+      The vertical dashed lines indicate the values of the
+      corresponding parameter for which training data is available.
     }
     \label{fig:extrapolbeam}
 \end{figure}
@@ -244,21 +292,16 @@ the training dataset, and hence a blow up of the extrapolation uncertainties is 
 
 \paragraph{Dependence on the exposure time $t_{\rm exp}$.}
 %
-The network was trained on data with exposure times of $10$ and $100$ ms, so interpolation and extrapolation is possible. Similar to the predictions for varying beam energy, also for exposure time the uncertainties grow bigger as the value deviates more from the training inputs.
+The network was trained on data with exposure times of $10$ and $100$ ms,
+so interpolation and extrapolation is possible. Similar to the predictions for varying beam energy, also for exposure time the uncertainties grow bigger as the value deviates more from the training inputs.
 %
-In Fig.~\ref{fig:extrapotime} we display a similar comparison as in
-as Fig.~\ref{fig:extrapolbeam} now for the model
-      predictions as a function of the exposure time $t_{\rm exp}$
-for two values of the electron beam energy, $E_b=$ 60 keV and 200 keV.
+The right panel of Fig.~\ref{fig:extrapolbeam} displays a similar model
+comparison as in the left one but now and as a function of $t_{\rm exp}$ for two values of $E_b$ (right panel).
+%
+We observe that the FWHM increases roughly in a linear manner with the exposure time, indicating
+that lower values of $t_{\rm exp}$ allow for an improved spectral resolution.
+%
+Further, also in this case we find that the model uncertainties grow rapidly in the
+extrapolation region beyond that covered for the training dataset.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-  \centering
-    \includegraphics[width=120mm]{plots/Time_extrapolation.pdf}
-    \caption{Same as Fig.~\ref{fig:extrapolbeam} now displaying the model
-      predictions as a function of the exposure time $t_{\rm exp}$
-for two values of the electron beam energy, $E_b=$ 60 keV and 200 keV.
-      {\bf ToDo}}
-    \label{fig:extrapotime}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
