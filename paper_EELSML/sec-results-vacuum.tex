@@ -75,6 +75,32 @@ Following the strategy presented in Sect.~\ref{sec:methodology}, first of all we
 corresponding to each of the four sets of operation conditions and determine the statistical uncertainty
 associated to each energy loss bin by means of Eq.~(\ref{eq:sigmaiexp}).
 %
+For each of the four training sets, we determine the range $\lc \Delta E_{\rm pd}^{\rm (min)}, 
+\Delta E_{\rm pd}^{\rm (max)}\rc$ where pseudo-data needs to be added by plotting the ratio of 
+the intensity to the statistical uncertainty 
+as a function of the energy loss. 
+%
+As shown in Figure~\ref{fig:intensityratio}, these values are different for each data set. 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=120mm]{plots/Intensity_to_sigma_ratio.pdf}
+    \caption{The ratio of the mean intensity to the experimental uncertainty as a function of the energy loss,
+    for each of the spectra listed in Table~\ref{table:vacuumdata}. When the ratio drops below 1 we are in the regime
+    where we are fitting noise. This happens at .2 eV, .25 eV and two times at .9 eV. }
+    \label{fig:intensityratio}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+When this ratio is smaller than 1 we are in the undesirable regime of fitting noise data. For this reason
+We drop all data for $\Delta E \ge \Delta E_{\rm pd}^{\rm (min)}$ and add pseudo-data points at higher energy loss.
+%
+The experimental uncertainties $\sigma^{(exp)_i$ of the pseudo-data points are chosen as 1/10 of the 
+spectrum intensity at $\Delta E_{\rm pd}^{\rm (min)}$. Note that this choice is in fact arbitrary 
+and does not contribute
+to the final evaluation of the fit quality.
+%
 We use this information to generate a sample of $N_{\rm rep}=500$ Monte Carlo replicas of the input data listed
 in Table~\ref{table:vacuumdata} and train an individual neural network model to each of these replicas.
 %
