@@ -41,7 +41,7 @@ def smooth(x,window_len=10,window='hanning'):
 
 linestyles = ['solid', 'dotted', 'dashed', 'dashdot']
 
-plt.figure(figsize=(10,7))
+plt.figure(figsize=(5,3.5))
 
 for i, file in enumerate([file10_60, file100_60, file100_200, file10_200]):
     E_min = -.1
@@ -53,21 +53,25 @@ for i, file in enumerate([file10_60, file100_60, file100_200, file10_200]):
     plt.axhline(y=1, linestyle='--', color='black')
     
     plt.xlim([-.1, 1])
-    plt.title('Intensity to uncertainty ratio', fontsize=16)
-    plt.axvline(x = .2, color='lightgray')
-    plt.axvline(x = .25, color='lightgray')
-    plt.axvline(x = .9, color='lightgray')
-    plt.xlabel('Energy loss (ev)', fontsize=18)
-    plt.ylabel('R = I/$\sigma$', fontsize=18)
-    plt.xticks(fontsize=14)
-    plt.yticks(fontsize=14)
-   
-    plt.plot(file['x'], smooth(file['y_norm']/file['sigma'], wl), \
-             linestyle=linestyles[i], linewidth = 3, label=(file['time'].max(), file['energy'].max()))
-    
-    plt.legend(loc='upper right', fontsize=16)
+    #plt.title('Intensity to uncertainty ratio', fontsize=16)
+    plt.axvline(x = .2, color='black',ls="dashed",alpha=0.2)
+    plt.axvline(x = .25, color='black',ls="dashed",alpha=0.2)
+    plt.axvline(x = .9, color='black',ls="dashed",alpha=0.2)
+    plt.xlabel('Energy loss (eV)', fontsize=16)
+    plt.ylabel(r'$I^{(\rm exp)}_{\rm EEL}/\sigma^{(\rm exp)}~(\Delta E)$', fontsize=16)
+    plt.xticks(fontsize=11)
+    plt.yticks(fontsize=11)
 
-plt.savefig('Intensity_to_sigma_ratio.pdf')
+    labelp = r"$t_{\rm exp}=$"+str(file['time'].max())+" ms, $E_b=$"+str(file['energy'].max())+" keV"
+    
+    plt.plot(file['x'], smooth(file['y_norm']/file['sigma'], wl), \
+             linestyle=linestyles[i], linewidth = 2, label=labelp)
+    
+    plt.legend(loc='upper right', fontsize=9)
+
+plt.tight_layout()
+plt.savefig('intensity_to_error_ratio.pdf')
+print("Saved figure: intensity_to_error_ratio.pdf")
 
 
 # In[ ]:
