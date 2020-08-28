@@ -16,12 +16,12 @@ Such calibration is necessary since, as explained in Sect.~\ref{sec:training}, s
 hyper-parameters are determined by the comparison of the intensity derivatives
 between spectra taken in vacuum and those in sample.
 
-In this section first of all we present the input dataset and motivate the choice
+In this section, first of all we present the input dataset and motivate the choice
 of training settings and model hyperparameters.
 %
 Then we validate the model training by assessing the fit quality.
 %
-Lastly we study the dependence of the model predictions in its various input
+Lastly, we study the dependence of the model predictions in its various input
 variables, and study the dependence of the model uncertainties upon
 the removal of a subset of the training dataset.
 
@@ -34,8 +34,13 @@ In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spect
     and the average full width at half maximum (FWHM)
     evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
     %
-    All the spectra listed were acquired with a Titan TEM equipped with a Schottky field emitter.
-    
+    All the spectra  listed on Table~\ref{table:vacuumdata}
+    were acquired with a Titan TEM equipped with a Schottky field emitter.
+    %
+    We point out that since here
+    we are interested in the low-loss region, $\Delta E_{\rm max}$ does not need
+    to be too large, and in any case the large $\Delta E$ behaviour of the model is fixed
+    by the constraint implemented by Eq.~(\ref{eq:chi2modified}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,39 +72,41 @@ $ 34\pm 2$         \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
- We point out that since here we are interested in the low-loss region, $\Delta E_{\rm max}$ does not need
-    to be too large, and in any case the large $|\Delta E|$ behaviour of the model is fixed
-    by the constraint implemented by means of Eq.~(\ref{eq:chi2modified}).
-    %
-    The energy resolution of these spectra, quantified by the value of the FWHM, ranges
+    The energy resolution of these spectra, quantified by the value of their FWHM, ranges
     from 26 meV to 50 meV depending on the specific operation conditions of the microscope,
     with an standard deviation between 2 and 7 meV.
     %
-    A total of 69,632 independent measurements will be thus used for the ZLP model
+    The value of the FWHM varies only mildly with the value of the beam energy $E_b$
+    but grows by around a factor two for spectra collected at larger exposure times $t_{\rm exp}$.
+    %
+    A total of almost $7\times 10^4$ independent measurements will be thus used for the ZLP model
     training on the vacuum spectra.
     %
-    As we show below, one of the advantages of our model is that it can extrapolate the ZLP predictions
-    for other operation conditions of the microscope beyond those used for the training.
+    As will be highlighted in Sects.~\ref{eq:depdeltae} and~\ref{eq:depebeam}, one of the advantages of our ZLP model is that it can extrapolate its predictions
+    to other operation conditions beyond those used for the training.
 
 Following the strategy presented in Sect.~\ref{sec:methodology}, first of all we combine the $N_{\rm sp}$ spectra
 corresponding to each of the four sets of operation conditions and determine the statistical uncertainty
 associated to each energy loss bin by means of Eq.~(\ref{eq:sigmaiexp}).
 %
-For each of the four training sets, we determine the range $\lc \Delta E_{\rm pd}^{\rm (min)}, 
-\Delta E_{\rm pd}^{\rm (max)}\rc$ where pseudo-data needs to be added by plotting the ratio of 
-the intensity to the statistical uncertainty 
-as a function of the energy loss. 
+For each of the training sets, we need to determine the value of $\Delta E_{\rm pd}^{\rm (min)}$
+that defines the range for which we add the  pseudo-data
+that imposes the correct $\Delta E \to \infty$ limit of the model.
 %
-As shown in Figure~\ref{fig:intensityratio}, these values are different for each data set. 
-%
+This value is determined
+by inspecting the ratio between the central experimental value of the total
+EELS intensity, $I_{{\rm EEL},i}^{(\rm exp)}$, and its corresponding
+total uncertainty defined in Eq.~(\ref{eq:sigmaiexp}).
+
+
+      
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[ht]
+\begin{figure}[t]
     \centering
     \includegraphics[width=120mm]{plots/intensity_to_error_ratio.pdf}
     \caption{The ratio between the central experimental value of the total
       EELS intensity, $I_{{\rm EEL},i}^{(\rm exp)}$, and the corresponding
-      total uncertainty defined in Eq.~(\ref{eq:standarddev}).
+      total uncertainty defined in Eq.~(\ref{eq:sigmaiexp}).
       %
       Results are shown for the four combinations of $t_{\rm exp}$
       and $E_{b}$ listed in Table~\ref{table:vacuumdata}.
@@ -112,16 +119,30 @@ As shown in Figure~\ref{fig:intensityratio}, these values are different for each
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-When this ratio is smaller than 1 we are in the undesirable regime of fitting noise data. For this reason
-We drop all data for $\Delta E \ge \Delta E_{\rm pd}^{\rm (min)}$ and add pseudo-data points at higher energy loss.
+
+Fig.~\ref{fig:intensityratio} displays this ratio
+for the four combinations of $t_{\rm exp}$
+and $E_{b}$ listed in Table~\ref{table:vacuumdata}.
 %
-The experimental uncertainties $\sigma^{(\rm exp)}_i$ of the pseudo-data points are chosen as 1/10 of the 
-spectrum intensity at $\Delta E_{\rm pd}^{\rm (min)}$. Note that this choice is in fact arbitrary 
-and does not contribute
-to the final evaluation of the fit quality.
+The vertical dashed lines marks the values of $\Delta E$ for which
+this ratio becomes smaller than unity.
 %
-We use this information to generate a sample of $N_{\rm rep}=500$ Monte Carlo replicas of the input data listed
-in Table~\ref{table:vacuumdata} and train an individual neural network model to each of these replicas.
+For larger $\Delta E$, the EELS spectra become
+consistent with zero within uncertainties and can thus be discarded and replaced
+by the pseudo-data constraints.
+%
+The total uncertainty of the pseudo-data points is chosen to be
+\be
+\sigma_j^{(\rm pd)} = \frac{1}{10}I_{{\rm EEL}}^{\rm (exp)}\lp \Delta E = \Delta E_{\rm pd}^{\rm (min)}\rp \,, \quad 
+j= 1,\ldots,N_{\rm pd} \, .
+\ee
+The factor of 1/10 is found to be suitable to ensure that the constraint
+is enforced without distorting
+the training to the experimental data.
+
+The input data points listed in Table~\ref{table:vacuumdata} are used
+to to generate a sample of $N_{\rm rep}=500$ Monte Carlo replicas
+and train an individual neural network model to each of these replicas.
 %
 The end result of the procedure is a set of model replicas,
 \be
@@ -231,8 +252,9 @@ Total    &                     &                      &      \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Dependence on the electron energy loss $\Delta E$.}
-%
+\subsection{Dependence on the electron energy loss}
+\label{eq:depdeltae}
+
 Having demonstrated that our neural network model provides a satisfactory description
 of all the input EEL spectra, we now present its  predictions for specific
 choices of the input parameters.
@@ -289,6 +311,9 @@ this would not be the case had one one a simple functional fit to model the ZLP.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Dependence on  beam energy  and exposure time }
+\label{eq:depebeam}
+
+
 As indicated in Table~\ref{table:vacuumdata}, the training dataset contains
 spectra taken at two values of the electron beam energy, $E_b=60$ keV and 200 keV.
 %
