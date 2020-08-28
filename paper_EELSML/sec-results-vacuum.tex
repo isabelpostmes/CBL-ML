@@ -2,18 +2,30 @@
 \label{sec:results_vacuum}
 
 Now we move to present the application of the strategy presented in the previous
-section to the parametrisation of the ZLP spectra taken in vacuum.
+section to the parametrisation of ZLP spectra acquired in vacuum.
 %
 Applying our model to this case has a two-fold motivation.
 %
 First of all, we aim to demonstrate that our model is flexible enough to effectively reproduce the
 input EELS measurements for a range of variations of the operation parameters of the microscope.
 %
-Second, it will allow us to provide a calibration prediction for the case of the in-sample measurements.
+Second, it will allow us to provide a calibration prediction
+useful for the case of the in-sample measurements.
 %
 Such calibration is necessary since, as explained in Sect.~\ref{sec:training}, some of the model
 hyper-parameters are determined by the comparison of the intensity derivatives
 between spectra taken in vacuum and those in sample.
+
+In this section first of all we present the input dataset and motivate the choice
+of training settings and model hyperparameters.
+%
+Then we validate the model training by assessing the fit quality.
+%
+Lastly we study the dependence of the model predictions in its various input
+variables, and study the dependence of the model uncertainties upon
+the removal of a subset of the training dataset.
+
+\subsection{Training settings}
 
 In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spectra acquired in vacuum to train the neural
     network model.  For each set of spectra, we indicate the exposure time $t_{\rm exp}$, the beam energy
@@ -23,7 +35,6 @@ In Table~\ref{table:vacuumdata} we collect the main properties of the EELS spect
     evaluated over the $N_{\rm sp}$ spectra with the corresponding variance.
     %
     All the spectra listed were acquired with a Titan TEM equipped with a Schottky field emitter.
-
     
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,10 +96,18 @@ As shown in Figure~\ref{fig:intensityratio}, these values are different for each
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=120mm]{plots/Intensity_to_sigma_ratio.pdf}
-    \caption{The ratio of the mean intensity to the experimental uncertainty as a function of the energy loss,
-    for each of the spectra listed in Table~\ref{table:vacuumdata}. When the ratio drops below 1 we are in the regime
-    where we are fitting noise. This happens at .2 eV, .25 eV and two times at .9 eV. }
+    \includegraphics[width=120mm]{plots/intensity_to_error_ratio.pdf}
+    \caption{The ratio between the central experimental value of the total
+      EELS intensity, $I_{{\rm EEL},i}^{(\rm exp)}$, and the corresponding
+      total uncertainty defined in Eq.~(\ref{eq:standarddev}).
+      %
+      Results are shown for the four combinations of $t_{\rm exp}$
+      and $E_{b}$ listed in Table~\ref{table:vacuumdata}.
+      %
+      The vertical dashed lines marks the values of $\Delta E$ for which
+      this ratio becomes smaller than unity, which indicates when the input
+      data starts to be dominated by the statistical noise.
+      }
     \label{fig:intensityratio}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,7 +115,7 @@ As shown in Figure~\ref{fig:intensityratio}, these values are different for each
 When this ratio is smaller than 1 we are in the undesirable regime of fitting noise data. For this reason
 We drop all data for $\Delta E \ge \Delta E_{\rm pd}^{\rm (min)}$ and add pseudo-data points at higher energy loss.
 %
-The experimental uncertainties $\sigma^{(exp)_i$ of the pseudo-data points are chosen as 1/10 of the 
+The experimental uncertainties $\sigma^{(\rm exp)}_i$ of the pseudo-data points are chosen as 1/10 of the 
 spectrum intensity at $\Delta E_{\rm pd}^{\rm (min)}$. Note that this choice is in fact arbitrary 
 and does not contribute
 to the final evaluation of the fit quality.
@@ -136,7 +155,7 @@ I_{\rm ZLP}^{\rm (mod)(k)}( \{z_1\}) \, ,
 where as in the previous section $\{z_l\}$ denotes a possible set of input variables for the model.
 We now discuss some of features of this ZLP vacuum model, here $\{z_l\}=\lp \Delta E, E_{b},t_{\rm exp}\rp$.
 
-\paragraph{Fit quality.}
+\subsection{Fit quality}
 %
 To begin with, we would like to quantify the overall fit quality of the model and demonstrate that it is flexible enough
 to describe all the available input datasets.
@@ -212,7 +231,7 @@ Total    &                     &                      &      \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{Dependence on the electron energy loss $\Delta E$.}
+\subsection{Dependence on the electron energy loss $\Delta E$.}
 %
 Having demonstrated that our neural network model provides a satisfactory description
 of all the input EEL spectra, we now present its  predictions for specific
@@ -269,8 +288,7 @@ this would not be the case had one one a simple functional fit to model the ZLP.
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{Dependence on the beam energy $E_b$.}
-%
+\subsection{Dependence on  beam energy  and exposure time }
 As indicated in Table~\ref{table:vacuumdata}, the training dataset contains
 spectra taken at two values of the electron beam energy, $E_b=60$ keV and 200 keV.
 %
@@ -319,8 +337,6 @@ Indeed, as soon as the model departs from the data region there exist a very lar
 number of different functional form models for $I_{\rm ZLP}(\Delta E)$ that can describe equally well
 the training dataset, and hence a blow up of the extrapolation uncertainties is generically expected.
 
-\paragraph{Dependence on the exposure time $t_{\rm exp}$.}
-%
 The network was trained on data with exposure times of $10$ and $100$ ms,
 so interpolation and extrapolation is possible. Similar to the predictions for varying beam energy, also for exposure time the uncertainties grow bigger as the value deviates more from the training inputs.
 %
