@@ -8,7 +8,6 @@ from scipy import signal
 from scipy import interpolate
 from scipy.optimize import leastsq
 from io import StringIO
-from scipy.interpolate import UnivariateSpline
 from matplotlib import gridspec
 from  matplotlib import rc
 from  matplotlib import cm
