@@ -19,51 +19,61 @@ import matplotlib
 ###################### Load data ################################################
 
 
-energy_file = pd.read_csv('data/Prediction_120keV')
+energy_file = pd.read_csv('data/interpolation120file')
 
-groups = energy_file.groupby(['time', 'energy'])
-
+#################################################################################
 
 ncols, nrows = 2,1
+
 gs = matplotlib.gridspec.GridSpec(nrows,ncols)
+plt.figure(figsize=(ncols*7,nrows*4.5))
 
-plt.figure(figsize=(ncols*5,nrows*3.5))
+ax1 = plt.subplot(gs[0])
+ax2 = plt.subplot(gs[1])
+lines=['-', 'dotted', 'dashdot']
 
-
-
-for name, group in groups:
-    mean_prediction = group.iloc[:, 4:].mean(axis=1)
-    std_prediction = group.iloc[:, 4:].std(axis=1)
-    
-    
-    if group['time'].max() == .1:
-        i = 0
-        ax = plt.subplot(gs[i])
-        ax.set_title(r'$t_{\rm exp}=10~{\rm ms}$', fontsize = 15)
-        ax.set_ylabel('Intensity (a.u.)', fontsize = 15)
-        ax.set_ylim([0, 1])
-        lab = r"$E_b=$"+str(int(name[1] * 100))+" keV"
-        ax.plot(group.x*1000, (mean_prediction), label=lab)
-        ax.fill_between(group.x*1000, mean_prediction + std_prediction, mean_prediction - std_prediction, alpha=.3)
-    if group['time'].max() == 1:
-        i = 1
-        ax = plt.subplot(gs[i])
-        ax.set_title(r'$t_{\rm exp}=100~{\rm ms}$', fontsize = 15)
-        lab = r"$E_b=$"+str(int(name[1] * 100))+" keV"
-        ax.plot(group.x*1000, (mean_prediction),  label=lab)
-        ax.set_ylim([0, 1.2])
-        
-        ax.fill_between(group.x*1000, mean_prediction + std_prediction, mean_prediction - std_prediction, alpha=.3)
+for j,i  in enumerate([['(0.1, 0.6)', 60], ['(0.1, 1.2)', 120], ['(0.1, 2.0)', 200]]):
+    k = 0
+    ax=plt.subplot(gs[k])
+    ax.set_title(r'$t_{\rm exp}=10~{\rm ms}$', fontsize = 15)
+    ax.set_ylabel('Intensity (a.u.)', fontsize = 15)
     ax.set_xlim([-90, 90])
     ax.set_yticks([])
     ax.set_xticks([-80, -40, 0, 40, 80])
     ax.set_xlabel('Energy loss (meV)', fontsize = 15)
-   
-    #ax.set_yticklabels(fontsize=1)
     ax.tick_params(which='major',direction='in',length=10, labelsize=11)
     ax.tick_params(which='minor',length=10, labelsize=11)
-
+    
+    lab = r"$E_b=$"+str(i[1])+" keV"
+    
+    ax.plot(energy_file['x'], energy_file['mean%(i)s'%{"i": i[0]}], linestyle=lines[j], linewidth = 2, label=lab)
+    ax.fill_between(energy_file['x'], energy_file['up%(i)s'%{"i": i[0]}], \
+                    energy_file['down%(i)s'%{"i": i[0]}], alpha=.3)
     ax.legend(fontsize = 12)
+    
+for j,i  in enumerate([['(1.0, 0.6)', 60], ['(1.0, 1.2)', 120], ['(1.0, 2.0)', 200]]):
+    k = 1
+    ax=plt.subplot(gs[k])
+    ax.set_title(r'$t_{\rm exp}=100~{\rm ms}$', fontsize = 15)
+        #ax.set_ylim([0, 1])
+    lab = r"$E_b=$"+str(i[1])+" keV"
+    
+    ax.set_xlim([-90, 90])
+    ax.set_yticks([])
+    ax.set_xticks([-80, -40, 0, 40, 80])
+    ax.set_xlabel('Energy loss (meV)', fontsize = 15)
+    ax.tick_params(which='major',direction='in',length=10, labelsize=11)
+    ax.tick_params(which='minor',length=10, labelsize=11)
+    
+    ax.plot(energy_file['x'], energy_file['mean%(i)s'%{"i": i[0]}], linestyle=lines[j], linewidth = 2, label=lab)
+    ax.fill_between(energy_file['x'], energy_file['up%(i)s'%{"i": i[0]}], \
+                    energy_file['down%(i)s'%{"i": i[0]}], alpha=.3)
+    ax.legend(fontsize = 12)
+
+    
 plt.tight_layout()
 plt.savefig('../plots/deltaE_dependence_vacuum.pdf')
 print("Saved figure = ../plots/deltaE_dependence_vacuum.pdf")
+
+
+
