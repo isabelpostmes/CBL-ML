@@ -104,32 +104,34 @@ total uncertainty defined in Eq.~(\ref{eq:sigmaiexp}).
 \begin{figure}[t]
     \centering
     \includegraphics[width=120mm]{plots/intensity_to_error_ratio.pdf}
-    \caption{The ratio between the central experimental value of the total
+    \caption{\small The ratio between the central experimental value of the total
       EELS intensity, $I_{{\rm EEL},i}^{(\rm exp)}$, and the corresponding
       total uncertainty defined in Eq.~(\ref{eq:sigmaiexp}).
       %
       Results are shown for the four combinations of $t_{\rm exp}$
       and $E_{b}$ listed in Table~\ref{table:vacuumdata}.
       %
-      The vertical dashed lines marks the values of $\Delta E$ for which
+      The vertical dashed lines mark the values of $\Delta E$ for which
       this ratio becomes smaller than unity, which indicates when the input
       data starts to be dominated by the statistical noise.
       }
     \label{fig:intensityratio}
 \end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Fig.~\ref{fig:intensityratio} displays this ratio
 for the four combinations of $t_{\rm exp}$
 and $E_{b}$ listed in Table~\ref{table:vacuumdata}.
 %
-The vertical dashed lines marks the values of $\Delta E$ for which
+The vertical dashed lines indicate the values of $\Delta E$ for which
 this ratio becomes smaller than unity.
 %
 For larger $\Delta E$, the EELS spectra become
 consistent with zero within uncertainties and can thus be discarded and replaced
 by the pseudo-data constraints.
+%
+Thus the cross-over value of $\Delta E$  where the ratio satisfies $I/\sigma\simeq 1$
+is a reasonable choice for $\Delta E_{\rm pd}^{\rm (min)}$
 %
 The total uncertainty of the pseudo-data points is chosen to be
 \be
@@ -139,8 +141,15 @@ j= 1,\ldots,N_{\rm pd} \, .
 The factor of 1/10 is found to be suitable to ensure that the constraint
 is enforced without distorting
 the training to the experimental data.
+%
+We note from Fig.~\ref{fig:intensityratio} that $\Delta E_{\rm pd}^{\rm (min)}$ will
+depend on general on the operation conditions.
+%
+We find that
+for our training samples $\Delta E_{\rm pd}^{\rm (min)} \simeq 200$ meV for $t_{\rm exp}=10$ ms
+and $\simeq  900$ meV for 100 ms, roughly independent on the value of $E_b$.
 
-The input data points listed in Table~\ref{table:vacuumdata} are used
+The input experimental measurements listed in Table~\ref{table:vacuumdata} are used
 to to generate a sample of $N_{\rm rep}=500$ Monte Carlo replicas
 and train an individual neural network model to each of these replicas.
 %
@@ -217,7 +226,7 @@ In Table~\ref{table:chi2summary} we indicate the values of the final $\chi^2$ pe
 \begin{figure}[t]
     \centering
     \includegraphics[width=120mm]{plots/chi2_distributions.pdf}
-    \caption{The $\chi^2$ (per data point) distribution evaluated for the training and validation sets
+    \caption{\small The $\chi^2$ (per data point) distribution evaluated for the training and validation sets
       of the $N_{\rm rep}=500$ replicas of the sample trained on the spectra
       listed in Table~\ref{table:vacuumdata}.}
     \label{fig:chi2_distributions}
@@ -242,7 +251,7 @@ Total    &                     &                      &      \\
 \br
   \end{tabular}
     \end{center}
-  \caption{\small The values of the final $\chi^2$ per data point,
+  \caption{\small \small The values of the final $\chi^2$ per data point,
     Eq.~(\ref{eq:chi2_final}), as well as the average values of the error Eq.~(\ref{eq:chi2})
     over the training and validation subsets, for each of the four sets of spectra listed in
     Table~\ref{table:vacuumdata} as well as for the total dataset.
@@ -262,17 +271,57 @@ choices of the input parameters.
 First of all, we investigate the dependence of the results as a function of the
 electron energy loss $\Delta E$.
 %
-In the left panel of Fig.~\ref{fig:EELS_vacuum_DeltaE} we show the central value and 68\% confidence level uncertainty band of the ZLP model as a function
-of $\Delta E$,
-evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}), for $t_{\rm exp}=100$ ms
-and $E_{b}=60$ and 200 keV.
+Fig.~\ref{fig:EELS_vacuum_DeltaE} displays the central value and 68\% confidence level uncertainty band
+for the ZLP model as a function
+of electron energy loss $\Delta E$
+evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}).
 %
-The inset displays the relative model uncertainty as a function of $\Delta E$.
+We display results corresponding to 
+three different values of $E_b$  and for both
+$t_{\rm exp}=10$ ms (left)  and $t_{\rm exp}=100$ ms (right panel).
 %
-We can observe the differences in the ZLP predictions as the electron beam energy $E_b$ is varied.
+We emphasize that no training data with $E_b=120$ keV has been used and thus our prediction
+in that case arises purely from the model interpolation.
 %
-The relative uncertainties in the model turn out to be around 20\%, more or less independent
-of the electron energy loss.
+It is interesting to note how both the overall normalisation and the shape of
+the predicted ZLP depend on the specific operation conditions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=170mm]{plots/deltaE_dependence_vacuum.pdf}
+    \caption{\small Top: the central value and 68\% confidence level uncertainty band
+      for the ZLP model as a function
+      of electron energy loss $\Delta E$
+      evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}).
+      %
+      We display results corresponding to 
+      three different values of $E_b$  and for both
+      $t_{\rm exp}=10$ ms (left)  and $t_{\rm exp}=100$ ms (right panel).
+      %
+      Note that no training data with $E_b=120$ keV has been used and thus our prediction
+      in that case arises purely from the model interpolation.
+      %
+      Bottom: the corresponding relative uncertainty as a function of $\Delta E$
+      for each of the three values of $E_b$.
+      \label{fig:EELS_vacuum_DeltaE}}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In the bottom panel of Fig.~\ref{fig:EELS_vacuum_DeltaE} we show
+the corresponding relative uncertainty as a function of $\Delta E$
+for each of the three values of $E_b$.
+%
+Recall that in this work we allow for non-Gaussian distributions and thus the central
+value is the mean of the distribution while the error band in general will
+be asymmetric.
+%
+In the case of the $t_{\rm exp}=10$ ms results, we see how the model prediction
+at $E_b=120$ keV typically exhibits larger uncertainties than the predictions
+for the two values of $E_b$ for which we have training data.
+%
+In the case of $t_{\rm exp}=100$ ms instead the model predictions exhibit very similar
+uncertainties for the three values of $E_b$, which further more depend only mildly on $\Delta E$.
 
 It is interesting to assess how the model results are modified once a subset of the data points
 are excluded from the fit.
@@ -281,44 +330,18 @@ As illustrated in Fig.~\ref{fig:EELS_toy}, when training the model on sample spe
 with $\Delta E_I \le \Delta E \le \Delta E_{II}$ will be removed from the training dataset to avoid the
 contamination from the inelastic contributions.
 %
-To emulate the effects of such cut, in the right panel of Fig.~\ref{fig:EELS_vacuum_DeltaE} we
-display the same comparison of the left one but now
-for the case in which the input data bins with $\Delta E \ge 50$ meV are excluded from the fit.
-%
-In this way we test the extrapolation properties of the model between the data region ($\Delta E < 50$ meV)
-and the region where $I_{\rm ZLP}(\Delta E)$ is forced to vanish.
-%
-If we compare the relative model uncertainties between the two cases, one can observe the expected
-increase in the errors where a fraction of the input data has been cut away.
-%
-The same qualitative behaviour appears for the two values of $E_b$ considered here.
-%
-The comparisons of Fig.~\ref{fig:EELS_vacuum_DeltaE} indicate that our model uncertainties
-indeed translate in an appropriate way the information contained in the training dataset -- note that
-this would not be the case had one one a simple functional fit to model the ZLP.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=170mm]{plots/deltaE_dependence_vacuum.pdf}
-    \caption{Left panel: the central value and 68\% confidence level uncertainty band of the ZLP model as a function
-      of electron energy loss $\Delta E$,
-      evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}), for
-      the three different values of $E_b$ considered and for both
-      $t_{\rm exp}=10$ ms (left)  and $t_{\rm exp}=100$ ms (right panel).
-      \label{fig:EELS_vacuum_DeltaE}}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+To emulate the effects of such cut, 
 Fig.~\ref{fig:EELS_vacuum_DeltaE} displays
-the relative uncertainty in the model predictions for $I_{\rm EEL}(\Delta E)$
+the relative uncertainty in the model predictions for $I_{\rm ZLP}(\Delta E)$
 as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms (left)
 and 100 ms (right panel).
 %
-We show results for three different sets of trainings: without any cut
-in the training dataset, and for the case where the data points with $\Delta E \ge \Delta E_{\rm cut}$
-are removed from the training dataset for two different values
-of $\Delta E_{\rm cut}$.
+We show results for three different sets of trainings: first of all, one without any cut
+in the training dataset, and then for the case where the data points with $\Delta E \ge \Delta E_{\rm cut}$
+are removed from the training dataset.
+%
+We consider two values of $\Delta E_{\rm cut}$, namely 50 meV and 100 meV, indicated
+with vertical dash-dotted lines.
 %
 Note that the same pseudo-data points that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
 in all three cases.
@@ -328,7 +351,7 @@ in all three cases.
     \centering
     \includegraphics[width=0.49\textwidth]{plots/prediction_with_cut_10ms.pdf}
     \includegraphics[width=0.49\textwidth]{plots/prediction_with_cut_100ms.pdf}
-    \caption{The relative uncertainty in the model predictions for $I_{\rm EEL}(\Delta E)$
+    \caption{\small The relative uncertainty in the model predictions for $I_{\rm EEL}(\Delta E)$
       as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms (left)
       and 100 ms (right panel).
       %
@@ -342,6 +365,20 @@ in all three cases.
       \label{fig:EELS_vacuum_DeltaE}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+From this comparison we can observe how the model predictions become markedly more uncertain
+once a subset of the training data is cut away, as expected due to the effect of the information
+loss.
+%
+While for the cut $\Delta E_{\rm cut}=100$ meV the increase in model uncertainty is only moderate
+as compared with the baseline fit where no cut is performed (since for this value of $\Delta E$
+uncertainties are small to begin with), rather more dramatic effects are observed
+for a value of the cut $\Delta E_{\rm cut}=50$ meV.
+%
+This comparison highlights how ideally we would like to keep as many data points
+in the training set for the ZLP model, provided of course we can verify that the
+possible contributions to the spectra related to inelastic scatterings from the
+sample can be neglected.
 
 \subsection{Dependence on  beam energy  and exposure time }
 \label{eq:depebeam}
@@ -369,7 +406,7 @@ The left panel of Fig.~\ref{fig:extrapolbeam} displays  model predictions for th
     \centering
     \includegraphics[width=0.49\textwidth]{plots/Ebeam_extrapolation.pdf}
     \includegraphics[width=0.49\textwidth]{plots/time_extrapolation.pdf}
-    \caption{The model predictions for the FWHM of the zero loss peak
+    \caption{\small The model predictions for the FWHM of the zero loss peak
       (and its corresponding uncertainty) as a function of the beam energy $E_b$
       for two values of the exposure time (left panel)
       and as a function of $t_{\rm exp}$ for two values of $E_b$ (right panel).
