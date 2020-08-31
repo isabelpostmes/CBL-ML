@@ -336,15 +336,16 @@ the relative uncertainty in the model predictions for $I_{\rm ZLP}(\Delta E)$
 as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms (left)
 and 100 ms (right panel).
 %
-We show results for three different sets of trainings: first of all, one without any cut
+We show results for three different sets of training: first of all, one without any cut
 in the training dataset, and then for the case where the data points with $\Delta E \ge \Delta E_{\rm cut}$
 are removed from the training dataset.
 %
 We consider two values of $\Delta E_{\rm cut}$, namely 50 meV and 100 meV, indicated
 with vertical dash-dotted lines.
 %
-Note that the same pseudo-data points that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
-in all three cases.
+In both cases, data points are removed up until $\Delta E =$ 800 meV. The pseudo-data points 
+that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
+in all three cases in the region 800 meV $\le \Delta E \le 1 eV$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
@@ -389,7 +390,7 @@ spectra taken at two values of the electron beam energy, $E_b=60$ keV and 200 ke
 %
 The left panel of Fig.~\ref{fig:extrapolbeam} displays  model predictions for the FWHM of the zero loss peak
       (and its corresponding uncertainty) as a function of the beam energy $E_b$
-      for two values of the exposure time, $t_{\rm exp}=10$ ns and 100 ms.
+      for two values of the exposure time, $t_{\rm exp}=10$ ms and 100 ms.
       %
       The vertical dashed lines indicate the values of $E_b$ for which training data is available.
       %
