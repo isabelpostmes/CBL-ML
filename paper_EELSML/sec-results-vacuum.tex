@@ -310,6 +310,39 @@ this would not be the case had one one a simple functional fit to model the ZLP.
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Fig.~\ref{fig:EELS_vacuum_DeltaE} displays
+the relative uncertainty in the model predictions for $I_{\rm EEL}(\Delta E)$
+as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms (left)
+and 100 ms (right panel).
+%
+We show results for three different sets of trainings: without any cut
+in the training dataset, and for the case where the data points with $\Delta E \ge \Delta E_{\rm cut}$
+are removed from the training dataset for two different values
+of $\Delta E_{\rm cut}$.
+%
+Note that the same pseudo-data points that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
+in all three cases.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.49\textwidth]{plots/prediction_with_cut_10ms.pdf}
+    \includegraphics[width=0.49\textwidth]{plots/prediction_with_cut_100ms.pdf}
+    \caption{The relative uncertainty in the model predictions for $I_{\rm EEL}(\Delta E)$
+      as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms (left)
+      and 100 ms (right panel).
+      %
+      We show results for three different sets of trainings: without any cut
+      in the training dataset, and for the case where the data points with $\Delta E \ge \Delta E_{\rm cut}$
+      are removed from the training dataset for two different values
+      of $\Delta E_{\rm cut}$.
+      %
+      Note that the same pseudo-data points that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
+      in all three cases.
+      \label{fig:EELS_vacuum_DeltaE}}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subsection{Dependence on  beam energy  and exposure time }
 \label{eq:depebeam}
 

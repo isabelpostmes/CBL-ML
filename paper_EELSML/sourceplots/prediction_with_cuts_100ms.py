@@ -42,9 +42,9 @@ for name, group in groups_cut_big:
     std_prediction = group.iloc[:, 4:].std(axis=1).to_numpy()
     
     if group['time'].max() == 1 and group['energy'].max() == 2:
-        p3=ax.plot(group.x*1000, np.divide(mean_prediction, mean_prediction), label='with data cut at 50meV',color='gray',ls="dotted")
+        p3=ax.plot(group.x*1000, np.divide(mean_prediction, mean_prediction), label='with data cut at 50meV',color=rescolors[2],ls="dotted")
         p3a=ax.fill_between(group.x*1000, np.divide(mean_prediction + std_prediction, mean_prediction), \
-                        np.divide(mean_prediction - std_prediction, mean_prediction), alpha=.3,color='lightgray')     
+                        np.divide(mean_prediction - std_prediction, mean_prediction), alpha=.3,color=rescolors[2])     
         
 for name, group in groups_full:
     mean_prediction = group.iloc[:, 4:].mean(axis=1).to_numpy()
@@ -67,21 +67,22 @@ for name, group in groups_cut:
         
 ax.axvline(x=50, linestyle='dashdot', color='black') 
 ax.axvline(x=100, linestyle='dashdot', color='black') 
-ax.axvline(x=800, linestyle='dashdot', color='black') 
+ax.axvline(x=800, linestyle='dashdot', color='black')
+ax.set_ylabel(r'relative uncertainty in $I_{\rm EEL}(\Delta E)$', fontsize = 13)
 ax.set_title('$t_{exp}$ = 100 ms, $E_b$ = 200 keV', fontsize = 15)
-ax.set_ylabel('relative uncertainty', fontsize = 15)
-ax.set_xlabel('Energy loss (eV)', fontsize = 15)  
-ax.set_xlim([10, 1e3])
-ax.set_ylim([0.8, 1.2])
+ax.set_xlabel('Energy loss (meV)', fontsize = 15)  
+ax.set_xlim([10, 1.1e3])
+ax.set_ylim([0.90, 1.15])
 ax.set_xscale("log")
 ax.tick_params(which='major',direction='in',length=5, labelsize=12)
 ax.tick_params(which='minor',direction='in',length=5, labelsize=12)
 
 
-ax.legend([(p1[0],p1a),(p2[0],p2a),(p3[0],p3a) ],["no data cut","with data cut at 100meV","with data cut at 50meV"], frameon=True,loc=[0.53,0.74],prop={'size':11})
+ax.legend([(p1[0],p1a),(p2[0],p2a),(p3[0],p3a) ],[r"no $\Delta E_{\rm cut}$ cut",r"$\Delta E_{\rm cut}=100$ meV",r"$\Delta E_{\rm cut}=50$ meV"], frameon=True,loc=[0.53,0.74],prop={'size':11})
 
 
 plt.tight_layout()
 
-plt.savefig('prediction_with_cut_10ms.pdf')
-print("saved fig = prediction_with_cut_10ms.pdf")
+plt.savefig('../plots/prediction_with_cut_100ms.pdf')
+print("saved fig = ../plots/prediction_with_cut_100ms.pdf")
+
