@@ -72,18 +72,24 @@ must be analysed independently.
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In Table~\ref{table:sampledata} we collect the most relevant properties of the spectra collected
+In Table~\ref{table:sampledata} we demonstrate the most relevant properties of the spectra collected
 in the locations indicated in Fig.~\ref{fig:ws2positions} using the same convention as
 in Table~\ref{table:sampledata}.
 %
 As mentioned, the sets of spectra from samples A and B
-have been acquired with different microscopes and thus are
+have been acquired with different microscopes and are therefore
 not directly comparable.
 %
-The full width at half maximum is averaged over all spectra of a given sample,
+The full width at half maximum is averaged over all spectra of a given set,
 including those acquired on vacuum.
 %
-From this table one can observe that ....
+From this table one can observe that the microscope resolution on the measurements of the first set equals 160 meV, 
+which is three times higher
+than the resolution obtained on the second set. 
+%
+This difference can be ascribed to the fact that the first set of measurements were obtained with the use of a 
+monochromator, whereas the spectra of set B were recorded without a monochromator.
+%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,8 +100,8 @@ From this table one can observe that ....
 \br
 Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm b}$ {(}keV{)} & $N_{\rm sp}$ & $N_{\rm dat}$ & $\Delta E_{\rm min}$~(eV)  & $\Delta E_{\rm max}$~(eV)  & FWHM~(eV)  \\ 
 \mr
-A        &       ?       &    200 keV       &   10     &    2000    &     -0.93        & 9.07   & $ 0.165\pm0.01$ \\
-B        &       ?       &        ?         &   6      &    1918    &     -4.054       & 45.471 & $ 0.48\pm0.01$  \\
+A        &       ?       &    200 keV       &   10     &    2000    &     -0.93        & 9.07   & $ 0.16\pm0.01$ \\
+B        &       ?       &        ?         &   6      &    1918    &     -4.054       & 45.471 & $ 0.47\pm0.01$  \\
 \br
   \end{tabular}
     \end{center}
@@ -166,8 +172,8 @@ B        &    $2.65\pm0.06$               &          1.8           &            
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- We find that the location of the first minima is relatively stable
- among all the spectra belonging to given set.
+ We observe that the location of the first minimum is relatively stable
+ among all the spectra belonging to a given set.
  %
  The neural network training is performed for a wide range of $\Delta E_{\rm I}$ values
  subject to the condition that $\Delta E_{\rm I} \le \Delta E_{\rm min}$.
@@ -229,13 +235,13 @@ B        &    $2.65\pm0.06$               &          1.8           &            
  I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{(j)}(\Delta E) \, ,\quad \Delta E < \Delta E_0  \, ,\\
  I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{(j)} + \lp \xi_1^{(n_l)(k)}(\Delta E) - I_{\rm EELS}^{(j)}(\Delta E)\rp  \times \mathcal{F} \, , \nonumber \quad 
  \Delta E_0 < \Delta E \le \Delta E_1 \, ,\\
- &&\mathcal{F} = \exp\lp -\frac{\lp \Delta E - \Delta E_1 \rp^2 }{\lp \Delta E_0 - \Delta E_1 \rp^2 \delta^2} \rp  \, , \label{eq:mathcing} \\
+ &&\mathcal{F} = \exp\lp -\frac{\lp \Delta E - \Delta E_1 \rp^2 }{\lp \Delta E_0 - \Delta E_1 \rp^2 \delta^2} \rp  \, , \label{eq:matching} \\
  I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& \xi_1^{(n_l)(k)}(\Delta E) \, , \quad \Delta E > \Delta E_1 \nonumber \, ,
  \eea
  where $\xi_1^{(n_l)(k)}$ indicates the output of the $k$-th neural network that parametrises
  the ZLP and $\delta$ is a dimensionless tunable parameter.
  %
- In Eq.~(\ref{eq:mathcing}), $\mathcal{F}(\Delta E)$ represents a matching factor
+ In Eq.~(\ref{eq:matching}), $\mathcal{F}(\Delta E)$ represents a matching factor
  that ensures that the model prediction of the zero loss peak smoothly interpolates
  between $\Delta E=\Delta E_0$ (where $\mathcal{F}\ll 1$ and the original spectrum should
  be reproduced) and $\Delta E=\Delta E_1$
@@ -259,12 +265,12 @@ B        &    $2.65\pm0.06$               &          1.8           &            
  %
  This range has been chosen to maximise the amount of information in the onset region.
  %
- We end up, for each of the $N_{\rm sp}$ spectra, with $N_{\rm rep}$ values for
+ For each of the $N_{\rm sp}$ spectra, we end up with $N_{\rm rep}$ values for
  the bandgap energy and fit exponent,
  \be
  \Big \{ E_{\rm BG}^{(j,k)}, b^{(j,k)} \Big\} \, , \quad k=1,\ldots,N_{\rm rep} \, ,
  \ee
- from which again one can evaluate statistical estimators such as medians, 68\% CL ranges,
+ from which again one can evaluate statistical estimators such as medians, 68\% CL ranges
  and correlations.
 
 The left panel of Fig.~\ref{fig:sp4_subtracted_spectrum} displays
