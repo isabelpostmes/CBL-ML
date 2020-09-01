@@ -170,25 +170,20 @@ is displayed in Fig.~\ref{fig:architecture}.
 
 We discussed in Sect.~\ref{sec:eels} how
 even for EEL spectra taken at identical operation conditions of the microscope,
-in general the resulting ZLP intensities will be different as discussed
-in 
+in general the resulting ZLP intensities will differ.
 %
 Further, there exist a large number of different NN configurations, each
 representing a different functional form for $I_{\rm ZLP}^{(\rm mod)}$ which provide
 an equally valid description of the input data.
 %
-Using the notation of~\cite{Ball:2014uwa} we denote these two types of uncertainties
-as the ``experimental'' and ``parametrization'' components.
+To  estimate these uncertainties and propagate them to physical predictions,
+we use here the Monte Carlo replica method.
 %
-To faithfully estimate these uncertainties and to propagate them to our  predictions
-for the ZLP-subtracted spectra without the need of any kind of approximation,
-we adopt here the Monte Carlo replica method.
-%
-The basic idea of this method is to exploit the available information
+The basic idea  is to exploit the available information
 on experimental measurements (central values, uncertainties, and correlations)
 to construct a sampling of the probability density in the space of 
-the data, which following the neural network training is propagated
-to the probability density in the space of $I_{\rm ZLP}$ models.
+the data, which by means of the NN training is then propagated
+to a probability density in the space of $I_{\rm ZLP}$ models.
 
 Let us assume that we have $n_{\rm dat}$ independent measurements of the ZLP intensity, for
 different or the same values of the input parameters collectively denoted as $\{z_i\}$:
@@ -198,8 +193,8 @@ I^{\rm (exp)}_{{\rm ZLP},i}\lp \{ z_i  \}\rp = I^{\rm (exp)}_{{\rm ZLP},i}\lp  \
 \ee
 The Monte Carlo method is based on the generation
 of a large number $N_{\rm rep}$ of Monte Carlo replicas of these original data points
-by means of a multi-Gaussian distribution with the central values and covariance matrices
-taken from the data,
+by means of a multi-Gaussian distribution, with the central values and covariance matrices
+from the input measurements,
 \be
 \label{eq:MCreplicaGen}
   I_{{\rm ZLP},i}^{{\rm (art)}(k)}  =  I^{\rm (exp)}_{{\rm ZLP},i} + r_i^{({\rm stat},k)}\sigma_i^{\rm (stat)}
@@ -213,15 +208,18 @@ taken from the data,
   The values of $\{r_i^{(k)}\}$ are
   generated with a suitable correlation pattern to ensure
   that averages over the set of Monte Carlo
-  replicas reproduce the original experimental covariance matrix,
-  \bea
-  \la  \lp I_{{\rm ZLP},i}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},i}^{{\rm (art)}(k)}\ra_{\rm rep}\rp
-  \lp I_{{\rm ZLP},j}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},j}^{{\rm (art)}(k)}\ra_{\rm rep}\rp\ra_{\rm rep} \nonumber \\ \label{eq:expcovariance} \qquad\qquad = {\rm cov}^{(\rm exp)}\lp I_{{\rm ZLP},i},I_{{\rm ZLP},j}\rp \qquad \, .
-  \eea
+  replicas reproduce the original experimental covariance matrix, namely
+  \be
+  \la  \lp I_{{\rm ZLP},i}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},i}^{{\rm (art)}}\ra_{\rm rep}\rp
+  \lp I_{{\rm ZLP},j}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},j}^{{\rm (art)}}\ra_{\rm rep}\rp\ra_{\rm rep}
+  \label{eq:expcovariance} = {\rm cov}^{(\rm exp)}\lp I_{{\rm ZLP},i},I_{{\rm ZLP},j}\rp  \, ,
+  \ee
+  where averages are evaluated over the $N_{\rm rep}$ replicas that compose the sample.
+  %
 We thus note that each $k$-th replica contains 
 as many data points as the original set.
 
-In the present case, the information on experimental correlations is not accessible and
+In our case the information on experimental correlations is not accessible and
 thus we assume that there is a single source of point-by-point uncorrelated systematic
 uncertainty, denoted as $\sigma_i^{\rm (exp)}$, which is estimated as follows.
 %
@@ -237,15 +235,16 @@ Then we evaluate the total experimental uncertainty in one of these bins as
 \be
 \label{eq:sigmaiexp}
 \sigma_i^{\rm (exp)} = \lp \frac{1}{N_{\rm sp}-1} \sum_{l=1}^{N_{\rm sp}}
-\lp I_{{\rm ZLP},i}^{ ({\rm exp}),l}  - \la I_{{\rm ZLP},i}^{ ({\rm exp})}\ra \rp \rp^{1/2} \, ,
+\lp I_{{\rm ZLP},i}^{ ({\rm exp}),l}  - \la I_{{\rm ZLP},i}^{ ({\rm exp})}\ra_{N_{\rm sp}} \rp \rp^{1/2} \, ,\,
 i=1,\ldots, n_{\rm dat} \, ,
 \ee
 that is, as the standard deviation over the $N_{\rm sp}$ spectra.
 %
 This uncertainty is separately evaluated for each set of microscope operation conditions
-for which spectra are available.
+for which data available.
 %
-In this case, Eqns.~(\ref{eq:MCreplicaGen}) and~(\ref{eq:expcovariance}) reduce to
+In the absence of correlations Eqns.~(\ref{eq:MCreplicaGen}) and~(\ref{eq:expcovariance}) thus
+simplify to
 \be
  I_{{\rm ZLP},i}^{{\rm (art)}(k)}  =  I^{\rm (exp)}_{{\rm ZLP},i} + r_i^{({\rm tot},k)}\sigma_i^{\rm (exp)}
  \,, \quad \forall i
@@ -253,19 +252,22 @@ In this case, Eqns.~(\ref{eq:MCreplicaGen}) and~(\ref{eq:expcovariance}) reduce 
 \ee
 and
   \bea
-  \la  \lp I_{{\rm ZLP},i}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},i}^{{\rm (art)}(k)}\ra\rp
-  \lp I_{{\rm ZLP},j}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},j}^{{\rm (art)}(k)}\ra\rp\ra_{\rm rep} =
-  \sigma_i^{\rm (exp)}\sigma_j^{\rm (exp)}\delta_{ij}
+  \la  \lp I_{{\rm ZLP},i}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},i}^{{\rm (art)}}\ra_{\rm rep}\rp
+  \lp I_{{\rm ZLP},j}^{{\rm (art)}(k)} - \la I_{{\rm ZLP},j}^{{\rm (art)}}\ra_{\rep}\rp\ra_{\rm rep} =
+  \sigma_i^{\rm (exp)}\sigma_j^{\rm (exp)}\delta_{ij} \, ,
   \eea
-given that the experimental covariance matrix is diagonal.  
+  given that the experimental covariance matrix is diagonal.
+  %
+  Should in the future correlations became available, it would be straightforward to extend
+  our model to that case.
 
 The value of the number of generated MC replicas, $N_{\rm rep}$, should be chosen such that the set of replicas 
 models accurately the probability distribution of original training data.
 %
 To verify that this is the case,
 Fig.~\ref{fig:MC} displays a comparison between the original experimental central values
-$I_{{\rm ZLP},i}^{\rm (exp)}$ (left panel) and the corresponding 
-uncertainties $\sigma_i^{(\rm exp)}$ with the results of averaging over
+$I_{{\rm ZLP},i}^{\rm (exp)}$ (left) and the corresponding 
+total uncertainties $\sigma_i^{(\rm exp)}$ (right panel) with the results of averaging over
 a sample of $N_{\rm rep}$ Monte Carlo replicas generated by means of
 Eq.~(\ref{eq:MCreplicaGen}) for different number of replicas.
 %
