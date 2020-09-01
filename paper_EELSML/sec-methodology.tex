@@ -126,7 +126,7 @@ non-linear dependencies: even with a single hidden layer, a neural network
 can reproduce arbitrary functional dependencies provided it has a large enough
 number of neurons.
 
-An schematic representation of our model
+A schematic representation of our model
 is displayed in Fig.~\ref{fig:architecture}.
 %
  The input is an $n_I$ array containing $\Delta E$ and the rest of
@@ -135,7 +135,7 @@ is displayed in Fig.~\ref{fig:architecture}.
  associated to those input variables.
  %
  We adopt an $n_I$-10-15-5-1 architecture with three hidden layers, for a total
- number of 289~(271) free parameters for $n_I=3$~($n_I=1$) to be adjusted by the optimisation procedure.
+ number of 289~(271) free parameters for $n_I=3$~($n_I=1$) to be adjusted by the optimization procedure.
  %
  We use a sigmoid activation function for the three hidden layers and a ReLU
  for the final one.
@@ -381,13 +381,17 @@ we use a ReLU activation function for the last layer.
 In this work we adopt the {\tt TensorFlow} neural-net libraries to assemble
 the architecture illustrated in  Fig.~\ref{fig:architecture}.
 %
+Before training, all weights and biases are initialized in a non-deterministic order
+by the built-in global variable initializer. 
+%
 The optimisation of the figure of merit Eq.~(\ref{eq:chi2modified}) is carried
-out by means of  stochastic gradient descent combined with backpropagation,
+out by means of stochastic gradient descent combined with backpropagation,
 in particular by means of the Adam algorithm.
 %
 The hyper-parameters of the optimisation algorithm such as the learning rate
 have been adjusted to ensure proper learning is reached in the shortest amount
 of time possible.
+%
 
 Given that we have a extremely flexible parametrisation, one should be careful
 to avoid overlearning the input data.
@@ -404,7 +408,12 @@ dataset, $E^{(k)}_{\rm val}$ (which is not used for the training).
 %
 The optimal stopping point is then determined {\it a posteriori} for each replica
 as the specific network configuration that leads to the deepest minimum of $E^{(k)}_{\rm val}$.
-
+%
+The number of epochs should be chosen high enough to reach the optimal stopping point for each replica.
+For this work we need approximately 40,000 epochs to ensure overlearning.
+%
+This corresponds to a running time of 60 seconds per replica when training on a set of 500 datapoints.
+%
 Once the training of all the $N_{\rm rep}$ neural network models for the ZLP has been carried
 out as specified above, we gauge the overal fit quality of the model by computing the
 $\chi^2$ defined as
