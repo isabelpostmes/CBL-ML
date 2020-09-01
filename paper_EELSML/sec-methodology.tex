@@ -515,7 +515,8 @@ the amount of training data while ensuring that $I_{\rm EEL}$ is dominated
 by $I_{\rm ZLP}$.
 
 We can use the derivatives of the spectra, $dI_{\rm EEL}/d\Delta E$, to select suitable minimum and
-maximum values of these two parameters.
+maximum values for $\Delta E_I$. In order to select the value for $\Delta E_{II}$, we use the intensity
+profiles of the vacuum recorded spectra. 
 %
 Concerning $\Delta E_I $, its minimum possible value is selected as the value where the derivate taken on the sample
 data start to different significantly as compared to those spectra taken on vacuum.
@@ -543,12 +544,13 @@ we are sure to capture all suitable results and select the best value for each i
 %
 Concerning $\Delta E_{II}$, its minimum value should mark the region where $I_{\rm ZLP}(\Delta E\to \infty)\to 0$. 
 %
-We use the first derivative taken on the vacuum data and look when the monotonic decrease of derivatives
-slowly grows to zero. We can state that if the intensity decrease is fading, the intensity as a whole is 
-negligible. 
+In order to implement this constraint, similar to the previous section we look at the ratio 
+$I_{ZLP,i}^{(exp)}/ \sigma_i^{(exp)}$ to determine the energy loss $\Delta E_{\rm pd}$ at 
+which the contributions from the ZLP vanish. 
 %
-As a measure, we use the energy loss value where $dI_{\rm ZLP}/d\Delta E < 10^{-4}$, where the derivative is normalized
-in order to express its size relative to the intensity profile.
+As a measure, we use the energy loss value where the ratio $I_{ZLP,io}^{(exp)}/\sigma_i^{(exp)}$ drops below 1. 
+%
+We set the value of $\Delta E_{II}$ equal to this energy loss and add pseudo-data points for $\Delta E \ge \Delta E_{II}$.
 %
 Note that in this region the intensity of the ZLP is several orders of magnitude smaller than the intensity 
 of the elastic emissions and therefore the exact choice of $\Delta E_{II}$ doens't listen too closely.
