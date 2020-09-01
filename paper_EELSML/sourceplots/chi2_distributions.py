@@ -10,11 +10,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 ########## Load data ####################################
-chi_data = pd.read_csv('data/chi_data')
+chi_data = pd.read_csv('data/chi_data_vacuum')
 
 ####################
 fig, ax = plt.subplots((1))
-fig.set_size_inches((8,5))
+fig.set_size_inches((7.5,5))
 
 plt.title('$\chi^2$ distribution (vacuum spectra)', fontsize=20)
 plt.xlabel('$\chi^2$', fontsize=16)
@@ -22,8 +22,8 @@ plt.xlim([0.3, 2.5])
 
 rescolors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
-plt.hist(chi_data['Best chi2 value'], density=True, bins=20, range=[0.5, 3], alpha=0.7, label='training',histtype=u'step',lw=2.5,color=rescolors[0],fill=True,ec="darkblue")
-plt.hist(chi_data['val'], density=True, bins=20, range=[0.5, 3], alpha=0.7, label='validation',histtype=u'step',lw=2.5,color=rescolors[1],fill=True,ec="black")
+plt.hist(chi_data['train'], density=True, bins=30, range=[0.5, 3], alpha=0.7, label='training',histtype=u'step',lw=2.5,color=rescolors[0],fill=True,ec='darkslateblue')
+plt.hist(chi_data['val'], density=True, bins=30, range=[0.5, 3], alpha=0.7, label='validation',histtype=u'step',lw=2.5,color=rescolors[1],fill=True,ec='chocolate')
 plt.legend(fontsize=18)
 #plt.ylabel('Occurence', fontsize=16)
 ax.tick_params(which='major',direction='in',length=10, labelsize=16)
