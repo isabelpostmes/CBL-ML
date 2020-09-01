@@ -1,30 +1,28 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{A neural-network parametrisation of the zero-loss peak}
+\section{Neural network determination of the ZLP}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:methodology}
 
-In this section we present the methodology that will be
-used in this work to parametrise and subtract in a model-independent manner
-the zero-loss peak present in the low-loss region of EEL spectra.
+In this section we present our strategy to parametrise and subtract in a model-independent manner
+the zero-loss peak that arises in the low-loss region of EEL spectra by means
+of machine learning.
 %
-As mentioned in the introduction, our strategy will be inspired in the successful
-NNPDF approach used in high-energy physics for the determination of
-unpolarised~\cite{Ball:2008by,Ball:2012cx,Ball:2014uwa,Ball:2017nwa}
-and polarised parton distributions functions (PDFs) of protons, the nuclear
-parton distributions~\cite{AbdulKhalek:2020yuc}, and the fragmentation functions of partons into hadrons.
+As mentioned in the introduction, our strategy will be inspired by the 
+NNPDF method~\cite{Rojo:2018qdd} originally developed in the context of high-energy physics
+for studies of the quark and gluon substructure of the proton~\cite{Gao:2017yyd}.
 %
-First of add we discuss the parametrisation of the ZLP in terms of neural networks.
-%
-We then review the estimate and propagation of uncertainties using the MC replica method.
-%
-Afterwards we present our training strategy both in case of vacuum and of sample spectra,
-and discuss how to select the hyper-parameters that appear in the model.
+The NNPDF approach has been successfully applied, among others, to
+the determination of
+unpolarised~\cite{DelDebbio:2007ee,Ball:2008by,Ball:2012cx,Ball:2014uwa,Ball:2017nwa}
+and polarised parton distributions functions of protons,  nuclear
+parton distributions~\cite{AbdulKhalek:2019mzd,AbdulKhalek:2020yuc}, and the
+fragmentation functions of partons into neutral and charged
+hadrons~\cite{Bertone:2017tyb,Bertone:2018ecm}.
 
-
-In recent years
-machine learning techniques have been deployed in several studies
-related to transmission electron microscopy methods
-in the context of material science~\cite{Gordon:2020, Zhang:2019, Jany:2017, Ziatdinov:2017}.
+We note that recently several applications of machine learning
+to transmission electron microscopy analyses 
+in the context of material science have been
+presented, see {\it e.g.}~\cite{Gordon:2020, Zhang:2019, Jany:2017, Ziatdinov:2017,10.1145/2834892.2834896,doi:10.1021/acsnano.7b07504,cite-key}.
 %
 Representative examples
 include the automated identification
@@ -34,11 +32,20 @@ and defect classification~\cite{doi:10.1021/acsnano.7b07504},
 and spatial resolution enhancement
 using  using a generative adversarial network~\cite{cite-key}.
 %
-Our work represents to the best of our knowledge
+To the best of our knowledge, this is
 the first time that neural networks are used as 
  unbiased
-background removal interpolators, and combined with Monte Carlo sampling to construct a faithful estimate
-of the ML model uncertainties.
+ background-removal interpolators
+ and combined with Monte Carlo sampling to construct a faithful estimate
+of the model uncertainties.
+
+In this section
+first of add we discuss the parametrisation of the ZLP in terms of neural networks.
+%
+We then review the estimate and propagation of uncertainties using the MC replica method.
+%
+Afterwards we present our training strategy both in case of vacuum and of sample spectra,
+and discuss how to select the hyper-parameters that appear in the model.
 
 \subsection{ZLP parametrisation}
 \label{sec:parametrisation}
@@ -573,4 +580,4 @@ As a measure, we use the energy loss value where the ratio $I_{ZLP,io}^{(exp)}/\
 We set the value of $\Delta E_{II}$ equal to this energy loss and add pseudo-data points for $\Delta E \ge \Delta E_{II}$.
 %
 Note that in this region the intensity of the ZLP is several orders of magnitude smaller than the intensity 
-of the elastic emissions and therefore the exact choice of $\Delta E_{II}$ doens't listen too closely.
+of the elastic emissions and therefore the exact choice of $\Delta E_{II}$ does not listen too closely.
