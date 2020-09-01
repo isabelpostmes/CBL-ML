@@ -2,6 +2,7 @@
 \label{sec:introduction}
 
 Electron energy-loss spectroscopy (EELS) within the transmission electron microscope (TEM) provides
+a wide range of
 valuable information on the structural, chemical, and electronic properties of nanoscale materials.
 %
 Thanks to recent instrumentation breakthroughs
@@ -20,10 +21,11 @@ inter- and intra-band transitions~\cite{Rafferty:1998},
 and phonons to the determination of their bandgap and band structure~\cite{Stoger:2008}.
 
 Provided the sample is electron-transparent, as required for TEM inspection,
-in EELSthe bulk of the incident electron beam will traverse it
-either without interacting or restricted to elastic scatterings.
+in EELS the bulk of the incident electron beam will traverse it
+either without interacting or restricted to elastic scatterings with the atoms
+of the sample's crystalline lattice.
 %
-The resulting energy exchanges contribute to a narrow,
+These electrons are recorded as a narrow,
  high intensity peak centered at energy losses
 of $\Delta E\simeq 0$ and known as the zero loss peak (ZLP).
 %
@@ -33,33 +35,34 @@ of the full width at half maximum (FWHM) of the
 ZLP~\cite{Egerton:2009}.
 %
 In the low-loss region, the contribution from the ZLP
-often overwhelms that from 
-from the inelastic scatterings associated with the interactions of the fast electrons
+often overwhelms that from  from the inelastic scatterings arising with
+the interactions of the beam electrons
 with the sample.
 %
-Therefore, signals of relevant low-loss phenomena such as excitons,
+Therefore, relevant signals of low-loss phenomena such as excitons,
 phonons, and intraband transitions risk being drowned
 in ZLP tail~\cite{Abajo:2010}.
 %
-The accurate removal of the ZLP
+An accurate removal of the ZLP
 contribution is thus crucial  in order to efficiently chart and identify the  features
-of the low-loss  region of EEL spectra. 
+of the low-loss  region in EEL spectra. 
 
 The properties of the ZLP in monochromated EELS depend on the electron energy dispersion,
 the monochromator alignment, and the sample thickness~\cite{Park:2008, Stoger:2008}.
 %
-The first two factors arise already in the absence of a specimen, while the third one is associated
-to elastic scatterings with the sample such as  phonon excitation and exciton losses.
+The first two factors arise already in the absence of a specimen (vacuum operation),
+while the third one is associated
+to elastic scatterings with the sample such as atomic scatterings,
+phonon excitation, and exciton losses.
 %
-For this reason, measurements of EEL spectra taken in vacuum can only be used for calibration purposes
-but are not suitable
-to subtract the ZLP from spectra taken on specimens, since their shapes will be in general
-different.
-%
+This implies that  measurements of vacuum EEL spectra can be used for calibration purposes
+but not to subtract the ZLP from spectra taken on specimens, since their shapes will differ
+in general.
+
 Several approaches to ZLP subtraction have been put forward in 
 literature~\cite{Rafferty:2000, Stoger:2008, Egerton:1996}.
 %
-These are based on specific model assumptions about the ZLP properties, specifically
+These are often based on specific model assumptions about the ZLP properties, specifically
 concerning its parametric functional dependence, from Lorentzian~\cite{Dorneich:1998}
 and power laws~\cite{Erni:2005} to more general multiple-parameter functions~\cite{Benthem:2001}.
 %
