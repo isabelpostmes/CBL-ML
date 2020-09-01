@@ -20,6 +20,26 @@ We then review the estimate and propagation of uncertainties using the MC replic
 Afterwards we present our training strategy both in case of vacuum and of sample spectra,
 and discuss how to select the hyper-parameters that appear in the model.
 
+
+In recent years
+machine learning techniques have been deployed in several studies
+related to transmission electron microscopy methods
+in the context of material science~\cite{Gordon:2020, Zhang:2019, Jany:2017, Ziatdinov:2017}.
+%
+Representative examples
+include the automated identification
+of atomic-level structural information~\cite{10.1145/2834892.2834896},
+the extraction of chemical information
+and defect classification~\cite{doi:10.1021/acsnano.7b07504},
+and spatial resolution enhancement
+using  using a generative adversarial network~\cite{cite-key}.
+%
+Our work represents to the best of our knowledge
+the first time that neural networks are used as 
+ unbiased
+background removal interpolators, and combined with Monte Carlo sampling to construct a faithful estimate
+of the ML model uncertainties.
+
 \subsection{ZLP parametrisation}
 \label{sec:parametrisation}
 
