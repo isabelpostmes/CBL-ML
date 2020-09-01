@@ -164,9 +164,9 @@ Laurien Roest$^{1,2}$, Sabrya E. van Heijst$^{1}$,
 {\it \small
 
 $^{1}$Kavli Institute of Nanoscience, Delft University of Technology, 2628CJ Delft, The
-  Netherlands\\
+  Netherlands\\[0.1cm]
 $^{2}$Nikhef Theory Group, Science Park 105, 1098 XG Amsterdam, The
-  Netherlands \\$^{3}$Department of Physics and Astronomy, VU,
+  Netherlands \\[0.1cm]$^{3}$Department of Physics and Astronomy, VU,
     1081 HV Amsterdam, The Netherlands
 
   
@@ -180,33 +180,25 @@ $^{2}$Nikhef Theory Group, Science Park 105, 1098 XG Amsterdam, The
 \end{center}
 
   Electron energy-loss spectroscopy (EELS) within the
-  transmission electron microscope (TEM) provides valuable information on the structural, chemical, and electronic properties of materials at the nanoscale.
+  transmission electron microscope  provides valuable information on the structural, chemical, and electronic properties of materials at the nanoscale.
 %
-%Thanks to recent instrumentation breakthroughs, modern EELS analyses can
-%map these properties with unprecedented spatial and spectral resolution.
-%
-The exploitation of the information contained in EEL spectra requires
-however reliable
-access to the
+Exploiting the information contained in EEL spectra requires
+reliable access to the
 low-loss region ($\Delta E\lsim 5$ eV),
 where the contribution from the zero-loss peak (ZLP) overwhelms
 that from
-the inelastic scatterings between the incoming electrons and the sample.
+the inelastic scatterings off the sample.
 %
-Here we deploy machine learning techniques
-to provide a model-independent determination of the ZLP
-both in-vacuum and in-sample as a function of several input variables.
+Here we deploy machine learning techniques, inspired in particle physics applications,
+to realise a model-independent multidimensional determination of the ZLP
+ with a faithful uncertainty estimate.
 %
-This determination can then be used to disentangle
-the ZLP from the sample contributions in the low-loss EELS
-region
-with a faithful estimation of the associated uncertainties.
+Our method is then used to disentangle
+ZLP from the sample contributions in  low-loss EEL spectra acquired
+in WS$_2$ nanostructures.
 %
-As a proof of concept of our  method, ZLP-subtracted
-spectra are used to characterise the local electronic properties of
-WS$_2$ nanostructures, where we demonstrate that bilayer WS$_2$ exhibits a direct bandgap
-with $E_{\rm BG}= 2.05 \pm 0.12$ eV.
-%\\end{abstract}
+This makes possible determining the value and type of the WS$_2$ bandgap
+as a function of the underlying crystalline morphology of the nanostructures.
 
 \vspace{0.4cm}
 \noindent{\it Keywords:} {\small Transmission Electron Microscopy,
