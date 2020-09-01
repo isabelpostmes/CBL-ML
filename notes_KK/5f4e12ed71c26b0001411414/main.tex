@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+
+\title{Kramer-Kronig Anlaysis in TEM}
+\author{Isabel Postmes }
+\date{September 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+The Kramer-Kronig relations are two functions that relate the imaginary part of an complex function to the real part and vice versa. The relations hold as long as the complex function is analytic in the upper half-plane.
+The relations for function $\chi(\omega)=\chi_{1}(\omega)+i \chi_{2}(\omega)$, with $\omega$ a complex variable are given by \cite{wikipedia_2020}:
+
+\begin{equation}
+    \chi_{1}(\omega)=\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime}.
+\end{equation}
+
+
+
+Since the single scattering spectrum of a medium can be related to the complex permittivity, the Kramer-Kronig relations can be used to retrieve energy dependence of the real and imaginary permittivity from said spectrum \cite{egerton_2011}. If one ignores the instrumental broadening, surface-mode scattering and the retardation effects, the single scattering spectrum is approached by the single scattering distribution, which in place can be obtained from the recorded energy loss spectrum by the Fourier log method. \cite{egerton_2011}
+
+\begin{equation}
+\begin{aligned}
+J^{1}(E) & \approx S(E)=\frac{2 I_{0} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \int_{0}^{\beta} \frac{\theta d \theta}{\theta^{2}+\theta_{E}^{2}} \\
+\\
+&=\frac{I_{0} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]
+\end{aligned}
+\end{equation}
+
+In this equation $J^1$ is the single scattering distribution,
+
+
+Kramer-Kronig analysis is a method to obtain the complex permittivity, and optical quantities as the absorption- and reflection coefficients.
+
+\bibliography{bib}
+\bibliographystyle{IEEEtran}
+
+\end{document}
