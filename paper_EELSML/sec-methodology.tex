@@ -40,48 +40,56 @@ the first time that neural networks are used as
 of the model uncertainties.
 
 In this section
-first of add we discuss the parametrisation of the ZLP in terms of neural networks.
+first of all we discuss the parametrisation of the ZLP in terms of neural networks.
 %
-We then review the estimate and propagation of uncertainties using the MC replica method.
+We then review the Monte Carlo replica method used to estimate and propagate the
+uncertainties to the input data to the model predictions.
 %
-Afterwards we present our training strategy both in case of vacuum and of sample spectra,
-and discuss how to select the hyper-parameters that appear in the model.
+Subsequently, we present our training strategy both in case of vacuum and of sample spectra,
+and discuss how one can select the hyper-parameters that appear in the model.
 
 \subsection{ZLP parametrisation}
 \label{sec:parametrisation}
 
-The starting point of our approach is based on noting that, without any loss of generality, the intensity profile
-associated to a given EEL spectrum can be decomposed as
+To begin with we note that, without any loss of generality, the intensity profile
+associated to an EEL spectrum may be decomposed as
 \be
 \label{eq:IeelTot}
 I_{\rm EEL}(\Delta E) =I_{\rm ZLP}(\Delta E) + I_{\rm inel}(\Delta E) \, ,
 \ee
-where $\Delta E$ is the measured electron energy loss, $I_{\rm ZLP}$ is the zero-loss peak that receives
-contributions both instrumental origin  and from elastic scatterings of the fast electrons with the
-nuclei of the sample, and  $I_{\rm inel}(\Delta E)$ contains the contribution from
-inelastic scatterings off the electrons of the studied sample.
+where $\Delta E$ is the measured electron energy loss; $I_{\rm ZLP}$ is the zero-loss peak
+distribution arising both from instrumental origin  and from elastic scatterings; and
+$I_{\rm inel}(\Delta E)$ contains the contributions from the
+inelastic scatterings off the electrons and atoms in the specimen.
 %
-In certain limits it is easy to cleanly disentangle the two contributions: for large $\Delta E$
-we know that $I_{\rm ZLP}$ vanishes, while for $\Delta E\simeq 0$ then all emission can be associated to
- the ZLP peak.
+As shown by the representative example of Fig.~\ref{fig:EELS}, there are two limits
+for which one can cleanly disentangle the two contributions.
 %
-In this work we are interested in the low-loss region, where $I_{\rm ZLP}$ and $I_{\rm inel}$
-are of the same order and thus  care is required to separate them.
+First of all, for large enough values of
+$\Delta E$ then
+$I_{\rm ZLP}$ vanishes and thus $I_{\rm EEL} \to I_{\rm inel}$.
+%
+Secondly, in the $\Delta E\simeq 0$ limit all emission can be associated to
+ the ZLP such that $I_{\rm EEL}\to  I_{\rm ZLP}$.
+%
+In this work we are interested in the ultra-low-loss region, where $I_{\rm ZLP}$ and $I_{\rm inel}$
+become of the comparable magnitude.
 
 Our goal is to construct a parametrisation of $I_{\rm ZLP}$ based on artificial
-neural networks, whereby we can extract the relevant inelastic contribution by subtracting the
+neural networks, which we denote by $I_{\rm ZLP}^{\rm (mod)}$, whereby we
+can extract the relevant inelastic contribution by subtracting the
 ZLP background to the measured intensity spectra,
 \be
 \label{eq:ZLPseparation}
-I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E) - I_{\rm ZLP}^{\rm mod)}(\Delta E) \, ,
+I_{\rm inel}(\Delta E) \simeq I_{\rm EEL}(\Delta E) - I_{\rm ZLP}^{\rm (mod)}(\Delta E) \, ,
 \ee
-and thus be able to exploit the physical information contained in $I_{\rm inel}$ for small $\Delta E$.
+and thus be able to exploit the physical information contained in $I_{\rm inel}$ in
+the low-loss region.
 %
-Further, we want to estimate and propagate all the relevant sources of uncertainty associated
-both to the input data and to the subtraction procedure.
+Crucially, we aim to faithfully estimate and propagate all the relevant sources of uncertainty associated
+both to the input data and to methodological choices.
 
-
-As discussed in Sect.~\ref{sec:eels}, the ZLP in EELS depends both
+As discussed in Sect.~\ref{sec:eels}, the ZLP depends both
 on the value of the electron energy loss $\Delta E$ as well as on the operation
 parameters of the microscope, such as the electron beam energy $E_b$ and the exposure time
 $t_{\rm exp}$.
@@ -89,16 +97,16 @@ $t_{\rm exp}$.
 Therefore we want to construct a multidimensional model which takes all relevant
 variables as input.
 %
-This means that in general Eq.~(\ref{eq:ZLPseparation}) must be expressed as
+This means that in general Eq.~(\ref{eq:ZLPseparation}) must be written as
 \be
-I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E, E_{b},t_{\rm exp}, \ldots) - I_{\rm ZLP}^{\rm mod)}(\Delta E, E_{b},t_{\rm exp}, \ldots) \, ,
+I_{\rm inel}(\Delta E) = I_{\rm EEL}(\Delta E, E_{b},t_{\rm exp}, \ldots) - I_{\rm ZLP}^{\rm (mod)}(\Delta E, E_{b},t_{\rm exp}, \ldots) \, ,
 \ee
-where we note that by construction the subtracted spectra depends only on $\Delta E$ but not on the microscope
+where we note that the subtracted spectra should depend only on $\Delta E$ but not on the microscope
 operation parameters.
 %
 Ideally, the ZLP model should be able to accomodate as many input variables as possible.
-
-Following the NNPDF approach, here we parametrise $I_{\rm ZLP}$ by means of
+%
+Here we parametrise $I_{\rm ZLP}^{\rm (mod)}$ by means of
 multi-layer feed-forward artificial neural networks, that is, we express our ZLP model as
 \be
 \label{eq:ZLPmodelNN}
@@ -109,25 +117,25 @@ of the $n_l$ layers of the network when the $n_I$ inputs $\{ \Delta E, E_{b},t_{
 are used.
 %
 The weights and thresholds of this neural network model are then determined
-by supervised learning regression from a suitable training dataset, as
-detailed below.
+from the maximization of the model likelihood by means
+of supervised learning and non-linear regression from a suitable training dataset.
 %
-Multi-layer feed forward neural networks benefit from the ability
+This type of neural networks benefit from the ability
 to parametrise multidimensional input data with arbitrarily
-non-linear dependencies: even with a single hidden layer, neural networks
-can reproduce general functional dependencies provided one has a large enough
+non-linear dependencies: even with a single hidden layer, a neural network
+can reproduce arbitrary functional dependencies provided it has a large enough
 number of neurons.
 
 An schematic representation of our model
 is displayed in Fig.~\ref{fig:architecture}.
 %
- The input is an $n_I$ array containing $\Delta E$ and the
+ The input is an $n_I$ array containing $\Delta E$ and the rest of
  operation variables of the microscope, and
- the output is the value of the intensity of the zero-loss peak
- expected for an EEL spectrum for the chosen input variables.
+ the output is the value of the intensity of the ZLP distribution
+ associated to those input variables.
  %
  We adopt an $n_I$-10-15-5-1 architecture with three hidden layers, for a total
- number of 289~(271) free parameters for $n_i=3$~($n_I=1$) to be adjusted by the optimisation procedure.
+ number of 289~(271) free parameters for $n_I=3$~($n_I=1$) to be adjusted by the optimisation procedure.
  %
  We use a sigmoid activation function for the three hidden layers and a ReLU
  for the final one.
@@ -143,40 +151,27 @@ is displayed in Fig.~\ref{fig:architecture}.
 \begin{figure}[t]
     \centering
     \includegraphics[width=99mm]{plots/architecture.pdf}
-    \caption{Schematic representation of the NN-based model of the ZLP used
-      in this work, Eq.~(\ref{eq:ZLPmodelNN}).
+    \caption{Schematic representation of our ML model for the ZLP, Eq.~(\ref{eq:ZLPmodelNN}).
       %
-      The input is an $n_I$-dimensional array containing $\Delta E$ and all other relevant
+      The input is an $n_I$-dimensional array containing $\Delta E$ and other
       operation variables of the microscope such as $E_b$ and $t_{\rm exp}$.
       %
       The output is the predicted value of the intensity of the zero-loss peak
-      expected for an EEL spectrum with those specific input variables.
+      distribution associated to those specific input variables.
+      %
+      The architecture is chosen to be $n_I$-10-15-5-1, with sigmoid activation functions
+      in all layers except for a ReLU in the output neuron.
     }
     \label{fig:architecture}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%One of the reasons for the widespread success of machine learning 
-%is the growing availability of high processing capabilities 
-%and the large amounts of data at disposal~\cite{LeCun:2015}.
-%
-%Typical machine learning algorithms are divided into three classes:
-%supervised learning, unsupervised learning and reinforcement learning~\cite{Kotsiantis:2007}.
-%
-%A supervised learning regression tool of a feed-forward neural network 
-%was chosen for the purpose of this study. This is the simplest type 
-%in the group of neural networks and it was selected for its ability
-%to it accomodate multidimensional input data and 
-%incorporate non-linear interactions, within reasonable computation times. 
-%
-%For predicting the properties of the ZLP in vacuum, we construct an multidimensional
-%input neural network, a schematic of which can be observed in figure~\ref{fig:architecture}.
-
 \subsection{Uncertainty propagation}
 
-Even for EEL spectra taken at identical operation conditions of the microscope,
+We discussed in Sect.~\ref{sec:eels} how
+even for EEL spectra taken at identical operation conditions of the microscope,
 in general the resulting ZLP intensities will be different as discussed
-in Sect.~\ref{sec:eels}.
+in 
 %
 Further, there exist a large number of different NN configurations, each
 representing a different functional form for $I_{\rm ZLP}^{(\rm mod)}$ which provide
@@ -194,20 +189,6 @@ on experimental measurements (central values, uncertainties, and correlations)
 to construct a sampling of the probability density in the space of 
 the data, which following the neural network training is propagated
 to the probability density in the space of $I_{\rm ZLP}$ models.
-
-%With artificial neural networks as unbiased interpolators to describe the ZLP, 
-%it is possible to construct a probability distribution in the space of 
-%the experimental data and a faithful estimate of the ML model uncertainties.
-%
-%This sampled ZLP prediction can be applied to subtract to the EEL spectra while
-%keeping full track of all uncertainties associated to the data, model and parametrisation.
-%
-%Based on the NNPDF approach, 
-%error propagation from experimental data to the fit is performed by the Monte Carlo (MC)
-%replica method. 
-%
-%In the MC approach, any statistical property of the ZLP can be derived from a 
-%sample of replicas of the function.
 
 Let us assume that we have $n_{\rm dat}$ independent measurements of the ZLP intensity, for
 different or the same values of the input parameters collectively denoted as $\{z_i\}$:
