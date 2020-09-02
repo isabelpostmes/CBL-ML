@@ -11,7 +11,7 @@
 
 \maketitle
 
-
+\section{Kramer-Kronig relations}
 The Kramer-Kronig relations are two functions that relate the imaginary part of an complex function to the real part and vice versa. The relations hold as long as the complex function is analytic in the upper half-plane.
 The relations for function $\chi(\omega)=\chi_{1}(\omega)+i \chi_{2}(\omega)$, with $\omega$ a complex variable are given by \cite{wikipedia_2020}:
 
@@ -25,9 +25,26 @@ and:
     \chi_{2}(\omega)=-\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime}.
 \end{equation}
 
+Here $\mathcal{P}$ denotes the Cauchy principal value of the integral. For causal functions, due to (anti)symmetries arrising from its causality, these can be rewritten to \cite{wikipedia_2020}:
+
+\begin{equation}\label{eq_ch1_1}
+    \chi_{1}(\omega)=\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega^{\prime} \chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega \chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime}.
+\end{equation}
 
 
-Since the single scattering spectrum of a medium can be related to the complex permittivity, the Kramer-Kronig relations can be used to retrieve energy dependence of the real and imaginary permittivity from said spectrum \cite{egerton_2011}. If one ignores the instrumental broadening, surface-mode scattering and the retardation effects, the single scattering spectrum is approached by the single scattering distribution, which in place can be obtained from the recorded energy loss spectrum by the Fourier log method. \cite{egerton_2011}
+Since the single scattering spectrum of a medium can be related to the imaginary part of the complex permittivity, the Kramer-Kronig relations can be used to retrieve energy dependence of the real permittivity \cite{egerton_2011}. 
+
+
+
+
+\section{Spectrum analysis}
+If one ignores the instrumental broadening, surface-mode scattering and the retardation effects, the single scattering spectrum is approached by the single scattering distribution, which in place can be obtained from the recorded energy loss spectrum by the Fourier log method. \cite{egerton_2011}
 
 \begin{equation}\label{eq_S_E}
 \begin{aligned}
@@ -37,26 +54,39 @@ J^{1}(E) & \approx S(E)=\frac{2 I_{0} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im
 \end{aligned}
 \end{equation}
 
-In this equation is $J^1$ the single scattering distribution, $S(E)$ the single scattering spectrum, $I_0$ the zero-loss intensity, $t$ the sample thickness, $v$ the velocity of the incoming electron, $\beta$ the collection semi angle, $\alpha$ the angular divergence of the incoming beam, and $\theta_E$ the characteristic scattering angle for energy loss $E$. In this equation $\alpha$ is assumed small in comparison with $\beta$. If this is not the case, additional angular corrections are needed. Furthermore, $\theta_E$ is given by:
+In this equation is $J^1(E)$ the single scattering distribution, $S(E)$ the single scattering spectrum, $I_0$ the zero-loss intensity, $t$ the sample thickness, $v$ the velocity of the incoming electron, $\beta$ the collection semi angle, $\alpha$ the angular divergence of the incoming beam, and $\theta_E$ the characteristic scattering angle for energy loss $E$. In this equation $\alpha$ is assumed small in comparison with $\beta$. If this is not the case, additional angular corrections are needed. Furthermore, $\theta_E$ is given by:
 
 \begin{equation} \label{eq_th_E}
-    \theta_E = E/(\gamma m_0v^2 .
+    \theta_E = E/(\gamma m_0v^2) .
+\end{equation}
+
+
+Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\varepsilon(E)\right]$ from $\operatorname{Im}\left[-1/\varepsilon(E)\right]$, equation \eqref{eq_ch1_1} should be rewritten to \cite{Dapor2017}:
+
+\begin{equation}
+    \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]=1-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon\left(E^{\prime}\right)}\right] \frac{E^{\prime} d E^{\prime}}{E^{\prime 2}-E^{2}}.
 \end{equation}
 
 
 
-The first step of the K-K analysis is now to rewrite Eq. \ref{eq_S_E} to:
+\paragraph{QUESTIONs on my end} Will we be working with $J(E)$, and is there the need for a Fourier method, or is $J^1(E)$ provided? Are additional angular corrections needed?
+
+\section{Step 1: rescaling intensity}
+The first step of the K-K analysis is now to rewrite Eq. \eqref{eq_S_E} to:
 
 \begin{equation}
     \frac{J^1(E)}{\ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]} =\frac{I_{0} t}{\pi a_{0} m_{0} v^{2}} . \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] 
 \end{equation}
 
 
-As $\theta_E$ scales linearly with $E$, see \ref{eq_th_E}, the intensity in on the left side of the equation above now relatively increases for high energy loss with respect to low energy loss. \textcolor{red}{SOMETHING about aperture correction, is that relevant? }
+As $\theta_E$ scales linearly with $E$, see \eqref{eq_th_E}, the intensity in on the left side of the equation above now relatively increases for high energy loss with respect to low energy loss. \textcolor{red}{SOMETHING about aperture correction, is that relevant? }
 
 
+\paragraph{QUESTIONs on my end} I assume $\beta$ and $v$ are known, and that we do not take a distribution for $v$? 
 
 
+\section{Step 2: extrapolating}
+Since the upcoming integrals all extend to infinity, but the data acquisition is inherently up to a finite energy, the spectra need to be extrapolated. 
 
 
 
