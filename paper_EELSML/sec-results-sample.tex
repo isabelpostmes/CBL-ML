@@ -15,16 +15,16 @@ Their geometrical configuration is such that, depending on the specific region
 of the nanostructure that one is imaging, the spectra will be sensitive
 to different thicknesses and orientations of the material.
 
-The parametrisation of these in-sample EEL spectra will then be used
-to subtract the ZLP contribution and extract the bandgap energy $E_{\rm BG}$ from
+The parametrisation of the in-sample recorded EEL spectra will be used
+to subtract the contribution of the ZLP and extract the bandgap energy $E_{\rm BG}$ from
 the behaviour of $I_{\rm inel}(\Delta E)$ in the onset region.
 %
-The value of the bandgap  has been estimated in different ways
-from subtracted EEL spectra, such as by means of the inflection point of the rising intensity or
+In literature, different methods have been proposed to estimate the value of the bandgap from 
+subtracted EEL spectra, \textit{e.g.) by means of the inflection point of the rising intensity or
 a linear fit to the maximum positive slope~\cite{Schamm:2003}.
 %
-Here we will adopt the approach of~\cite{Rafferty:2000} whereby the behaviour
-of $I_{\rm inel}(\Delta E)$ in the onset region is  modeled by
+Here we will adopt the approach of~\cite{Rafferty:2000} where the behaviour
+of $I_{\rm inel}(\Delta E)$ in the onset region is modeled as
 \begin{equation}
   \label{eq:I1}
     I_{\rm inel}(\Delta E) \simeq  A \lp \Delta E-E_{\rm BG} \rp^{b} \, , \quad \Delta E \ge E_{\rm BG} \, ,
@@ -32,26 +32,27 @@ of $I_{\rm inel}(\Delta E)$ in the onset region is  modeled by
 and vanishes for $E < E_{\rm BG}$, where $A$ and $b$ are constants extracted from the fit.
 %
 The power exponent $b$ is expected to be $b\simeq 1/2$ for a semiconductor material characterised
-by a direct bandgap, and $b\simeq 3/2$ for the case instead of an indirect bandgap.
+by a direct bandgap, and $b\simeq 3/2$ instead for the case of an indirect bandgap.
 
 \subsection{Training dataset}
 %
 Fig.~\ref{fig:ws2positions} displays
 low-magnification TEM images of two different regions of
-the WS$_2$ nanoflowers, denoted as sample A and sample B in the following.
+the WS$_2$ nanoflowers, after this denoted as sample A and sample B.
 %
 In each image we indicate the specific locations where
 EEL spectra have been recorded, including in-vacuum measurements taken
 for calibration purposes.
 %
-In the upper image, the differences in contrast are correlated to the material
+In the upper image, the differences in contrast are related to the material
 thickness, with higher contrast corresponding to thinner regions.
 %
-Here the ZLP parametrisation strategy will be applied separately
+The ZLP parametrisation strategy will be applied separately
 to samples A and B, since in each case the EELS measurements have
 been obtained with different electron microscopes and
-operation settings, which thus as explained in Sect.~\ref{sec:eels}
-must be analysed independently.
+operation settings. 
+%
+For this reason we should analyse them independently, as explained in Sect.~\ref{sec:eels}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
@@ -76,8 +77,8 @@ In Table~\ref{table:sampledata} we demonstrate the most relevant properties of t
 in the locations indicated in Fig.~\ref{fig:ws2positions} using the same convention as
 in Table~\ref{table:sampledata}.
 %
-As mentioned, the sets of spectra from samples A and B
-have been acquired with different microscopes and are therefore
+As the sets of spectra from samples A and B
+have been acquired with different microscopes, they are
 not directly comparable.
 %
 The full width at half maximum is averaged over all spectra of a given set,
@@ -115,17 +116,18 @@ B        &       ?       &        ?         &   6      &    1918    &     -4.054
 In the following we will focus on representative spectra, specifically spectra \#4 and \#5 in sample
 A and spectra \#14 and \#15 in sample B.
 %
-The full set of original spectra are made available together with the code used to
-analyse them as described in this work, whose installation
-and usage instructions are summarised in~\ref{sec:installation}.
+The full set of spectra together with the code used for this analysis
+are made available together in~\ref{sec:installation}, where its installation
+and usage instructions are summarised.
 %
-By means of the {\tt Digital Micrograph} EELS software we can determine
-the thickness of the material in each of the locations, and use it to
-estimate the number of monolayers, taking into account that
-one layer (S-W-S) of WS$_2$ has a thickness of around 0.9 nm.
+The thickness of the material in each of the locations can be determined
+with the {\tt Digital Micrograph} EELS software and this can be used to
+estimate the number of monolayers. 
 %
-For example, the thinner spectrum in sample A is \#5,
-with a thickness of 2.1 nm corresponding to around 2 monolayers.
+Taking into account that
+one layer (S-W-S) of WS$_2$ has a thickness of approximately 0.9 nm, the thinner spectrum 
+in sample A is \#5,
+with a thickness of 2.1 nm corresponding to 2 monolayers.
 
 \subsection{ZLP subtraction}
 
