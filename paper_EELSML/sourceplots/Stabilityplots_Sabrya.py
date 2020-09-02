@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-
 ########## def smooth function ##########################
 def smooth(x, window_len, window='hanning'):
     s=np.r_[x[window_len-1:0:-1],x,x[-2:-window_len-1:-1]]
@@ -84,7 +83,7 @@ plt.title('Spectrum 14', fontsize=20)
 for i in range(2):
     ax = plt.subplot(gs[i])
    
-    ax.set_xlim([1.6, 2.2])
+    ax.set_xlim([1.6, 2.0])
     
     ax.tick_params(labelbottom=True)
     ax.tick_params(which='major', direction='in', length= 10, labelsize=14)
@@ -99,6 +98,8 @@ for i in range(2):
         ax.plot(dE1_array, smooth(df_high[0], wl), '-', color='steelblue',label=label2)
         ax.plot(dE1_array, smooth(df_low[0], wl), '-', color='steelblue', label=label2)
         ax.fill_between(dE1_array, smooth(df_high[0], wl), smooth(df_low[0], wl), color='steelblue', alpha=.2, label=label2)
+
+        ax.axvline(x=1.8,color="black",ls="dashdot")
         
     
     if i == 1:
@@ -111,20 +112,21 @@ for i in range(2):
         ax.set_yticks([0, .5, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5])
         ax.set_ylabel(r'$E_{\rm BG}$ (eV)', fontsize=22)
         ax.set_xlabel(r'$\Delta E_{\rm I}$ (eV)', fontsize=22)
-        ax.set_ylim([0.95, 2.5])
+        ax.set_ylim([0.95, 2.4])
+        ax.axvline(x=1.8,color="black",ls="dashdot")
         
     
     handles, labels = ax.get_legend_handles_labels()
     ax.legend((handles[0], (handles[1], handles[2], handles[3])), (labels[0], labels[1]), \
-                  loc = 'upper left', fontsize=17)
+                  loc = 'upper left', fontsize=19)
     
 
     #if (i % 2) != 0:
         # ax.set_yticklabels([])
   
 plt.tight_layout()
-plt.savefig('Stability_plots_sp14.pdf')
-print("Saved fig = Stability_plots_sp14.pdf")
+plt.savefig('../plots/Stability_plots_sp14.pdf')
+print("Saved fig = ../plots/Stability_plots_sp14.pdf")
 
 
 

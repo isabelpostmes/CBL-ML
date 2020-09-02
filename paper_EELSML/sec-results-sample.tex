@@ -317,7 +317,7 @@ are found for the rest of locations.
 As mentioned above, this region is characterised by a sizable thickness where
 WS$_2$ is expected to behave as a bulk material.
 %
-The left panel of Fig.~\ref{fig:sp4_subtracted_spectrum} displays the original
+The left panel of Fig.~\ref{fig:sp14_subtracted_spectrum} displays the original
 and subtracted EEL spectrum
 together with the predictions of the ZLP model, where
 the bands indicate the 68\% confidence level uncertainties and the central value
@@ -341,7 +341,7 @@ together with the corresponding uncertainty bands.
      Right: the average ratio of the derivative of the intensity
      distribution in sp14 over its vacuum counterpart, Eq.~(\ref{eq:rder})
   }
-\label{fig:sp4_subtracted_spectrum}
+\label{fig:sp14_subtracted_spectrum}
 \end{centering}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -367,125 +367,135 @@ indicating that the training dataset has not been contaminated by the inelastic 
 
 The average ratio of the derivative of the intensity
 distribution in sp14 over its vacuum counterpart, Eq.~(\ref{eq:rder}), is shown
-in the right panel of  Fig.~\ref{fig:sp4_subtracted_spectrum}. 
+in the right panel of  Fig.~\ref{fig:sp14_subtracted_spectrum}. 
 %
-From this comparison we can see that Fig.~\ref{fig:sp4_subtracted_spectrum} validates our choice of
-$\Delta E_{\rm I}$.
+By requiring that $\mathcal{R}^{(j)}_{\rm der}(\Delta E_{\rm I})\simeq 0.9$ we obtain
+the value $\Delta E_{\rm I}=1.8$ eV used as baseline the analysis.
+%
+It should be noted that this choice is not unique, for example requiring
+$\mathcal{R}^{(j)}_{\rm der}(\Delta E_{\rm I})\simeq 0.8$ instead would have led
+to $\Delta E_{\rm I}=2.0$ eV.
+%
+It is therefore important to asses the stability of our results as the hyper-parameter $\Delta E_{\rm I}$
+is varied around its optimal value.
 
-Fig.~\label{fig:subtracted_spectra_comp} displays the
-The ZLP-subtracted spectra corresponding to locations \#4, \#5, and \#6
-    in ..... with the corresponding uncertainties.
+With this motivation, in Fig.~\ref{fig:bvalues_sampleA} we display the
+values of the exponent $b$
+and the bandgap energy $E_{\rm BG}$ 
+obtained from the same subtracted spectrum as that shown in
+Fig.~\ref{fig:sp14_subtracted_spectrum} for variations of $\Delta E_{\rm I}$ 
+around its optimal value (1.8 eV, indicated by the horizontal dashed line) by an amount
+of $\pm 0.2$ eV.
+%
+Here the central value and the error band for each value of $\Delta E_I$ is evaluated
+as the median and the 68\% CL interval over the $N_{\rm rep}=500$ Monte Carlo replicas.
+%
+We observe that the model predictions for both $b$ and $E_{\rm BG}$ are stable with respect
+to variations of $\Delta E_I$, with any shift in the central value contained within the
+uncertainty bands.
+%
+We can therefore conclude that our approach is robust with respect to the choice of its
+hyper-parameters.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+\begin{centering}
+  \includegraphics[width=0.99\linewidth]{plots/Stability_plots_sp14.pdf} 
+  \caption{\small The values of the exponent $b$ (left)
+    and the bandgap energy $E_{\rm BG}$ (right panel) from the model Eq.~(\ref{eq:I1})
+    obtained from the subtracted spectrum sp14 as $\Delta E_{\rm I}$ is varied by $\pm 0.2$ eV
+    around its optimal value, indicated by the horizontal dashed line.
+  }
+\label{fig:bvalues_sampleA}
+\end{centering}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The final values for $E_{\rm BG}$ and $b$ obtained in the analysis of this specific spectrum are
+\be
+E_{\rm BG} = 1.6_{-0.2}^{+0.3}\,{\rm eV} \, ,\quad b= 1.3_{-0.7}^{+0.3} \, .
+\ee
+We thus find that for this specific region of the WS$_2$ nanoflowers
+the model fit to the subtracted EEL spectrum exhibits a clear preference
+for an indirect bandgap (where $b\simeq 1.5$), though a direct one ($b\simeq 0.5$)
+cannot be excluded within uncertainties.
+%
+This result is consistent with the theoretical expectations of the local
+electronic properties of bulk WS$_2$.
+%
+Further, the value of $E_{\rm BG}$ is consistent with previous determinations
+in the same material at the bulk level, such as those collected in Table~\ref{table:bgvalues}.
+%
+Consistent results are obtained for other locations of Fig.~\ref{fig:ws2positions}
+where spectra have been recorded.
+%
+To the best of our knowledge
+these results represent the first EELS bandgap analysis of WS$_2$ nanostructures
+whose crystalline structure is based on mixed 2H/3R polytypes.
+
+
+
+\subsection{Bandgap analysis of sample B}
+
+We now discuss the results of the bandgap analysis of sample B,
+taking location sp4 in Fig.~\ref{fig:ws2positions} as representative spectrum; compatible results
+are found for the rest of locations.
+%
+In Fig.~\ref{fig:SubtractedEELS_plot_sp4} we present the analogous
+result to that of Fig.~\ref{fig:sp14_subtracted_spectrum}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+\begin{centering}
+  \includegraphics[width=0.60\linewidth]{plots/SubtractedEELS_plot_sp4.pdf}
+  \caption{Same as Fig.~\ref{fig:sp14_subtracted_spectrum}
+    now for sp4 (sample B) from Fig.~\ref{fig:ws2positions}.
+  }
+\label{fig:SubtractedEELS_plot_sp4}
+\end{centering}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Fig.~\ref{fig:subtracted_spectra_comp} then displays the
+the ZLP-subtracted spectra from sample B corresponding to locations sp4, sp5, and sp6
+    from Fig.~\ref{fig:ws2positions} together with the corresponding model uncertainties.
     %
     Results are shown for two values of the hyperparameter $\Delta E_{\rm I}$,
     1.45 eV (left) and 1.55 eV (right panel).
+    %
+    Note how features of the subtracted spectra such as the peaks as $\Delta E\simeq 1.5$,
+    1.7 and 2.0 are common across the three spectra, demonstrating that there
+    are genuine physical features of the ultra-low-loss region rather than statistical
+    fluctuations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \begin{centering}
   \includegraphics[width=0.99\linewidth]{plots/subtracted_spectra_comp.pdf}
-  \caption{The ZLP-subtracted spectra corresponding to locations \#4, \#5, and \#6
-    in ..... with the corresponding uncertainties.
+  \caption{The ZLP-subtracted spectra from sample B corresponding to locations sp4, sp5, and sp6
+    from Fig.~\ref{fig:ws2positions} together with the corresponding model uncertainties.
     %
     Results are shown for two values of the hyperparameter $\Delta E_{\rm I}$,
     1.45 eV (left) and 1.55 eV (right panel).
+    %
+    Note how features of the subtracted spectra such as the peaks as $\Delta E\simeq 1.5$,
+    1.7 and 2.0 are common across the three spectra.
   }
 \label{fig:subtracted_spectra_comp}
 \end{centering}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Bandgap determination}
-
-
-
-We now move to discuss the results on the bandgap determination obtained
-by fitting the functional form Eq.~(\ref{eq:I1}) to each of the subtracted
-spectra defined by Eq.~(\ref{eq:subtractedModelPrediction2}).
-%
-Results will be presented as a function of the hyper-parameter $\Delta E_{\rm I}$
-in order to gauge the stability of the results.
-%
-To begin with, in Fig.~\ref{fig:bvalues}
-we display the values of the bandgap energy $E_{\rm BG}$ (top panels)
-and of the exponent $b$ (bottom panels) as a function of $\Delta E_I$
-for locations \#4 (left)
-and \#5 (right panels) from Sample A indicated in Fig.~\ref{fig:ws2positions}.
-%
-The central value and the error band for each value of $\Delta E_I$ is evaluated
-as the median and the 68\% CL interval over the $N_{\rm rep}=500$ Monte Carlo replicas.
-%
-The red marker indicates the position of the optimal value of
-$\Delta E_{\rm I}$ determined as specified above.
+Fig.~\ref{fig:bvalues_sampleB} displays
+same comparison as Fig.~\label{fig:bvalues_sampleA} now for sp4 in sample B.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{figure}[t]
 \begin{centering}
-  \includegraphics[width=0.6\linewidth]{plots/Stability_plots_sp4.pdf}
-  \includegraphics[width=0.6\linewidth]{plots/Stability_plots_sp14.pdf} 
-  \caption{Top: the values of the bandgap energy $E_{\rm BG}$ and of the exponent $b$
-  obtained from fits to the onset
-  region of subtracted spectra using Eq.~(\ref{eq:I1}) as a function
-  of the hyper-parameter $\Delta E_{\rm I}$.
-  %
-  We show results for locations \#4 from set A (top)
-  and \#14 of set B (bottom) indicated in Fig.~\ref{fig:ws2positions}.
-  %
-  The central value and the error band for each value of $\Delta E_I$ is evaluated
-  as the median and the 68\% CL interval over the $N_{\rm rep}=500$ Monte Carlo replicas.
-  }
-\label{fig:bvalues}
+  \includegraphics[width=0.99\linewidth]{plots/Stability_plots_sp4.pdf}
+  \caption{Same as Fig.~\label{fig:bvalues_sampleA} now for sp4 in sample B.
+   }
+\label{fig:bvalues_sampleB}
 \end{centering}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-In Table~\ref{table:bandgap_fitting} we collect
- the median values and 68\% CL ranges for the bandgap energy $E_{\rm BG}$
- and the bandgap exponent $b$ determined from fitting Eq.~(\ref{eq:I1}) to each of the subtracted
- spectra defined by Eq.~(\ref{eq:subtractedModelPrediction2}).
- %
- We consider two representative spectra from sample A and two
- from sample B. 
- %
- The error is divided into the statistical and the systematic component, which are
- then added in quadrature to evaluate the total uncertainty in the fit results. 
- %
- From these results we see that the spectra in sample A are consistent with a direct bandgap,
- while those of sample B with an indirect bandgap.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}[t]
-  \begin{center}
-    \footnotesize
-            \renewcommand{\arraystretch}{1.50}
-  \begin{tabular}{@{}c|c|c|c}
-\br
-Set & Spectrum   &$E_{\rm BG}$~(eV)  &  $b$  \\
-\mr
-\mr
-A        &   sp\#4   &     $ 2.0 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  2.0 \pm 0.3^{\rm (tot)}   $                &       $ 0.5 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  0.5 \pm 0.3^{\rm (tot)}   $                       \\
-\mr
-A        &   sp\#5   &     $ 2.0 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  2.0 \pm 0.3^{\rm (tot)}   $                &       $ 0.5 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  0.5 \pm 0.3^{\rm (tot)}   $                       \\
-\mr
-\mr
-B        &   sp\#14   &     $ 2.0 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  2.0 \pm 0.3^{\rm (tot)}   $                &       $ 0.5 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  0.5 \pm 0.3^{\rm (tot)}   $                       \\
-\mr
-B        &   sp\#15   &     $ 2.0 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  2.0 \pm 0.3^{\rm (tot)}   $                &       $ 0.5 \pm 0.3^{\rm (stat)} \pm  0.2^{\rm (sys)}=  0.5 \pm 0.3^{\rm (tot)}   $                       \\
-\br
-  \end{tabular}
-    \end{center}
-  \caption{\small The median values and 68\% CL ranges for the bandgap energy $E_{\rm BG}$
-    and the bandgap exponent $b$ determined from fitting Eq.~(\ref{eq:I1}) to each of the subtracted
-    spectra defined by Eq.~(\ref{eq:subtractedModelPrediction2}).
-    %
-    As justified in the text, we consider two representative spectra from sample A and two
-    from sample B. 
-    %
-    The error is divided into the statistical and the systematic component, which are
-    then added in quadrature to evaluate the total uncertainty in the fit results. {\rm ToDo}.
-  }
-   \label{table:bandgap_fitting}
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

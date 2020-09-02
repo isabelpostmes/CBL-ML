@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-
 ########## def smooth function ##########################
 def smooth(x, window_len, window='hanning'):
     s=np.r_[x[window_len-1:0:-1],x,x[-2:-window_len-1:-1]]
@@ -84,13 +83,13 @@ maxs = mins + 2
 for i in range(mins, maxs):
     ax = plt.subplot(gs[i-mins])
    
-    ax.set_xlim([1.05, 1.8])
+    ax.set_xlim([1.2, 1.6])
     
     ax.tick_params(labelbottom=True)
     ax.tick_params(which='major', direction='in', length= 10, labelsize=14)
     
     if i == mins:
-        ax.set_ylim([-.25, 2])
+        ax.set_ylim([-.1, 1.6])
         ax.set_yticks([0, .5, 1, 1.5, 2])
         ax.set_xlabel(r'$\Delta E_{\rm I}$ (eV)', fontsize=22)
         ax.set_ylabel(r'$b$', fontsize=22)
@@ -99,7 +98,8 @@ for i in range(mins, maxs):
         ax.plot(dE1_array, smooth(df_high[i], wl), '-', color='steelblue',label=label2)
         ax.plot(dE1_array, smooth(df_low[i], wl), '-', color='steelblue', label=label2)
         ax.fill_between(dE1_array, smooth(df_high[i], wl), smooth(df_low[i], wl), color='steelblue', alpha=.2, label=label2)
-        ax.axvline(x=1.4, linestyle='--', color='gray')
+        ax.axvline(x=1.4, linestyle='dashdot', color='black')
+        ax.set_ylim([-.1, 1.4])
         
     if i == mins+1:
         ax.set_ylim([2, 3])
@@ -111,12 +111,13 @@ for i in range(mins, maxs):
         ax.set_yticks([.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5])
         ax.set_ylabel(r'$E_{\rm BG}$ (eV)', fontsize=22)
         ax.set_xlabel(r'$\Delta E_{\rm I}$ (eV)', fontsize=22)
-        ax.set_ylim([0.7, 1.5])
-        ax.axvline(x=1.4, linestyle='--', color='gray')
+        ax.set_ylim([0.8, 1.4])
+        ax.axvline(x=1.4, linestyle='dashdot', color='black')
     
     handles, labels = ax.get_legend_handles_labels()
     ax.legend((handles[0], (handles[1], handles[2], handles[3])), (labels[0], labels[1]), \
                   loc = 'upper left', fontsize=17)
     
 plt.tight_layout()
-plt.savefig('Stabilityplots_sp4.pdf')
+plt.savefig('../plots/Stabilityplots_sp4.pdf')
+print("Saved fig = ../plots/Stabilityplots_sp4.pdf")
