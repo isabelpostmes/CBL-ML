@@ -1,58 +1,44 @@
 \section{ZLP subtraction and bandgap determination in WS$_2$}
 \label{sec:results_sample}
 
-Following the discussion of the vacuum results, we now move
-to present the application of our fitting strategy to the parametrisation
-of EEL spectra recorded on samples.
+Following the discussion of the vacuum ZLP analysis, we now
+present the application of our machine learning strategy to parametrise the ZLP
+arising in EEL spectra recorded on specimens.
 %
-Specifically, we will analyse EELS measurements taken on the WS$_2$ nanostructures
-presented in~\cite{SabryaWS2} and reviewed in Sect.~\ref{sec:tmd}.
+Specifically, we will analyse EELS measurements acquired on different regions
+of the WS$_2$ nanoflowers reviewed in Sect.~\ref{sec:tmd}.
 %
-These nanostructures exhibit a flower-like configuration where different layers
-of material combine to form the petals and the stem of the flowers.
-%
-Their geometrical configuration is such that, depending on the specific region
-of the nanostructure that one is imaging, the spectra will be sensitive
-to different thicknesses and orientations of the material.
-
-The parametrisation of the in-sample recorded EEL spectra will be used
-to subtract the contribution of the ZLP and extract the bandgap energy $E_{\rm BG}$ from
-the behaviour of $I_{\rm inel}(\Delta E)$ in the onset region.
-%
-In literature, different methods have been proposed to estimate the value of the bandgap from 
-subtracted EEL spectra, \textit{e.g.} by means of the inflection point of the rising intensity or
-a linear fit to the maximum positive slope~\cite{Schamm:2003}.
-%
-Here we will adopt the approach of~\cite{Rafferty:2000} where the behaviour
-of $I_{\rm inel}(\Delta E)$ in the onset region is modeled as
-\begin{equation}
-  \label{eq:I1}
-    I_{\rm inel}(\Delta E) \simeq  A \lp \Delta E-E_{\rm BG} \rp^{b} \, , \quad \Delta E \ge E_{\rm BG} \, ,
-\end{equation}
-and vanishes for $E < E_{\rm BG}$, where $A$ and $b$ are constants extracted from the fit.
-%
-The power exponent $b$ is expected to be $b\simeq 1/2$ for a semiconductor material characterised
-by a direct bandgap, and $b\simeq 3/2$ instead for the case of an indirect bandgap.
+The resulting ZLP parametrisation will then be used to isolate the inelastic
+contribution $I_{\rm inel}$ in each spectrum and determine the bandgap energy $E_{\rm BG}$ from
+its behaviour in the onset region.
 
 \subsection{Training dataset}
 %
-Fig.~\ref{fig:ws2positions} displays
-low-magnification TEM images of two different regions of
-the WS$_2$ nanoflowers, after this denoted as sample A and sample B.
+Low-magnification TEM images of two representative regions of
+the WS$_2$ nanoflowers are displayed in Fig.~\ref{fig:ws2positions},
+denoted as sample A and sample B.
 %
 In each image we indicate the specific locations where
 EEL spectra have been recorded, including in-vacuum measurements taken
 for calibration purposes.
 %
-In the upper image, the differences in contrast are related to the material
+Note that in sample B  the differences in contrast are related to the material
 thickness, with higher contrast corresponding to thinner regions.
 %
-The ZLP parametrisation strategy will be applied separately
-to samples A and B, since in each case the EELS measurements have
-been obtained with different electron microscopes and
-operation settings. 
+The two samples exhibit different structural morphologies: while sample A is composed
+by a relatively thick region of WS$_2$, sample B corresponds to a thin petal region
+with possibly overlapping terraces.
 %
-For this reason we should analyse them independently, as explained in Sect.~\ref{sec:eels}.
+In other words, sample A is composed by bulk WS$_2$ while in sample B some specific regions
+could be rather thinner, down to the few monolayers level.
+%
+This thickness information has been be determined
+by means of the {\tt Digital~Micrograph}  software.
+%
+Further, the measurements on each sample have
+been obtained with different electron microscopes and
+operation settings, and for this reason
+we analyse them independently.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
@@ -65,32 +51,31 @@ For this reason we should analyse them independently, as explained in Sect.~\ref
     EEL spectra have been recorded, including the in-vacuum measurements taken
     for calibration purposes.
     %
-    In sample A the difference in contrast is correlated to the material
+    In sample B the difference in contrast is correlated to the material
     thickness, with higher contrast corresponding to thinner regions of the nanostructure.
+    %
+    The morphological differences between the two samples are discussed in the text.
   }
 \label{fig:ws2positions}
 \end{centering}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In Table~\ref{table:sampledata} we demonstrate the most relevant properties of the spectra collected
-in the locations indicated in Fig.~\ref{fig:ws2positions} using the same convention as
-in Table~\ref{table:sampledata}.
+In Table~\ref{table:sampledata} we collect the most relevant properties of the spectra collected
+in the locations indicated in Fig.~\ref{fig:ws2positions} using the same format as
+in Table~\ref{table:vacuumdata}.
 %
-As the sets of spectra from samples A and B
-have been acquired with different microscopes, they are
-not directly comparable.
+Note that since the of spectra from samples A and B
+have been acquired with different microscopes, features of the ZLP
+such as the FWHM are expected to be different.
 %
-The full width at half maximum is averaged over all spectra of a given set,
-including those acquired on vacuum.
-%
-From this table one can observe that the microscope resolution on the measurements of the first set equals 160 meV, 
-which is three times higher
+From this table one can observe how  the ZLP for the spectra acquired on sample A exhibit
+a FWHM about three times higher as compared to those of sample B
 than the resolution obtained on the second set. 
 %
-This difference can be ascribed to the fact that the first set of measurements were obtained with the use of a 
-monochromator, whereas the spectra of set B were recorded without a monochromator.
-%
+This difference can be understood from the fact that the EELS spectra from sample B, unless those
+from sample B,
+were recorded with a TEM equipped with a monochromator.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,49 +86,56 @@ monochromator, whereas the spectra of set B were recorded without a monochromato
 \br
 Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm b}$ {(}keV{)} & $N_{\rm sp}$ & $N_{\rm dat}$ & $\Delta E_{\rm min}$~(eV)  & $\Delta E_{\rm max}$~(eV)  & FWHM~(eV)  \\ 
 \mr
-A        &       ?       &    200 keV       &   10     &    2000    &     -0.93        & 9.07   & $ 0.16\pm0.01$ \\
-B        &       ?       &        ?         &   6      &    1918    &     -4.054       & 45.471 & $ 0.47\pm0.01$  \\
+A        &       ?       &        ?         &   6      &    1918    &     -4.1       & 45.5 & $ 0.47\pm0.01$  \\
+B        &       ?       &    200 keV       &   10     &    2000    &     -0.9        & 9.1   & $ 0.16\pm0.01$ \\
 \br
   \end{tabular}
     \end{center}
-  \caption{\small Same as Table~\ref{table:vacuumdata} now for the EEL spectra taken on two sets of WS$_2$ nanostructures. \textbf{ToDo: missing operational values}
+  \caption{\small Same as Table~\ref{table:vacuumdata} now for the EEL spectra taken on specimens A and B.
+    %
+    Note that the location on the WS$_2$ nanoflowers where each spectra has been recorded
+    was indicated in Fig.~\ref{fig:ws2positions}.
   }
    \label{table:sampledata}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In the following we will focus on representative spectra, specifically spectra \#4 and \#5 in sample
-A and spectra \#14 and \#15 in sample B.
+In the following we will present results for representative spectra
+corresponding to each of the two samples.
 %
-The full set of spectra together with the code used for this analysis
-are made available together in~\ref{sec:installation}, where its installation
-and usage instructions are summarised.
-%
-The thickness of the material in each of the locations can be determined
-with the {\tt Digital Micrograph} EELS software and this can be used to
-estimate the number of monolayers. 
-%
-Taking into account that
-one layer (S-W-S) of WS$_2$ has a thickness of approximately 0.9 nm, the thinner spectrum 
-in sample A is \#5,
-with a thickness of 2.1 nm corresponding to 2 monolayers.
+The full set of spectra together are available together with {\tt EELSfitter},
+the code used to produce the results of this analysis
+and whose installation
+and usage instructions are presented in Appendix~\ref{sec:installation}.
 
-\subsection{ZLP subtraction}
 
-In Table~\ref{table:sampledata_summary} we display
-the mean value and uncertainty of the first local minima, $\Delta E|_{\rm min}$,
-   averaged over the spectra corresponding to samples A and B from
-    Fig.~\ref{fig:ws2positions},
+\subsection{Subtraction procedure}
+
+In Table~\ref{table:sampledata_summary} we collect
+the mean value and uncertainty of the first local minimum, $\Delta E|_{\rm min}$,
+averaged over the spectra corresponding to samples A and B from
+Fig.~\ref{fig:ws2positions},
 as well as the corresponding values of the hyper-parameters
-    $\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ defined in Fig.~\ref{fig:EELS_toy}.
-    %
-Recall that as explained in Sect.~\ref{sec:methodology} only
-the data with $\Delta E \le \Delta E_{\rm I}$ is used for the training
-    of the neural network model.
-    %
-    For $\Delta E \ge \Delta E_{\rm II}$ instead, the training set includes only the pseudo-data
-    that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
+ $\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ defined in Fig.~\ref{fig:EELS_toy}.
+%
+Recall that only
+the data points with $\Delta E \le \Delta E_{\rm I}$ is used for the training
+of the neural network model.
+%
+For $\Delta E \ge \Delta E_{\rm II}$ instead, the training set includes only the pseudo-data
+that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
+%
+ The location of the first minimum is relatively stable
+ among all the spectra belonging to a given set.
+ %
+ This indicates that the onset of the inelastic contributions $I_{\rm inel}$ does
+ not change significantly as we move to different regions of the sample.
+ %
+ The model training is performed for a range of $\Delta E_{\rm I}$ values
+ subject to the condition that $\Delta E_{\rm I} \le \Delta E_{\rm min}$,
+ with the optimal values listed  in Table~\ref{table:sampledata_summary} selected
+ by comparing the intensity derivatives in the sample with the vacuum reference.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -154,8 +146,8 @@ the data with $\Delta E \le \Delta E_{\rm I}$ is used for the training
 \br
 Set & $\Delta E|_{\rm min}$~(eV)  &  $\Delta E_{\rm I}$~(eV)  &  $\Delta E_{\rm II}$~(eV)   \\
 \mr
-A        &    $1.80\pm0.04$               &          1.4        &      6        \\
-B        &    $2.70\pm0.06$               &          1.8        &      12         \\
+A        &    $2.70\pm0.06$               &          1.8        &      12         \\
+B        &    $1.80\pm0.04$               &          1.4        &      6        \\
 \br
   \end{tabular}
     \end{center}
@@ -174,27 +166,16 @@ B        &    $2.70\pm0.06$               &          1.8        &      12       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- We observe that the location of the first minimum is relatively stable
- among all the spectra belonging to a given set.
+The result of the  neural network training is
+ a set of $N_{\rm rep}=500$ replicas
+  parametrising the ZLP, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
  %
- The neural network training is performed for a wide range of $\Delta E_{\rm I}$ values
- subject to the condition that $\Delta E_{\rm I} \le \Delta E_{\rm min}$.
- %
- The optimal values listed  in Table~\ref{table:sampledata_summary} are selected
- by means of comparing the intensity derivatives in the sample with those
- of the vacuum combined with a stability analysis, as we discuss below.
- %
- Upon completion of the neural network training, one ends up
- for each of the independent samples with
- a set $N_{\rm rep}=500$ replicas
- of the zero-loss peak parametrisation, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
- %
- Assuming that we have $N_{\rm sp}$ spectra in each sample, then the zero-loss peak
+ Taking into account that we have $N_{\rm sp}$ individual spectra in each sample,  the ZLP
  subtraction is performed individually
  for each Monte Carlo replica,
  \be
  \label{eq:subtractedModelPrediction}
- I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E) \equiv I_{\rm EELS}^{(j)}(\Delta E) - I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)\, ,
+ I_{\rm inel}^{({\rm exp})(j,k)}(\Delta E) \equiv I_{\rm EELS}^{({\rm exp})(j)}(\Delta E) - I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)\, ,
  \quad \forall~N_{\rm rep} \, ,\quad j=1,\ldots,N_{\rm sp} \, ,
  \ee
  from which statistical estimators can be evaluated as usual.
@@ -202,21 +183,21 @@ B        &    $2.70\pm0.06$               &          1.8        &      12       
  For instance, the mean value for our model prediction for the $j$-th spectrum
  can be evaluated by averaging over the set of replicas,
  \be
- \la  I_{\rm inel}^{({\rm mod})(j)}\ra (\Delta E)
+ \la  I_{\rm inel}^{({\rm exp})({\rm (exp)}j)}\ra (\Delta E)
  = \frac{1}{N_{\rm rep}} \sum_{k=1}^{N_{\rm rep}}  I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E) \, ,
  \quad j=1,\ldots,N_{\rm sp} \, ,
  \ee
- and likewise for the corresponding uncertainties.
+ and likewise for the corresponding uncertainties or correlations.
 %
- We note that for large values of $\Delta E$
+ For large values of $\Delta E$
  the model prediction reduces to the original spectra, since in that region
- the ZLP contribution vanishes by construction,
+ the ZLP contribution vanishes,
  \be
- I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E \gg \Delta E_{\rm II}) \to  I_{\rm EELS}^{(j)}(\Delta E) \, ,\quad
+ I_{\rm inel}^{({\rm exp})(j,k)}(\Delta E \gg \Delta E_{\rm I}) \to  I_{\rm EE}^{{\rm (exp)}(j)}(\Delta E) \, ,\quad
  \forall~j,k \, .
  \ee
  
- For very small values of the energy loss $\Delta E$, the contribution to the total
+ For very small values of the energy loss, the contribution to the total
  spectra from inelastic scatterings is negligible
  and thus the subtracted model prediction Eq.~(\ref{eq:subtractedModelPrediction}) should
  vanish.
@@ -234,8 +215,9 @@ B        &    $2.70\pm0.06$               &          1.8        &      12       
  behaviour:
  \bea
  \nonumber
- I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{(j)}(\Delta E) \, ,\quad \Delta E < \Delta E_0  \, ,\\
- I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{(j)} + \lp \xi_1^{(n_l)(k)}(\Delta E) - I_{\rm EELS}^{(j)}(\Delta E)\rp  \times \mathcal{F} \, , \nonumber \quad 
+ I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{({\rm exp})(j)}(\Delta E) \, ,\quad \Delta E < \Delta E_0  \, ,\\
+ I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& I_{\rm EELS}^{{\rm (exp)}(j)} + \lp \xi_1^{(n_l)(k)}(\Delta E) -
+ I_{\rm EELS}^{{\rm (exp)}(j)}(\Delta E)\rp  \times \mathcal{F} \, , \nonumber \quad 
  \Delta E_0 < \Delta E \le \Delta E_1 \, ,\\
  &&\mathcal{F} = \exp\lp -\frac{\lp \Delta E - \Delta E_1 \rp^2 }{\lp \Delta E_0 - \Delta E_1 \rp^2 \delta^2} \rp  \, , \label{eq:matching} \\
  I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E) &=& \xi_1^{(n_l)(k)}(\Delta E) \, , \quad \Delta E > \Delta E_1 \nonumber \, ,
@@ -244,45 +226,74 @@ B        &    $2.70\pm0.06$               &          1.8        &      12       
  the ZLP and $\delta$ is a dimensionless tunable parameter.
  %
  In Eq.~(\ref{eq:matching}), $\mathcal{F}(\Delta E)$ represents a matching factor
- that ensures that the model prediction of the zero loss peak smoothly interpolates
+ that ensures that the ZLP model prediction smoothly interpolates
  between $\Delta E=\Delta E_0$ (where $\mathcal{F}\ll 1$ and the original spectrum should
  be reproduced) and $\Delta E=\Delta E_1$
- (where $\mathcal{F}=1$ leaving the neural net output unmodified).
+ (where $\mathcal{F}=1$ leaving the neural network output unaffected).
  %
- In  this work we choose $\Delta E_0 = \Delta E_1 -0.5\,{\rm eV}$, though we have verified
+ Here we adopt $\Delta E_0 = \Delta E_1 -0.5\,{\rm eV}$,  having verified
  that results are fairly independent of this choice.
-
+ %
  Taking into account the matching procedure, we can slightly modify Eq.~(\ref{eq:subtractedModelPrediction})
- to read
+ to 
  \be
  \label{eq:subtractedModelPrediction2}
- I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E) \equiv I_{\rm EELS}^{(j)}(\Delta E) - I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E)\, ,
+ I_{\rm inel}^{({\rm mod})(j,k)}(\Delta E) \equiv I_{\rm EELS}^{({\rm exp})(j)}(\Delta E) - I_{\rm ZLP}^{({\rm mod})(j,k)}(\Delta E)\, ,
  \quad \forall~N_{\rm rep} \, ,\quad j=1,\ldots,N_{\rm sp} \, .
  \ee
- For each of the $N_{\rm sp}$ collected spectra and each of the $N_{\rm rep}$ replicas,
- we fit to Eq.~(\ref{eq:subtractedModelPrediction2}) the functional form Eq.~(\ref{eq:I1}).
+
+ The ensemble of ZLP-subtracted spectra $\{I_{\rm inel}^{({\rm mod})(j,k)} \} $
+ can then be used to estimate the bandgap of the specimen in the region where
+ they were acquired.
  %
- The range in $\Delta E$ for these fits to the subtracted spectra is taken to be
- $\lc \Delta E_{\rm I} - 0.5~{\rm eV}, \Delta E_{\rm I} + 1.2~{\rm eV}\rc$.
+ Different approaches  have been put forward to estimate the value of the bandgap from 
+subtracted EEL spectra, \textit{e.g.} by means of the inflection point of the rising intensity or
+a linear fit to the maximum positive slope~\cite{Schamm:2003}.
+%
+Here we will adopt the approach of~\cite{Rafferty:2000} where the behaviour
+of $I_{\rm inel}(\Delta E)$ in the onset region is modeled as
+\begin{equation}
+  \label{eq:I1}
+    I_{\rm inel}(\Delta E) \simeq  A \lp \Delta E-E_{\rm BG} \rp^{b} \, , \quad \Delta E \ge E_{\rm BG} \, ,
+\end{equation}
+and vanishes for $E < E_{\rm BG}$, where both the bandgap value
+$E_{\rm BG}$ as well as the parameters $A$ and $b$ are extracted from the fit.
+%
+The exponent $b$ is expected to be $b\simeq 1/2~(3/2)$ for a semiconductor material characterised
+by a direct~(indirect) bandgap.
  %
- This range has been chosen to maximise the amount of information in the onset region.
+ For each of the $N_{\rm sp}$ spectra and the $N_{\rm rep}$ replicas
+ we fit to Eq.~(\ref{eq:subtractedModelPrediction2}) the model Eq.~(\ref{eq:I1})
+ within a range taken to be
+ $\lc \Delta E_{\rm I} - 0.5~{\rm eV}, \Delta E_{\rm I} + 0.7~{\rm eV}\rc$.
  %
- For each of the $N_{\rm sp}$ spectra, we end up with $N_{\rm rep}$ values for
- the bandgap energy and fit exponent,
+ One ends up with $N_{\rm rep}$ values for
+ the bandgap energy and fit exponent for each spectra,
  \be
  \Big \{ E_{\rm BG}^{(j,k)}, b^{(j,k)} \Big\} \, , \quad k=1,\ldots,N_{\rm rep} \, ,
+ \quad j=1,\ldots,N_{\rm sp} \, ,
  \ee
- from which again one can evaluate statistical estimators such as medians, 68\% CL ranges
- and correlations.
+ from which again one can readily evaluate their statistical estimators.
+ %
+ In the following, we will display the median and the 68\% confidence level intervals
+ in these parameters to account for the fact distributon in in general non-gaussian.
 
- \subsection{Results for sample B}
+ \subsection{Bandgap analysis of sample A}
 
-The left panel of Fig.~\ref{fig:sp4_subtracted_spectrum} displays
-the original
-and subtracted EEL spectrum corresponding to location \#4 in Fig.~\ref{fig:ws2positions},
-together with the predictions of the ZLP model evaluated using
-Eq.~(\ref{eq:mathcing}).
+ We present first the results of the bandgap analysis of sample A,
+ taking sp14 as representative spectrum.
+ %
+ The left panel of Fig.~\ref{fig:sp4_subtracted_spectrum} displays the original
+  and subtracted EEL spectrum corresponding to location sp14 of sample A in Fig.~\ref{fig:ws2positions},
+  together with the predictions of the ZLP model.
   %
+  The bands indicate the 68\% CL uncertainties.
+  %
+  The inset displays the result of the fit using Eq.~(\ref{eq:I1}) to the onset
+  region of the subtracted spectrum.
+
+  
+  
 Both for the ZLP model and for the subtracted spectrum we show both the central value
 and the standard deviation of the predictions.
 %
@@ -298,20 +309,19 @@ is sensible, by evaluating the following ratio
 One should verify that $\mathcal{R}_{\rm abs}\lp \Delta E_1\rp$ is not too far from unity,
 indicating that the training dataset has not been contaminated by the inelastic contributions.
      
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \begin{centering}
-  \includegraphics[width=0.36\linewidth,angle=-90]{plots/sp4_subtracted_spectrum.pdf}
-   \includegraphics[width=0.36\linewidth,angle=-90]{plots/Derivatives_sp4.pdf}
+  \includegraphics[width=0.99\linewidth]{plots/SubtractedEELS_plot_sp14.pdf}
    \caption{Left: the original
-     and subtracted EEL spectrum corresponding to location \#4 in Fig.~\ref{fig:ws2positions},
-     together with the predictions of the ZLP models.
+     and subtracted EEL spectrum corresponding to location sp14 of sample A in Fig.~\ref{fig:ws2positions},
+     together with the predictions of the ZLP model, where
+     the bands indicate the 68\% confidence level uncertainties.
      %
-     The inset displays the result of the fit using Eq.~(\ref{eq:I1}) to the onset
+     The inset displays the result of fitting Eq.~(\ref{eq:I1}) to the onset
      region of the subtracted spectrum.
      %
-     Right: The ratio of the derivative intensity of the original spectrum, $dI_{\rm EEL}/d\Delta E$,
+     Right: the ratio of the derivative intensity of the original spectrum, $dI_{\rm EEL}/d\Delta E$,
      over that of the ZLP measurements taken on the vacuum $d I_{\rm ZLP}/d\Delta E$.
   }
 \label{fig:sp4_subtracted_spectrum}
@@ -372,6 +382,8 @@ The ZLP-subtracted spectra corresponding to locations \#4, \#5, and \#6
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Bandgap determination}
+
+
 
 We now move to discuss the results on the bandgap determination obtained
 by fitting the functional form Eq.~(\ref{eq:I1}) to each of the subtracted
