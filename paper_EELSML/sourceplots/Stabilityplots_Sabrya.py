@@ -94,20 +94,20 @@ for i in range(2):
         ax.set_xlabel(r'$\Delta E_{\rm I}$ (eV)', fontsize=22)
         ax.set_ylabel(r'$b$', fontsize=22)
         
-        ax.plot(dE1_array, smooth(df_bandgaps[0], wl), '--', color='steelblue', label=label1)
-        ax.plot(dE1_array, smooth(df_high[0], wl), '-', color='steelblue',label=label2)
-        ax.plot(dE1_array, smooth(df_low[0], wl), '-', color='steelblue', label=label2)
-        ax.fill_between(dE1_array, smooth(df_high[0], wl), smooth(df_low[0], wl), color='steelblue', alpha=.2, label=label2)
+        ax.plot(dE1_array, (df_bandgaps[0]), '--', color='steelblue', label=label1)
+        ax.plot(dE1_array, (df_high[0]), '-', color='steelblue',label=label2)
+        ax.plot(dE1_array, (df_low[0]), '-', color='steelblue', label=label2)
+        ax.fill_between(dE1_array, (df_high[0]), (df_low[0]), color='steelblue', alpha=.2, label=label2)
 
         ax.axvline(x=1.8,color="black",ls="dashdot")
         
     
     if i == 1:
         ax.set_ylim([2, 3])
-        ax.plot(dE1_array, smooth(bg_bandgaps[0], wl), '--', color='steelblue', label=label1)
-        ax.plot(dE1_array, smooth(bg_high[0], wl), '-', color='steelblue', label = label2)
-        ax.plot(dE1_array, smooth(bg_low[0], wl), '-', color='steelblue', label = label2)
-        ax.fill_between(dE1_array, smooth(bg_high[0], wl), smooth(bg_low[0], wl), \
+        ax.plot(dE1_array, (bg_bandgaps[0]), '--', color='steelblue', label=label1)
+        ax.plot(dE1_array, (bg_high[0]), '-', color='steelblue', label = label2)
+        ax.plot(dE1_array, (bg_low[0]), '-', color='steelblue', label = label2)
+        ax.fill_between(dE1_array, (bg_high[0]), (bg_low[0]), \
                     color='steelblue', alpha=.2, label=label2)
         ax.set_yticks([0, .5, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5])
         ax.set_ylabel(r'$E_{\rm BG}$ (eV)', fontsize=22)

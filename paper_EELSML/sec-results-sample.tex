@@ -69,13 +69,11 @@ Note that since the of spectra from samples A and B
 have been acquired with different microscopes, features of the ZLP
 such as the FWHM are expected to be different.
 %
-From this table one can observe how  the ZLP for the spectra acquired on sample A exhibit
-a FWHM about three times higher as compared to those of sample B
-than the resolution obtained on the second set. 
+From this table one can observe how the ZLP for the spectra acquired on sample A exhibit
+a FWHM about three times larger as compared to those of sample B.
 %
-This difference can be understood from the fact that the EELS spectra from sample B, unless those
-from sample B,
-were recorded with a TEM equipped with a monochromator.
+This difference in resolution can be understood from the fact that the EELS spectra from sample B, unlike those
+from sample A, were recorded with a TEM equipped with a monochromator.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,8 +84,8 @@ were recorded with a TEM equipped with a monochromator.
 \br
 Set & $t_{\rm exp}$ {(}ms{)} & $E_{\rm b}$ {(}keV{)} & $N_{\rm sp}$ & $N_{\rm dat}$ & $\Delta E_{\rm min}$~(eV)  & $\Delta E_{\rm max}$~(eV)  & FWHM~(eV)  \\ 
 \mr
-A        &       ?       &        ?         &   6      &    1918    &     -4.1       & 45.5 & $ 0.47\pm0.01$  \\
-B        &       ?       &    200 keV       &   10     &    2000    &     -0.9        & 9.1   & $ 0.16\pm0.01$ \\
+A        &       1       &        60         &   6      &    1918    &     -4.1       & 45.5 & $ 0.47\pm0.01$  \\
+B        &       190       &        60       &   10     &    2000    &     -0.9        & 9.1   & $ 0.16\pm0.01$ \\
 \br
   \end{tabular}
     \end{center}
@@ -101,12 +99,12 @@ B        &       ?       &    200 keV       &   10     &    2000    &     -0.9  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In the following we will present results for representative spectra
+In the following we will present the results for representative spectra
 corresponding to each of the two samples.
 %
-The full set of spectra together are available together with {\tt EELSfitter},
-the code used to produce the results of this analysis
-and whose installation
+The full set of spectra is available together with {\tt EELSfitter},
+the code used to produce the results of this analysis,
+whose installation
 and usage instructions are presented in Appendix~\ref{sec:installation}.
 
 \subsection{Subtraction procedure}
@@ -132,6 +130,15 @@ of the neural network model.
 %
 For $\Delta E \ge \Delta E_{\rm II}$ instead, the training set includes only the pseudo-data
 that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
+ %
+The values for $\Delta E_{\rm II}$ were determined from the vacuum recorded spectra
+following the same procedure as explained 
+in Sect.~\ref{sec:results_vacuum}.
+%
+We note that the values of $\Delta E_{\rm II}$ for this part are significantly higher than
+the ones found in Fig.~\ref{fig:intensityratio}. This could be ascribed to the fact that 
+the vacuum spectra from sample A and B are recorded in proximity to a sample, and therefore
+effects from the sample are still present, although diminishable.
  %
 The model training is performed for a range of $\Delta E_{\rm I}$ values
 subject to the condition that $\Delta E_{\rm I} \le \Delta E_{\rm min}$.
@@ -165,7 +172,7 @@ B        &    $1.80\pm0.04$               &          1.4        &      6        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The optimal values of $\Delta E_{\rm I}$ listed  in Table~\ref{table:sampledata_summary} are
+The optimal values of $\Delta E_{\rm I}$ listed in Table~\ref{table:sampledata_summary} are
 determined as follows.
 %
 We evaluate the ratio
@@ -188,7 +195,7 @@ This ratio allows to identify a suitable value of $\Delta E_{I}$ by establishing
 for which energy losses the shape (rather than the absolute value) of the intensity distributions 
 recorded on the specimen starts to differ significantly from their vacuum counterparts.
 %
-A sensible choice of $\Delta E_{\rm I}$ could be for instance given by
+A sensible choice of $\Delta E_{\rm I}$ could for instance be given by
 $\mathcal{R}_{\rm der}(\Delta E_{\rm I}) \simeq 0.8$, for which derivatives differ
 at the 20\% level.
 %
@@ -311,7 +318,7 @@ by a direct~(indirect) bandgap.
  \subsection{Bandgap analysis of sample A}
 
 We present first the results of the bandgap analysis of sample A,
-taking location sp14 in Fig.~\ref{fig:ws2positions} as representative spectrum; compatible results
+taking location sp\#4 in Fig.~\ref{fig:ws2positions} as representative spectrum; compatible results
 are found for the rest of locations.
 %
 As mentioned above, this region is characterised by a sizable thickness where
@@ -331,7 +338,7 @@ together with the corresponding uncertainty bands.
 \begin{centering}
   \includegraphics[width=0.99\linewidth]{plots/SubtractedEELS_plot_sp14.pdf}
    \caption{Left: the original
-     and subtracted EEL spectrum corresponding to location sp14 of sample A in Fig.~\ref{fig:ws2positions},
+     and subtracted EEL spectrum corresponding to location \#4 of sample A in Fig.~\ref{fig:ws2positions},
      together with the predictions of the ZLP model, where
      the bands indicate the 68\% confidence level uncertainties.
      %
@@ -339,7 +346,7 @@ together with the corresponding uncertainty bands.
      region of the subtracted spectrum.
      %
      Right: the average ratio of the derivative of the intensity
-     distribution in sp14 over its vacuum counterpart, Eq.~(\ref{eq:rder})
+     distribution in sp4 over its vacuum counterpart, Eq.~(\ref{eq:rder})
   }
 \label{fig:sp14_subtracted_spectrum}
 \end{centering}
@@ -366,7 +373,7 @@ It is indeed important to verify that $\mathcal{R}_{\rm abs}\lp \Delta E_1\rp$ i
 indicating that the training dataset has not been contaminated by the inelastic contributions.
 
 The average ratio of the derivative of the intensity
-distribution in sp14 over its vacuum counterpart, Eq.~(\ref{eq:rder}), is shown
+distribution in spectrum 4 over its vacuum counterpart, Eq.~(\ref{eq:rder}), is shown
 in the right panel of  Fig.~\ref{fig:sp14_subtracted_spectrum}. 
 %
 By requiring that $\mathcal{R}^{(j)}_{\rm der}(\Delta E_{\rm I})\simeq 0.9$ we obtain
