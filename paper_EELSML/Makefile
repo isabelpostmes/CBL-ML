@@ -5,4 +5,4 @@ default:
 	pdflatex EELS_ML
 
 clean:
-	rm -rf *~ *.bbl *.out *.pdf *.log *.aux *.blg *.toc EELS_ML.pdf
+	rm -rf *~ *.bbl *.out *.pdf *.log *.aux *.blg *.toc EELS_ML.pdf sourceplots/*~ sourceplots/*.pdf
