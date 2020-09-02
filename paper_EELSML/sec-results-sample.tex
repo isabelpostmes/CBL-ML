@@ -109,15 +109,22 @@ the code used to produce the results of this analysis
 and whose installation
 and usage instructions are presented in Appendix~\ref{sec:installation}.
 
-
 \subsection{Subtraction procedure}
 
 In Table~\ref{table:sampledata_summary} we collect
-the mean value and uncertainty of the first local minimum, $\Delta E|_{\rm min}$,
+the mean value and uncertainty of the first local minimum, $\Delta E|_{\rm min}$.
 averaged over the spectra corresponding to samples A and B from
-Fig.~\ref{fig:ws2positions},
-as well as the corresponding values of the hyper-parameters
- $\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ defined in Fig.~\ref{fig:EELS_toy}.
+Fig.~\ref{fig:ws2positions}.
+%
+The location of the first minimum is relatively stable
+among all the spectra belonging to a given set.
+%
+This indicates that the onset of the inelastic contributions $I_{\rm inel}$ does
+not change significantly as we move to different regions of the sample.
+%
+We also indicate
+the corresponding values of the hyper-parameters
+$\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ defined in Fig.~\ref{fig:EELS_toy}.
 %
 Recall that only
 the data points with $\Delta E \le \Delta E_{\rm I}$ is used for the training
@@ -125,17 +132,9 @@ of the neural network model.
 %
 For $\Delta E \ge \Delta E_{\rm II}$ instead, the training set includes only the pseudo-data
 that implements the $I_{\rm ZLP}(\Delta E)\to 0$ constraint.
-%
- The location of the first minimum is relatively stable
- among all the spectra belonging to a given set.
  %
- This indicates that the onset of the inelastic contributions $I_{\rm inel}$ does
- not change significantly as we move to different regions of the sample.
- %
- The model training is performed for a range of $\Delta E_{\rm I}$ values
- subject to the condition that $\Delta E_{\rm I} \le \Delta E_{\rm min}$,
- with the optimal values listed  in Table~\ref{table:sampledata_summary} selected
- by comparing the intensity derivatives in the sample with the vacuum reference.
+The model training is performed for a range of $\Delta E_{\rm I}$ values
+subject to the condition that $\Delta E_{\rm I} \le \Delta E_{\rm min}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,7 +165,38 @@ B        &    $1.80\pm0.04$               &          1.4        &      6        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The result of the  neural network training is
+The optimal values of $\Delta E_{\rm I}$ listed  in Table~\ref{table:sampledata_summary} are
+determined as follows.
+%
+We evaluate the ratio
+between the derivative of the intensity distribution acquired on the specimen over the
+same quantity recorded in vacuum,
+\be
+\label{eq:rder}
+\mathcal{R}^{(j)}_{\rm der}(\Delta E) \equiv
+\la
+\frac{
+  dI_{\rm EEL}^{({\rm exp})(j)}(\Delta E)/ d\Delta E
+}{
+  dI_{\rm EEL}^{({\rm exp})(j')}(\Delta E) /d\Delta E
+} \ra_{N_{\rm sp}' } \, ,
+\ee
+where $j'$ labels one of the $N_{\rm sp}'$ vacuum spectra and the average is taken
+over all available values of $j'$.
+%
+This ratio allows to identify a suitable value of $\Delta E_{I}$ by establishing
+for which energy losses the shape (rather than the absolute value) of the intensity distributions 
+recorded on the specimen starts to differ significantly from their vacuum counterparts.
+%
+A sensible choice of $\Delta E_{\rm I}$ could be for instance given by
+$\mathcal{R}_{\rm der}(\Delta E_{\rm I}) \simeq 0.8$, for which derivatives differ
+at the 20\% level.
+%
+Note also that the leftmost value of the energy loss satisfying
+$\mathcal{R}_{\rm der}(\Delta E)=0$ in Eq.~(\ref{eq:rder}) corresponds to the position of the first
+local minimum of the spectrum.
+
+The end result of the  neural network training is
  a set of $N_{\rm rep}=500$ replicas
   parametrising the ZLP, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
  %
@@ -276,39 +306,26 @@ by a direct~(indirect) bandgap.
  from which again one can readily evaluate their statistical estimators.
  %
  In the following, we will display the median and the 68\% confidence level intervals
- in these parameters to account for the fact distributon in in general non-gaussian.
+ for these parameters to account for the fact that their distribution will be in general non-Gaussian.
 
  \subsection{Bandgap analysis of sample A}
 
- We present first the results of the bandgap analysis of sample A,
- taking sp14 as representative spectrum.
- %
- The left panel of Fig.~\ref{fig:sp4_subtracted_spectrum} displays the original
-  and subtracted EEL spectrum corresponding to location sp14 of sample A in Fig.~\ref{fig:ws2positions},
-  together with the predictions of the ZLP model.
-  %
-  The bands indicate the 68\% CL uncertainties.
-  %
-  The inset displays the result of the fit using Eq.~(\ref{eq:I1}) to the onset
-  region of the subtracted spectrum.
+We present first the results of the bandgap analysis of sample A,
+taking location sp14 in Fig.~\ref{fig:ws2positions} as representative spectrum; compatible results
+are found for the rest of locations.
+%
+As mentioned above, this region is characterised by a sizable thickness where
+WS$_2$ is expected to behave as a bulk material.
+%
+The left panel of Fig.~\ref{fig:sp4_subtracted_spectrum} displays the original
+and subtracted EEL spectrum
+together with the predictions of the ZLP model, where
+the bands indicate the 68\% confidence level uncertainties and the central value
+is the median of the distribution.
+%
+The inset shows the result of the polynomial fits using Eq.~(\ref{eq:I1}) to the subtracted spectrum
+together with the corresponding uncertainty bands.
 
-  
-  
-Both for the ZLP model and for the subtracted spectrum we show both the central value
-and the standard deviation of the predictions.
-%
-One can observe how uncertainties are negligible at low $\Delta E$
-(due to the matching condition) and large $\Delta E$ (where the ZLP vanishes).
-%
-It is also possible to verify {\it a posteriori} that the choice of $\Delta E_I$
-is sensible, by evaluating the following ratio
-\be
-\mathcal{R}_{\rm abs}\lp \Delta E_1\rp \equiv 
-\la I_{\rm ZLP}^{({\rm mod})(j)}\ra /I_{\rm EELS}^{(j)} \Big|_{\Delta E = \Delta E1} \, .
-\ee
-One should verify that $\mathcal{R}_{\rm abs}\lp \Delta E_1\rp$ is not too far from unity,
-indicating that the training dataset has not been contaminated by the inelastic contributions.
-     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \begin{centering}
@@ -321,40 +338,36 @@ indicating that the training dataset has not been contaminated by the inelastic 
      The inset displays the result of fitting Eq.~(\ref{eq:I1}) to the onset
      region of the subtracted spectrum.
      %
-     Right: the ratio of the derivative intensity of the original spectrum, $dI_{\rm EEL}/d\Delta E$,
-     over that of the ZLP measurements taken on the vacuum $d I_{\rm ZLP}/d\Delta E$.
+     Right: the average ratio of the derivative of the intensity
+     distribution in sp14 over its vacuum counterpart, Eq.~(\ref{eq:rder})
   }
 \label{fig:sp4_subtracted_spectrum}
 \end{centering}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The inset in the left panel of Fig.~\ref{fig:sp4_subtracted_spectrum}
-shows the result of the  fits using Eq.~\ref{eq:I1} to the subtracted spectrum,
-with the band indicating the 68\% CL uncertainties.
+One can observe how the ZLP model uncertainties are small at low $\Delta E$
+(due to the matching condition) and large $\Delta E$ (where the ZLP vanishes),
+but become significant in the intermediate region where the contributions
+from $I_{\rm ZLP}$ and $I_{\rm inel}$ become comparable.
 %
-We discuss below the implication of this fit for the bandgap determination
-in the WS$_2$ nanostructures.
-
-In the right panel of  Fig.~\ref{fig:sp4_subtracted_spectrum} we display the ratio
-between the derivative of the intensity profiles corresponding to the sample locations
-with respect to a reference measurement taken on vacuum,
+It is worth emphasizing that these (unavoidable) uncertainties are neglected in most
+ZLP subtraction methods.
+%
+The validity of our choice for the hyperparameter $\Delta E_{\rm I}$ (Table~\ref{table:sampledata_summary})
+can be verified {\it a posteriori} by evaluating the ratio
 \be
-\mathcal{R}_{\rm der}(\Delta E) \equiv 
-\frac{
-  dI_{\rm EELS}^{(j)}/ d\Delta E
-}{
-  dI_{\rm EELS}^{(j')} /d\Delta E
-}\lp \Delta E\rp \, ,
+\mathcal{R}^{(j)}_{\rm abs}\lp \Delta E_{\rm I}\rp \equiv 
+\la I_{\rm ZLP}^{({\rm mod})(j)}\ra_{\rm rep} \Big/I_{\rm EEL}^{({\rm exp})(j)} \Big|_{\Delta E = \Delta E_{\rm I}} \, ,
 \ee
-where $j'$ labels one of the vacuum spectra.
+which in this case turns out to be $\mathcal{R}_{\rm abs} = 0.98$.
 %
-This ratio allows to identify a suitable value of $\Delta E_{I}$ by determining
-for which energy losses the derivatives of the sample spectra deviate significantly
-from the vacuum ones.
-%
-Note that $\mathcal{R}_{\rm der}(\Delta E)=0$ indicates the position of the first
-local minimum of the spectra.
+It is indeed important to verify that $\mathcal{R}_{\rm abs}\lp \Delta E_1\rp$ is not too far from unity,
+indicating that the training dataset has not been contaminated by the inelastic contributions.
+
+The average ratio of the derivative of the intensity
+distribution in sp14 over its vacuum counterpart, Eq.~(\ref{eq:rder}), is shown
+in the right panel of  Fig.~\ref{fig:sp4_subtracted_spectrum}. 
 %
 From this comparison we can see that Fig.~\ref{fig:sp4_subtracted_spectrum} validates our choice of
 $\Delta E_{\rm I}$.
