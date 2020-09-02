@@ -385,8 +385,8 @@ Before training, all weights and biases are initialized in a non-deterministic o
 by the built-in global variable initializer. 
 %
 The optimisation of the figure of merit Eq.~(\ref{eq:chi2modified}) is carried
-out by means of stochastic gradient descent combined with backpropagation,
-in particular by means of the Adam algorithm.
+out by means of stochastic gradient descent (SGD) combined with backpropagation. The
+specific SGD optimizer used is the Adam algorithm.
 %
 The hyper-parameters of the optimisation algorithm such as the learning rate
 have been adjusted to ensure proper learning is reached in the shortest amount
@@ -412,7 +412,8 @@ as the specific network configuration that leads to the deepest minimum of $E^{(
 The number of epochs should be chosen high enough to reach the optimal stopping point for each replica.
 For this work we need approximately 40,000 epochs to ensure overlearning.
 %
-This corresponds to a running time of 60 seconds per replica when training on a set of 500 datapoints.
+This corresponds to a serial running time of 60 seconds per replica when running the optimization on a 
+single CPU for a set of 500 datapoints.
 %
 Once the training of all the $N_{\rm rep}$ neural network models for the ZLP has been carried
 out as specified above, we gauge the overal fit quality of the model by computing the
