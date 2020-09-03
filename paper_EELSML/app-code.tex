@@ -8,6 +8,42 @@ in this work.
 %
 The code is publicly available from its GitHub repository
 \begin{center}
-\url{https://github.com/LHCfitNikhef/EELSfitter}
+\url{https://github.com/LHCfitNikhef/EELSfitter}.
 \end{center}
-and can be installed as follows:
+
+\subsection*{Load\_data.py}
+The purpose of the first script, {\tt Load\_data.py}, is to read the spectrum
+intensities and create dataframes to be used for training the neural network.
+%
+
+It reads out the spectrum intensities, automatically selects the energy loss
+at which the peak intensity occurs and translates the dataset such that
+the peak intensity is centered at $\Delta E =$0. 
+%
+Further, for each spectrum it returns the normalized intensity by normalizing
+over the total area under the spectrum. 
+%
+The output is two datasets, {\tt df} and {\tt df\_vacuum} which contain the 
+information on the in-sample and in-vacuum recorded spectra respectively. 
+%
+The user needs to upload the spectral data in .txt format to the 'Data' folder
+and make sure that the vacuum and in-sample spectra are added to the right one
+of the two datasets. 
+%
+For each of the spectra, the minimum and maximum value of the recorded energy 
+loss need to be set manually in {\tt Eloss\_min} and {\tt Eloss\_max}.
+
+\subsection*{Fitter.py}
+This file will be used to run the neural network training on the data that was 
+uploaded using the {\tt Load\_data.py} file.
+%
+It involves a few automatic steps to determine the hyper-parameters $\Delta E_I$
+and $\Delta E_{II}$, automatically prepares and cuts the data before it is feeded
+to the neural network to start the training. 
+%
+In order to determine the value for $\Delta E_I$, a dataframe {\tt df\_dx} is created
+and it calculates the derivatives of each of the in-sample recorded spectra, 
+stored as {\tt df\_dx['derivative y*']}, where {\tt *} is any of the in-sample recorded spectra.
+%
+Next, the first crossing of any of the derivatives with zero is determined 
+and this is the value of $\Delta E_I$. 
