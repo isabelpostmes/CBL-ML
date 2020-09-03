@@ -112,11 +112,13 @@ Combining the two leads to:
 \end{equation}
 in which $K$ is the proportionality constant, used to estimate the absolute thickness if the zero-loss integral and the indicent energy are known. This formula requires $\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right]$ to be known, as is the case in for example metals ($\operatorname{Re}\left[\frac{1}{\varepsilon_{metal}(0)}\right]\approx 0$). If this is not the case, other options to estimate $K$ will be discussed later on.
 
-This value of $K$, which is constant over $E$, can than in turn be used to retrieve the function of $\operatorname{Im}\left[-\frac{1}{\varepsilon(0)}\right]$ from the observed single scattering energy distribution $J^1(E)$ with eq. \eqref{eq_J_ac}.
+This value of $K$, which is constant over $E$, can than in turn be used to retrieve the function of $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the observed single scattering energy distribution $J^1(E)$ with eq. \eqref{eq_J_ac}.
 
 \textcolor{red}{need to add other estimations of $K$?}
 
 \subsection{Step 4: retrieving $\boldsymbol\varepsilon$}
+Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the steps above, one can now use eq. \eqref{eq_kkr_eps} to obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$, where one must pay attention to avoid including $E=E'$ in the discrete integral over the spectrum, as this is a singularity.
+
 
 
 \vspace{2cm}
