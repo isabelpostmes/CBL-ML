@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{bm}
 
 \title{Kramer-Kronig Anlaysis in TEM}
 \author{Isabel Postmes }
@@ -63,31 +64,59 @@ In this equation is $J^1(E)$ the single scattering distribution, $S(E)$ the sing
 
 Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\varepsilon(E)\right]$ from $\operatorname{Im}\left[-1/\varepsilon(E)\right]$, equation \eqref{eq_ch1_1} should be rewritten to \cite{Dapor2017}:
 
-\begin{equation}
+\begin{equation}\label{eq_kkr_eps}
     \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]=1-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon\left(E^{\prime}\right)}\right] \frac{E^{\prime} d E^{\prime}}{E^{\prime 2}-E^{2}}.
 \end{equation}
 
 
 
-\paragraph{QUESTIONs on my end} Will we be working with $J(E)$, and is there the need for a Fourier method, or is $J^1(E)$ provided? Are additional angular corrections needed?
+\paragraph{QUESTIONs on my end} Will we be working with $J(E)$, and is there the need for a Fourier method, or is $J^1(E)$ provided? Are additional angular corrections needed? Where does the 1 come from in eq \eqref{eq_kkr_eps}
 
-\section{Step 1: rescaling intensity}
+\subsection{Step 1: rescaling intensity}
 The first step of the K-K analysis is now to rewrite Eq. \eqref{eq_S_E} to:
 
-\begin{equation}
-    \frac{J^1(E)}{\ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]} =\frac{I_{0} t}{\pi a_{0} m_{0} v^{2}} . \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] 
+\begin{equation}\label{eq_J_ac}
+    J^1_{ac}(E) = \frac{J^1(E)}{\ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]} =\frac{I_{0} t}{\pi a_{0} m_{0} v^{2}}  \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] .
 \end{equation}
 
 
-As $\theta_E$ scales linearly with $E$, see \eqref{eq_th_E}, the intensity in on the left side of the equation above now relatively increases for high energy loss with respect to low energy loss. \textcolor{red}{SOMETHING about aperture correction, is that relevant? }
+As $\theta_E$ scales linearly with $E$, see eq. \eqref{eq_th_E}, the intensity in on the left side of the equation above now relatively increases for high energy loss with respect to low energy loss. \textcolor{red}{SOMETHING about aperture correction, is that relevant? }
 
 
 \paragraph{QUESTIONs on my end} I assume $\beta$ and $v$ are known, and that we do not take a distribution for $v$? 
 
 
-\section{Step 2: extrapolating}
-Since the upcoming integrals all extend to infinity, but the data acquisition is inherently up to a finite energy, the spectra need to be extrapolated. 
+\subsection{Step 2: extrapolating}
+Since the upcoming integrals all extend to infinity, but the data acquisition is inherently up to a finite energy, the spectra need to be extrapolated. An often used form is $AE^{-r}$, where $r=3$ if you follow the Drude-model, or $r$ can be deducted from experimental data.
 
+
+
+\subsection{Step 3: normalisation}
+
+Taking $E' = 0$ in \eqref{eq_kkr_eps}, one obtains:
+
+\begin{equation}
+    1-\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right]=\frac{2}{\pi} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \frac{d E}{E}.
+\end{equation}
+
+Now dividing both sides of Eq. \eqref{eq_J_ac} by the energy, and subsequently integrating them over energy results in a comparable integral:
+
+\begin{equation}\label{eq_J_ac}
+    \int_{0}^{\infty} J^1_{ac}(E) \frac{d E}{E}=  \frac{I_{0} t}{\pi a_{0} m_{0} v^{2}}  \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right]   \frac{d E}{E} .
+\end{equation}
+
+Combining the two leads to:
+
+\begin{equation}
+    \frac{\int_{0}^{\infty} J^1_{ac}(E) \frac{d E}{E}}{\frac{\pi}{2}(1-\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right])} = \frac{I_{0} t}{\pi a_{0} m_{0} v^{2}} = K ,
+\end{equation}
+in which $K$ is the proportionality constant, used to estimate the absolute thickness if the zero-loss integral and the indicent energy are known. This formula requires $\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right]$ to be known, as is the case in for example metals ($\operatorname{Re}\left[\frac{1}{\varepsilon_{metal}(0)}\right]\approx 0$). If this is not the case, other options to estimate $K$ will be discussed later on.
+
+This value of $K$, which is constant over $E$, can than in turn be used to retrieve the function of $\operatorname{Im}\left[-\frac{1}{\varepsilon(0)}\right]$ from the observed single scattering energy distribution $J^1(E)$ with eq. \eqref{eq_J_ac}.
+
+\textcolor{red}{need to add other estimations of $K$?}
+
+\subsection{Step 4: retrieving $\boldsymbol\varepsilon$}
 
 
 \vspace{2cm}
