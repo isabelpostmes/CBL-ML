@@ -91,7 +91,7 @@ Since the upcoming integrals all extend to infinity, but the data acquisition is
 
 
 
-\subsection{Step 3: normalisation}
+\subsection{Step 3: normalisation and retrieving $\operatorname{Im}\left[\frac{1}{\varepsilon(E)}\right]$}
 
 Taking $E' = 0$ in \eqref{eq_kkr_eps}, one obtains:
 
@@ -116,13 +116,18 @@ This value of $K$, which is constant over $E$, can than in turn be used to retri
 
 \textcolor{red}{need to add other estimations of $K$?}
 
-\subsection{Step 4: retrieving $\boldsymbol\varepsilon$}
+\subsection{Step 4: retrieving $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ }
 Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the steps above, one can now use eq. \eqref{eq_kkr_eps} to obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$, where one must pay attention to avoid including $E=E'$ in the discrete integral over the spectrum, as this is a singularity.
 
+\subsection{Step 5: retrieving $\boldsymbol\varepsilon$}
+The dielectric function can than be obtained from:
+
+\begin{equation}
+    \varepsilon(E)=\varepsilon_{1}(E)+i \varepsilon_{2}(E)=\frac{\operatorname{Re}[1 / \varepsilon(E)]+i \operatorname{Im}[-1 / \varepsilon(E)]}{\{\operatorname{Re}[1 / \varepsilon(E)]\}^{2}+\{\operatorname{Im}[-1 / \varepsilon(E)]\}^{2}}.
+\end{equation}
 
 
 \vspace{2cm}
-Kramer-Kronig analysis is a method to obtain the complex permittivity, and optical quantities as the absorption- and reflection coefficients.
 
 \bibliography{bib}
 \bibliographystyle{IEEEtran}
