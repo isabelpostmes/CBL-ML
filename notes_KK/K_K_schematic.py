@@ -52,15 +52,17 @@ E_extrp[:shape_J] = E
 J_extrp[shape_J:] = A*np.power(E_extrp[shape_J:],r)
 
 
-#step 3: normalisation
+#step 3: normalisation and retreiving Im[1/eps(E)]
 
 Re_eps0 = 0 #value of Re[1/eps(0)]
 int_J_over_E = np.sum(J_extrp/E_extrp)*dE
 K = 2*int_J_over_E/(math.pi*(1-Re_eps0))
 
 
-#step 4: retreiving ε
 Im_eps = J_extrp/K #Im[-1/eps(E)]
+
+
+#step 4: retreiving Re[1/eps(E)]
 
 Re_eps = np.zeros(sem_inf) # Re[1/eps(0)]
 
@@ -71,6 +73,10 @@ for i in range(E_extrp.size):
     Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps[select]*E_extrp[select]/(np.power(E_extrp[select],2)-E**2))
 
 
+#step 6: retreiving ε
+eps1 = Re_eps / (Re_eps**2 + Im_eps**2)
+eps2 = Im_eps / (Re_eps**2 + Im_eps**2)
+eps = eps1 + 1j*eps2
 
 
 
