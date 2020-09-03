@@ -318,7 +318,7 @@ by a direct~(indirect) bandgap.
  In the following, we will display the median and the 68\% confidence level intervals
  for these parameters to account for the fact that their distribution will be in general non-Gaussian.
 
- \subsection{Bandgap analysis of sample A}
+ \subsection{Bandgap analysis}
 
 We present first the results of the bandgap analysis of sample A,
 taking location sp\#4 in Fig.~\ref{fig:ws2positions} as representative spectrum; compatible results
@@ -443,28 +443,67 @@ To the best of our knowledge
 these results represent the first EELS bandgap analysis of WS$_2$ nanostructures
 whose crystalline structure is based on mixed 2H/3R polytypes.
 
+\subsection{Mapping excitonic transitions in the low-loss region}
 
-
-\subsection{Bandgap analysis of sample B}
-
-We now discuss the results of the bandgap analysis of sample B,
-taking location sp4 in Fig.~\ref{fig:ws2positions} as representative spectrum; compatible results
-are found for the rest of locations.
+Concerning the EEL spectra recorded in sample B (bottom panels
+in  Fig.~\ref{fig:ws2positions}), the same criterion
+for the derivative ratio Eq.~(\ref{eq:rder}) indicates now that $\Delta E_I\simeq 1.4$ eV,
+a somewhat lower value as the corresponding one obtained for sample A.
 %
-In Fig.~\ref{fig:SubtractedEELS_plot_sp4} we present the analogous
-result to that of Fig.~\ref{fig:sp14_subtracted_spectrum}.
+The left panel of Fig.~\ref{fig:SubtractedEELS_plot_sp4} displays
+the original
+and subtracted EEL spectra corresponding to location sp4 of sample B in Fig.~\ref{fig:ws2positions},
+together with the predictions of the ZLP model.
+%
+As in Fig.~\ref{fig:sp14_subtracted_spectrum}, the bands indicate the 68\% confidence level uncertainties.
+%
+The main difference with respect to the spectra recorded in sample A is the appearance of well-defined
+features (peaks) in the subtracted spectrum already at very small values of $\Delta E$.
+%
+In particular, we observes two marked peaks at $\Delta E\simeq 1.5$ and 2.0 eV and a
+softer one near $\Delta E=1.7$ eV.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \begin{centering}
-  \includegraphics[width=0.60\linewidth]{plots/SubtractedEELS_plot_sp4.pdf}
-  \caption{Same as Fig.~\ref{fig:sp14_subtracted_spectrum}
-    now for sp4 (sample B) from Fig.~\ref{fig:ws2positions}.
+  \includegraphics[width=0.99\linewidth]{plots/subtractedEELS_plot_sampleB_sp4.pdf}
+  \caption{Left: the original
+     and subtracted EEL spectra corresponding to location sp4 of sample B in Fig.~\ref{fig:ws2positions},
+     together with the predictions of the ZLP model.
+     %
+     The bands indicate the 68\% confidence level uncertainties.
+     %
+     Right: comparison of the ZLP-subtracted spectra from locations sp4, sp5, and sp6 in sample B
+     together with the corresponding model uncertainties.
+    %
+     Note how the features of the subtracted spectra, such as the peaks as $\Delta E\simeq 1.5$,
+    1.7 and 2.0 are eV, are common across the three locations.
   }
 \label{fig:SubtractedEELS_plot_sp4}
 \end{centering}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+There are two dominant factors that explain the differences in the EEL spectra recorded
+in samples A and B.
+%
+The first one is the former is much thicker (bulk material) while the latter corresponds
+to thin, overlapping petals whose thickness can be as small as a few monolayers.
+%
+The second is that the measurements taken in sample A used a TEM without monochromator,
+while those of sample B benefited from a monochromator and thus achieves a superior
+spectral resolution (average FWHM being 16 meV, to be compared with the 470 meV of sample A, see
+Table~\ref{table:sampledata}).
+%
+Therefore, the combination of structural and morpholical differences in the specimen together
+with the different operation conditions of the TEM account for most of the differences
+between the two set of spectra.
+
+
+bandgap not suitable
+
+
+statistical fluctuations
 
 Fig.~\ref{fig:subtracted_spectra_comp} displays the
 the ZLP-subtracted spectra from sample B corresponding to locations sp4, sp5, and sp6
@@ -501,24 +540,5 @@ bandgap excitation.
 Nevertheless, the ZLP-subtracted spectra in Fig.~\ref{fig:subtracted_spectra_comp} show that
 we have been able to cleanly resolve exciton features down to 1.5 eV within appropriate
 uncertainty.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t]
-\begin{centering}
-  \includegraphics[width=0.99\linewidth]{plots/subtracted_spectra_comp.pdf}
-  \caption{The ZLP-subtracted spectra from sample B corresponding to locations sp4, sp5, and sp6
-    from Fig.~\ref{fig:ws2positions} together with the corresponding model uncertainties.
-    %
-    Results are shown for two values of the hyperparameter $\Delta E_{\rm I}$,
-    1.45 eV (left) and 1.55 eV (right panel).
-    %
-    Note how features of the subtracted spectra such as the peaks as $\Delta E\simeq 1.5$,
-    1.7 and 2.0 are common across the three spectra.
-  }
-\label{fig:subtracted_spectra_comp}
-\end{centering}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
