@@ -68,12 +68,12 @@ In Table~\ref{table:sampledata} we collect the most relevant properties of the s
 in the locations indicated in Fig.~\ref{fig:ws2positions} using the same format as
 in Table~\ref{table:vacuumdata}.
 %
-Note that since the of spectra from samples A and B
+Note that since the spectra from samples A and B
 have been acquired with different microscopes, features of the ZLP
 such as the FWHM are expected to be different.
 %
 From this table one can observe how the ZLP for the spectra acquired on sample A exhibit
-a FWHM about three times larger as compared to those of sample B.
+a FWHM about five times larger as compared to those of sample B.
 %
 This difference in resolution can be understood from the fact that the EELS spectra from sample B, unlike those
 from sample A, were recorded with a TEM equipped with a monochromator.
@@ -359,7 +359,7 @@ together with the corresponding uncertainty bands.
 One can observe how the ZLP model uncertainties are small at low $\Delta E$
 (due to the matching condition) and large $\Delta E$ (where the ZLP vanishes),
 but become significant in the intermediate region where the contributions
-from $I_{\rm ZLP}$ and $I_{\rm inel}$ become comparable.
+from $I_{\rm ZLP}$ and $I_{\rm inel}$ become of the same order of magnitude.
 %
 It is worth emphasizing that these (unavoidable) uncertainties are neglected in most
 ZLP subtraction methods.
@@ -388,7 +388,7 @@ to $\Delta E_{\rm I}=2.0$ eV.
 %
 It is therefore important to asses the stability of our results as the hyper-parameter $\Delta E_{\rm I}$
 is varied around its optimal value.
-
+%
 With this motivation, in Fig.~\ref{fig:bvalues_sampleA} we display the
 values of the exponent $b$
 and the bandgap energy $E_{\rm BG}$ 
@@ -433,7 +433,7 @@ cannot be excluded within uncertainties.
 This result is consistent with the theoretical expectations of the local
 electronic properties of bulk WS$_2$.
 %
-Further, the value of $E_{\rm BG}$ is consistent with previous determinations
+Also the value of $E_{\rm BG}$ is consistent with previous determinations
 in the same material at the bulk level, such as those collected in Table~\ref{table:bgvalues}.
 %
 Consistent results are obtained for other locations of Fig.~\ref{fig:ws2positions}
@@ -451,12 +451,12 @@ based on the derivative ratio Eq.~(\ref{eq:rder}) to select the hyper-parameter 
 used.
 %
 In this case, we find a value of $\Delta E_{\rm I}\simeq 1.4$ eV,
- somewhat lower as the corresponding one obtained for sample A.
+ somewhat lower than the corresponding value obtained for sample A.
 %
 The left panel of Fig.~\ref{fig:SubtractedEELS_plot_sp4} displays
 the original
 and subtracted spectra corresponding to the representative
-location sp4 of sample B
+location sp\#4 of sample B,
 together with the predictions of the ZLP model.
 %
 As in Fig.~\ref{fig:sp14_subtracted_spectrum}, the bands indicate the 68\% confidence level uncertainties
@@ -489,10 +489,10 @@ of well-defined features (peaks) in the subtracted spectrum already at very smal
 In particular, we observe two marked peaks at $\Delta E\simeq 1.5$ and 2.0 eV and a
 softer one near $\Delta E=1.7$ eV (additional features arise also above 2.0 eV).
 %
-There are two dominant factors that explain the differences in the  spectra recorded
+There are two foremost explanations for the differences between the spectra recorded
 in the two samples.
 %
-The first one is that while sample A is much thicker (bulk material), sample B corresponds
+The first is that, while sample A is much thicker (bulk material), sample B corresponds
 to thin, overlapping petals whose thicknesses can be as small as a few monolayers.
 %
 The second is that the EELS measurements taken in sample A used a TEM without monochromator,
@@ -503,9 +503,9 @@ Table~\ref{table:sampledata}).
 The combination of structural and morphological variations in the specimen on the one hand together
 with the operation conditions of the TEM on the other hand therefore accounts for the differences
 between the two set of spectra.
-
+%
 It is worth noting at this point that our ZLP parametrisation and subtraction strategy works equally
-well irrespectively of the spectral resolution of the spectra under consideration.
+well irrespective of the spectral resolution of the spectra under consideration.
 %
 By comparing Fig.~\ref{fig:SubtractedEELS_plot_sp4} with~\ref{fig:sp14_subtracted_spectrum}, one observes
 that  model uncertainties are larger in the latter than in the former, as expected from the
@@ -515,20 +515,20 @@ spectral resolution of the EELS measurements taken on sample B.
 Nevertheless, the same approach has been used in both cases without the need of any fine-tuning
 or {\it ad hoc} adjustments: of course, if the starting
 spectra have to begin with a superior spectral resolution, then the resulting ZLP model uncertainties
-will improve accordingly but the procedure itself will be unchanged.
-
+will improve accordingly without changing the procedure itself.
+%
 Given that the
 well-defined spectral features present in Fig.~\ref{fig:SubtractedEELS_plot_sp4}
 appear close to the onset of the inelastic emissions $I_{\rm inel}(\Delta E)$,
 these spectra are not suitable for bandgap determination analyses.
 %
-The reason is that the method of~\cite{Rafferty:2000}
-used in sample A assumes that there is a sufficient  region in $\Delta E$
+This relies on the fact that the method of~\cite{Rafferty:2000}
+used for sample A is only applicable under the assumption that there is a sufficient region in $\Delta E$
 after the onset to perform the polynomial fit of Eq.~(\ref{eq:I1}).
 %
 This is clearly not possible in this case, and indeed such fits restricted to $\Delta E\le 1.4$ eV
 become numerically unstable.
-
+%
 Instead of studying the bandgap properties, one could exploit the ZLP-subtracted results of sample B
 to study the local
 excitonic transitions that are expected in the ultra-low-loss region of EEL spectra.
