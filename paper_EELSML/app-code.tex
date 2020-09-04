@@ -41,9 +41,128 @@ It involves a few automatic steps to determine the hyper-parameters $\Delta E_I$
 and $\Delta E_{II}$, automatically prepares and cuts the data before it is feeded
 to the neural network to start the training. 
 %
+\\
+
 In order to determine the value for $\Delta E_I$, a dataframe {\tt df\_dx} is created
 and it calculates the derivatives of each of the in-sample recorded spectra, 
 stored as {\tt df\_dx['derivative y*']}, where {\tt *} is any of the in-sample recorded spectra.
 %
-Next, the first crossing of any of the derivatives with zero is determined 
-and this is the value of $\Delta E_I$. 
+The first crossing of any of the derivatives with zero is determined 
+and stored as the value of $\Delta E_I$. 
+%
+\\
+
+Next, it calculates the mean over all vacuum spectra, {\tt df\_mean}, and the ratio of the 
+intensity to the uncertainty in each energy loss, {\tt df\_mean['ratio']}. 
+%
+The value of $\Delta E_{II}$ is determined as the energy loss at which this ratio
+drops below 1. 
+%
+This value $\Delta E_{II}$ is stored together with the value of $\Delta E_I$
+as the hyper-parameters for training. 
+%
+However, if one wishes to use other values for these parameters, for instance for 
+cross-validating the best value for $\Delta E_I$, these can be adjusted manually.
+%\\
+\\
+
+The next step is to only keep the data points with $\Delta E \le \Delta E_I$  
+and to drop the points for higher energy loss.
+%
+Experimental central values and uncertainties are calculated by means of equal width 
+discretization, for which the number of bins has to be set as {\tt nbins}. 
+%
+The default value is 32, which means that we use 32 training inputs spread equally
+over the range [$ \Delta E_{min}, \Delta E_I$]. 
+%
+Note that we use the logarithm of the intensity as training inputs, because this eases
+the optimization of the neural network. We will translate this back to the real intensity
+values after training.
+%
+$N_{pseudo}$ pseudo datapoints are added in the range $[\Delta E_{II}, \Delta E_{max}]$, where $ \Delta E_{max}$
+is the maximum energy loss value of the recorded spectra. 
+%
+The values for $N_{pseudo}$ and $\Delta E_{max}$ should be changed manually by 
+setting them in {\tt max\_x} and {\tt N\_pseudo}. 
+%
+The output is a dataframe {\tt df\_full} containing all training data and pseudo data points, 
+corresponding to a total of $N_{input}$ (= $n_{bins}$ + $N_{pd}$) training inputs.
+\\
+
+We are now at the point to define the neural network architecture and to prepare the
+training inputs to feed them to the neural network for training. 
+%
+The function {\tt make\_model()} allows to define the number of hidden layers and 
+nodes per layer. The default is an architecture of 1-10-15-5-1, meaning one-dimensional 
+input and output with three hidden layers in between.
+%
+In the section following this, a few subsequent steps are taken to prepare the data
+as inputs for the neural network. 
+%
+First, we initiate 'placeholders' for the variables
+{\tt x}, {\tt y} and {\tt sigma}. Placeholders allow us to create our operations and 
+build our computation graph, without needing the data itself. 
+%
+The dimension of the placeholder is defined by {\tt $[{\bf None}, dim]$} where 'dim'
+should be set to the dimension of the corresponding variable. In our case we use a 
+one-dimensional input, so dim=1. 
+%
+These placeholders are used to define {\tt predictions}, which is in fact a placeholder that is used 
+later to make predictions on inputs {\tt x}. 
+%
+Next, the dataset is split into 80\% training and
+20\% validation data.
+%
+Also we define a vector {\tt predict\_x} that is used to make a direct prediction after training
+on each of the replicas. It consists of $N_{pred}$ data points in the energy loss range
+{\tt [pred\_min, pred\_max]}. This vector can be changed to one's preferences. 
+%
+\\
+
+The final step to be taken before we can start training is the creation of the MC replicas.
+%
+This is done automatically using the experimental intensities {\tt train\_y} and uncertainties
+{\tt train\_sigma} for a total of {\tt Nrep} replicas. The output is an ($N_{input}, N_{rep}$) 
+vector containing all the MC replicas. \\
+
+The final part of this script is where the training is done inside the function {\tt function_train()}. 
+%
+The cost function, optimizer and learning rate are defined, together with a 'saver' used to 
+save the network parameters after each optimization. 
+%
+We start a loop over {\tt Nrep} replicas to initiate a training session on each of the individual replicas
+in series. 
+%
+For each iteration, the i'th replica {\tt train\_y} and {tt test\_y} are defined from the total of Nrep 
+MC replicas and used as training and validation labels. 
+%
+\\
+
+After initializing the cost and the epoch at zero, we have our operation defined, and we can run it in a session. 
+%
+We create a session object and initialize the network parameters with a global variables initializer.
+%
+The total number of training epochs per session is defined in {\tt training\_epochs} and it shows intermediate 
+results after each number of epochs defined by {\tt display\_step}. 
+%
+Running the session object over the optimizer and cost function requires knowledge about the values of x and sigma. 
+These are defined inside the {\tt feed_dict} argument. 
+%
+After each epoch, the average training cost and validation cost are evaluated and the network parameters 
+are updated accordingly.
+%
+Each display step, the graph outputs the training and validation cost. Once the maximum number of epochs 
+had been reached, the optimal stopping point is determined from taking the absolute minimum of the validation cost
+and restoring the corresponding network parameters by means of the 'saver' function.
+%
+From this network graph, one can directly output the prediction on the values of {\tt train\_x} and
+the results are stored in the array {\tt predictions\_values}.
+%
+It is also possible to make predictions on any input vector of choice by feeding the vector {\tt predict\_x} to the 
+network, which outputs an array {\tt extrapolation}.
+%
+Both predictions are stored in separate textfiles and can be retrieved later to evaluate the modeled zero loss peaks.
+
+
+
+
