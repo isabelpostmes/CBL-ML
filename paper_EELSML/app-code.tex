@@ -133,7 +133,7 @@ save the network parameters after each optimization.
 We start a loop over {\tt Nrep} replicas to initiate a training session on each of the individual replicas
 in series. 
 %
-For each iteration, the i'th replica {\tt train\_y} and {tt test\_y} are defined from the total of Nrep 
+For each iteration, the i'th replica {\tt train\_y} and {\tt test\_y} are defined from the total of Nrep 
 MC replicas and used as training and validation labels. 
 %
 \\
@@ -151,17 +151,87 @@ These are defined inside the {\tt feed\_dict} argument.
 After each epoch, the average training cost and validation cost are evaluated and the network parameters 
 are updated accordingly.
 %
-Each display step, the graph outputs the training and validation cost. Once the maximum number of epochs 
-had been reached, the optimal stopping point is determined from taking the absolute minimum of the validation cost
+Each display step, the graph outputs the training and validation cost. 
+Once the maximum number of epochs 
+had been reached, the optimal stopping point is determined from 
+taking the absolute minimum of the validation cost
 and restoring the corresponding network parameters by means of the 'saver' function.
 %
 From this network graph, one can directly output the prediction on the values of {\tt train\_x} and
 the results are stored in the array {\tt predictions\_values}.
 %
-It is also possible to make predictions on any input vector of choice by feeding the vector {\tt predict\_x} to the 
+It is also possible to make predictions on any input vector of choice by feeding 
+the vector {\tt predict\_x} to the 
 network, which outputs an array {\tt extrapolation}.
 %
 Both predictions are stored in separate textfiles and can be retrieved later to evaluate the modeled zero loss peaks.
+
+\subsection{Analysis.py}
+This script is used to analyse the predictions from the NN that are stored in the textfiles. 
+%
+In order to import these files, 
+one should give this script the right directions to find the prediction .txt files
+by adjusting the lines {\tt path\_to\_data} and {\tt path\_predict}, {\tt path\_cost} and {\tt path\_extrapolate}, 
+containing the predictions, cost function data and the extrapolation predictions respectively.
+%
+First, in order to disregard the results where the neural network was not able to converge,
+we select only the datafiles where the final error function was below a certain threshold. 
+%
+We use as error function the chi2 per data point and we take as the default threshold a value of 3. 
+%
+Keeping only the files with final chi2 values lower than 3, we import the predictions on these files.
+%
+Once these datasets have been selected, we move on to the evaluation of the ZLP predictions. 
+%
+\\
+
+First, we give two definitions: 
+\begin{itemize}
+\item {\tt def matching()}: this is the matching procedure to match the predicted ZLP to the spectrum
+to be subtracted, as explained in Sect.~\ref{sec:results_sample}. 
+%
+It automatically selects the
+values of $\Delta E_I$ and $\Delta E_{II}$ for the training session and defines the matching procedure
+correspondingly.
+\item {\tt def bandgap()}: here we define how we fit the exponential function to the onset of the bandgap,
+which is equal to Eq.~\ref{eq:I1}. 
+\end{itemize}
+
+
+We loop over the total of N$_{rep}$ replicas and read each corresponding prediction from the 
+extrapolation file. 
+%
+This means that we are reading out the prediction made for the vector {\tt predict\_x}. Note that
+this prediction is still the logarithm of the experimental intensity, so we take the exponential
+to translate this back.
+%
+For each replica {\tt k}, we create a datafile containing the original spectra intensities 
+({\tt original['x*']} and {\tt original['y*']}, the predicted ZLP for this replica ({\tt prediction y}) 
+and the predicted ZLP after matching with each spectrum ({\tt match *}). 
+%
+This is done for the total of N$_{rep}$ replicas and all these results are stored in one big 
+dataframe: {\tt total\_replicas}. 
+%
+From this file, we will be able to calculate the
+statistical variables such as prediction mean and uncertainty. 
+%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
