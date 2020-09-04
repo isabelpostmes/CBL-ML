@@ -3,51 +3,47 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:summary}
 
-In this work we have presented a novel strategy to parametrise and remove
-the zero-loss peak that appears in the low-loss region
-of electron energy loss spectroscopy measurements.
+In this work we have presented a novel, model-independent strategy to parametrise and subtract
+the ubiquitous zero-loss peak that dominates  the low-loss region
+of EEL spectra.
 %
-Our strategy is based on machine learning techniques developed
-in the context of high-energy physics, in particular for studies of the quark
-and gluon substructure of protons.
+Our strategy is based on machine learning and provides a faithful estimate of the
+uncertainties associated to both the input data and the procedure itself,
+which can  then be propagated to physical predictions  without any  approximations.
 %
-An important advantage of this method is the faithful estimation of the
-input data and methodological uncertainties and their propagation to the subtracted
-spectra without the need to rely on any kind of approximation.
+We have demonstrated how, in the case of vacuum spectra, our approach
+is sufficiently flexible to accomodate several input variables corresponding
+to different operation conditions of the microscope.
 %
-We have demonstrated how, in the case of vacuum spectra, the model
-is flexible enough to accomodate several input variables, corresponding
-to different operation conditions,  without the need to
-assume any {\it ad-hoc} functional form for the ZLP parametrisation.
+Further, we are able  to reliably
+extrapolate our predictions, {\it e.g.} for the  expected FWHM of the ZLP,
+to other operation conditions.
 %
-This flexibility allows us for example to extrapolate the expected FWHM of the ZLP
-corresponding to other operation conditions of the microscope, beyond those
-included in the training set.
+When applied to spectra recorded on specimens, our approach
+makes possible to robustly disentangle the ZLP contribution from
+those arising from inelastic scatterings.
 %
-When applied to EEL spectra recorded on samples, we have shown
-that our approach allows to cleanly disentangle the ZLP contribution from
-that of the inelastic emissions from the sample, and produce
-subtracted spectra  that account for all relevant sources of uncertainty.
-%
-This way it becomes possible to fully exploit
+Thanks to this subtraction, one can fully exploit
 the valuable physical information contained in the ultra low-loss region of
-these spectra.
+the spectra.
 
-As a proof of concept we have applied this ZLP subtraction
-strategy to EEL spectra recorded in thick regions of WS$_2$ nanoflowers, 
-where WS$_2$ is expected to behave as a bulk material.
+We have applied this ZLP subtraction
+strategy to EEL spectra recorded in  WS$_2$ nanoflowers characterised by a
+2H/3R polytypic crystalline structure.
 %
-We used the results to estimate the local value of the bandgap energy $E_{\rm BG}$
-and to assess whether this bandgap is direct or indirect.
+First of all, measurements taken in a relatively
+thick region of the specimen were used to estimate the local value of the bandgap energy $E_{\rm BG}$
+and determine whether it is direct or indirect.
 %
-The final values for $E_{\rm BG}$ and $b$ obtained in the analysis of this specific spectrum are
-E_{\rm BG} = 1.6_{-0.2}^{+0.3}\,{\rm eV} \, ,\quad b= 1.3_{-0.7}^{+0.3} \, .
+A model fit to the onset of the inelastic distribution finds $E_{\rm BG} \simeq 1.6 \pm 0.2\,{\rm eV}$ and
+a clear preference for an indirect bandgap, irrespective of the specific location
+of the specimen where the  spectra were recorded.
 %
-Our analysis displays preference for an indirect bandgap of approximately 1.6 eV,
-which is consistent with 
-theoretical expectations of bulk WS$_2$.
-%
-As a second proof of concept, we applied our methods to a much thinner sample of WS$_2$, 
+These findings are consistent with previous studies, both of theoretical
+and of experimental nature, of the bandgap structure of bulk WS$_2$.
+
+Further, we have also applied to our method to a much thinner region of the  WS$_2$ nanoflowers,
+specifically one
 composed of overlapping petals whose thicknesses can be as small as a few monolayers.
 %
 Instead of studying the bandgap properties, one could exploit the ZLP-subtracted results 
@@ -57,8 +53,8 @@ excitonic transitions that are observed in the ultra-low-loss region of the spec
 The ZLP-subtracted spectra in this sample have allowed
 the charting of exciton peaks down to $\Delta E\simeq 1.5$ eV together with
 the associated uncertainty estimate, allowing to establish their significance.
-%
-\newparagraph
+
+
 The approach presented in this work could be extended
 in several directions.
 %
