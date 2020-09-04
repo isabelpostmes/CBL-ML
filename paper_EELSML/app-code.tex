@@ -125,7 +125,7 @@ This is done automatically using the experimental intensities {\tt train\_y} and
 {\tt train\_sigma} for a total of {\tt Nrep} replicas. The output is an ($N_{input}, N_{rep}$) 
 vector containing all the MC replicas. \\
 
-The final part of this script is where the training is done inside the function {\tt function_train()}. 
+The final part of this script is where the training is done inside the function {\tt function\_train()}. 
 %
 The cost function, optimizer and learning rate are defined, together with a 'saver' used to 
 save the network parameters after each optimization. 
@@ -146,7 +146,7 @@ The total number of training epochs per session is defined in {\tt training\_epo
 results after each number of epochs defined by {\tt display\_step}. 
 %
 Running the session object over the optimizer and cost function requires knowledge about the values of x and sigma. 
-These are defined inside the {\tt feed_dict} argument. 
+These are defined inside the {\tt feed\_dict} argument. 
 %
 After each epoch, the average training cost and validation cost are evaluated and the network parameters 
 are updated accordingly.
