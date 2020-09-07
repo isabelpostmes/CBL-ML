@@ -27,85 +27,93 @@ Thanks to this subtraction, one can fully exploit
 the valuable physical information contained in the ultra low-loss region of
 the spectra.
 
-We have applied this ZLP subtraction
+Here we have applied this ZLP subtraction
 strategy to EEL spectra recorded in  WS$_2$ nanoflowers characterised by a
 2H/3R polytypic crystalline structure.
 %
 First of all, measurements taken in a relatively
 thick region of the specimen were used to estimate the local value of the bandgap energy $E_{\rm BG}$
-and determine whether it is direct or indirect.
+and to determine whether this bandgap is direct or indirect.
 %
-A model fit to the onset of the inelastic distribution finds $E_{\rm BG} \simeq 1.6 \pm 0.2\,{\rm eV}$ and
-a clear preference for an indirect bandgap, irrespective of the specific location
-of the specimen where the  spectra were recorded.
+A model fit to the onset of the inelastic intensity distribution obtains
+$E_{\rm BG} \simeq 1.6^{+0.3}_{-0.2}\,{\rm eV}$ and exhibits a marked preference for an indirect bandgap.
 %
-These findings are consistent with previous studies, both of theoretical
-and of experimental nature, of the bandgap structure of bulk WS$_2$.
+Compatible results are found for the other location
+in sample A where spectra have been acquired.
+%
+Our findings are consistent with previous studies, both of theoretical
+and of experimental nature, concerning the bandgap structure of bulk WS$_2$.
 
-Further, we have also applied to our method to a much thinner region of the  WS$_2$ nanoflowers,
-specifically one
-composed of overlapping petals whose thicknesses can be as small as a few monolayers.
+Subsequently, we have applied our method to a  thinner region of the  WS$_2$ nanoflowers,
+specifically a region composed by overlapping petals with varying
+thicknesses that can be as small as a few monolayers.
 %
-Instead of studying the bandgap properties, one could exploit the ZLP-subtracted results 
-of this sample to study the local
-excitonic transitions that are observed in the ultra-low-loss region of the spectra.
+We have demonstrated how for such specimens one can exploit the ZLP-subtracted results
+to characterise the local excitonic transitions that arise in the ultra-low-loss region.
 %
-The ZLP-subtracted spectra in this sample have allowed
-the charting of exciton peaks down to $\Delta E\simeq 1.5$ eV together with
-the associated uncertainty estimate, allowing to establish their significance.
-
+By charting the exciton peaks of 2H/3R polytypic WS$_2$ there,
+we identify two strong peaks at $\Delta E\simeq 1.5$ and 2 eV
+(and a softer one at 1.7 eV) and show how
+these features are consistent when comparing
+spatially-separated locations in sample B.
+%
+Further, since our method provides an associated uncertainty estimate,
+one can robustly establish the
+statistical significance of each of these
+ultra-low-loss region features.
 
 The approach presented in this work could be extended
 in several directions.
 %
 First of all, it would be interesting to test its robustness when additional
 operation conditions of the microscope are included as input variables,
-and to assess to which extend ZLP models obtained with an specific microscope
+and to verify to which extent the ZLP parametrisations obtained for an specific microscope
 can be generalised to an altogether different TEM.
 %
-Further, a strong cross-check of our method would be provided by comparing
+Further, a non-trivial cross-check of our method would be provided by validating
 our predictions for other operation conditions of the microscope, such
-as the FWHM as a function of the beam energy $E_b$ reported in Fig.~\ref{fig:extrapolbeam}
-with actual measurements and verifying whether or not there is agreement within the
-uncertainties of the prediction.
-%
+as the FWHM as a function of the beam energy $E_b$ of the exposure time
+$t_{\rm exp}$ reported in Fig.~\ref{fig:extrapolbeam},
+with actual measurements.
+
 Concerning the physical interpretation of the low-loss region of EEL
-spectra, our method could be applied to study the bandgap
-and other local electronic properties of different types
-of nanostructures built upon 2D layered materials, such as MoS$_2$ nanowalls
-and nano-pillars and WS$_2$/MoS$_2$ arrays or heterostructures.
+spectra, our method could be applied to study the bandgap properties 
+for different types
+of nanostructures built upon 2D layered materials, such as MoS$_2$ nanowalls~\cite{nanowalls}
+and 
+vertically-oriented nano-sheets~\cite{D0NR00755B} or
+WS$_2$/MoS$_2$ arrays, heterostructures, and ternary alloys.
 %
-In addition to the bandgap characterisation, one might
-consider the implications of our approach for the study
+In addition to bandgap characterisation, this ZLP-subtraction
+strategy should allow the detailed study
 of other phenomena relevant for the interpretation of the low-loss
 region such as  plasmons, excitons, phonon interactions, and
 intra-band transitions.
 %
-One could   further exploit the subtracted EEL spectra produced
-with our method to evaluate the complex dielectric function and its associated
-uncertainties by means of the Kramers-Kronig relation.
+One could also exploit the subtracted EEL spectra to further characterise
+local electronic properties by means of the
+ evaluation of the complex dielectric function and its associated
+uncertainties in terms of the Kramers-Kronig relations.
 %
-Such phenomenological studies of the local electronic properties would be compared
-with {\it ab initio} calculations such as Density Functional Theory, based
-on the same underlying crystalline structure of the analysed samples.
-%
-We recall that the results
-presented in this work are to the best of our knowledge the first EELS bandgap
-analysis of WS$_2$ nanostructures based on mixed 2H/3R polytypes.
+Finally, these phenomenological studies of local electronic properties should be compared
+with {\it ab initio} calculations based
+on the same underlying crystalline structure as the studied specimens.
 
-Another possible generalisation of our method would be to the study of spectral TEM images,
-where each pixel in the image contains an individual EEL spectrum (possibly
-extended to 3D images).
+Another possible generalisation of our method would be the automation of
+the study of spectral TEM images,
+such as the right panels of Fig.~\ref{fig:ws2positions},
+where each pixel contains an individual EEL spectrum.
 %
-Here machine learning methods would be useful in order
-to  identify relevant features of the spectra (peaks, edges, shoulders) in a fully
-automated way
-without having to process each spectrum individually, and then assess
+Here machine learning methods would provide a  useful handle in order
+to identify relevant features of the spectra (peaks, edges, shoulders) with minimal
+human intervention (no need to process each spectrum individually) and then determine
 how these features vary as we move along different regions of the
 nanostructure.
 %
-Such application would combine two of the most topical uses of machine learning, regression
-on the one hand and classification on the other hand.
+Such application would combine two important families of machine learning algorithms,
+those used for regression, in order to quantify the properties of spectral
+features such as width and significance, and those for classification, to identify categories
+of distinct features across the spectral image.
 
 \subsection*{Acknowledgments}
 %
