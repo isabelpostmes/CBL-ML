@@ -103,11 +103,11 @@ yline_xx=np.array([1.687,1.687])
 yline_yy=np.array([-20,1e6])
 plt.plot(yline_xx, yline_yy,color='grey',lw=1.9,ls="dotted")
 
-plt.text(1.525,0.0035,r"$\Delta E_I$",fontsize=12)
-plt.text(1.635,0.0035,r"$\Delta E_{II}$",fontsize=12)
-plt.text(1.475,0.077,r"$I$",fontsize=20)
-plt.text(1.6,0.077,r"$II$",fontsize=20)
-plt.text(1.9,0.077,r"$III$",fontsize=20)
+plt.text(1.525,0.0035,r"$\Delta E_{\rm I}$",fontsize=12)
+plt.text(1.635,0.0035,r"$\Delta E_{\rm II}$",fontsize=12)
+plt.text(1.475,0.077,r"$\rm I$",fontsize=20)
+plt.text(1.6,0.077,r"$\rm II$",fontsize=20)
+plt.text(1.9,0.077,r"$\rm III$",fontsize=20)
 
 
 # Create an inset

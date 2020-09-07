@@ -469,9 +469,9 @@ with the inset showing the values of the corresponding derivatives, $dI/d\Delta 
       We display the separate contributions from $I_{\rm ZLP}$
       and $I_{\rm inel}$ as well as their sum.
       %
-      We indicate the two regions used for the model training ($I$ and $III$),
+      We indicate the two regions used for the model training ($\rm I$ and $\rm III$),
       while as discussed in the text the trained model is then
-      extrapolated to region $II$, defined for $\Delta E_I \le \Delta E \le \Delta E_{II}$.
+      extrapolated to region $\rm II$, defined for $\Delta E_{\rm I} \le \Delta E \le \Delta E_{\rm II}$.
     }
     \label{fig:EELS_toy}
 \end{figure}
@@ -502,12 +502,12 @@ the following categorisation should de adopted:
 
 \begin{enumerate}
 
-\item For energy losses such that $\Delta E \le \Delta E_I$ (region $I$),
+\item For energy losses such that $\Delta E \le \Delta E_{\rm I}$ (region $I$),
   the model training  proceeds in the same way as for the vacuum case
   via the minimisation of Eq.~(\ref{eq:chi2})
 
 \item  
-  For $\Delta E \ge \Delta E_{II}$ (region $III$), we use instead Eq.~(\ref{eq:chi2modified})
+  For $\Delta E \ge \Delta E_{\rm II}$ (region $III$), we use instead Eq.~(\ref{eq:chi2modified})
   without the contribution from the input data, since for such values
   of $\Delta E$ one has that $I_{\rm inel}\gg I_{\rm ZLP}$.
   %
@@ -515,7 +515,7 @@ the following categorisation should de adopted:
   on the model is the one arising from the implementation
   of the constraint that $I_{\rm ZLP}(\Delta E\to \infty)\to 0$.
 
-\item The EELS data  in region $II$, defined by  $\Delta E_I \le \Delta E \le \Delta E_{II}$,
+\item The EELS data  in region $II$, defined by  $\Delta E_{\rm I} \le \Delta E \le \Delta E_{\rm II}$,
   is excluded from the training dataset, given that in this region the contribution to $I_{\rm EEL}$
   coming from $I_{\rm inel}$ is significant.
   %
@@ -524,22 +524,22 @@ the following categorisation should de adopted:
 
 \end{enumerate}
 
-This classification introduces two new hyper-parameters of our model, $\Delta E_I$ and
-$\Delta E_{II}$, that need to be specified before the training.
+This classification introduces two new hyper-parameters of our model, $\Delta E_{\rm I}$ and
+$\Delta E_{\rm II}$, that need to be specified before the training.
 %
-They should satisfy $\Delta E_I \le \Delta E_{\rm min}$ and $\Delta E_{II} \ge \Delta E_{\rm min}$,
+They should satisfy $\Delta E_{\rm I} \le \Delta E_{\rm min}$ and $\Delta E_{\rm II} \ge \Delta E_{\rm min}$,
 with $\Delta E_{\rm min}$ being the position of the first local minimum of $I_{\rm EEL}$.
 %
-As indicated by the toy spectra of Fig.~\ref{fig:EELS_toy}, a suitable value for $\Delta E_{I}$
+As indicated by the toy spectra of Fig.~\ref{fig:EELS_toy}, a suitable value for $\Delta E_{\rm I}$
 would be somewhat above the onset of the inelastic contributions, to maximise
 the amount of training data while ensuring that $I_{\rm EEL}$ is dominated
 by $I_{\rm ZLP}$.
 
 We can use the derivatives of the spectra, $dI_{\rm EEL}/d\Delta E$, to select suitable minimum and
-maximum values for $\Delta E_I$. In order to select the value for $\Delta E_{II}$, we use the intensity
+maximum values for $\Delta E_{\rm I}$. In order to select the value for $\Delta E_{\rm II}$, we use the intensity
 profiles of the vacuum recorded spectra. 
 %
-Concerning $\Delta E_I $, its minimum possible value is selected as the value where the derivate taken on the sample
+Concerning $\Delta E_{\rm I} $, its minimum possible value is selected as the value where the derivate taken on the sample
 data start to different significantly as compared to those spectra taken on vacuum.
 %
 This value is obtained by looking at the ratio of the derivatives of the spectra compared to the vacuum derivatives,
@@ -548,22 +548,22 @@ $R_{dI/d \Delta E} =  \left( \frac{dI_{\rm ZLP}/d\Delta E}{dI_{\rm EEL}/d\Delta 
 For low energy losses this ratio equals 1, but at some energy loss $\Delta E_{I,min}$ the
 sample stops monotonically decreasing and the ratio deviates from 1. 
 %
-We know that the hyper-parameter $\Delta E_I$ should satisfy $\Delta E_{I,min} \le \Delta E_I \le \Delta E_{\rm min}$,
+We know that the hyper-parameter $\Delta E_{\rm I}$ should satisfy $\Delta E_{I,min} \le \Delta E_{\rm I} \le \Delta E_{\rm min}$,
 which corresponds to the region where $R_{dI/d \Delta E} \ne  1$ and $R_{dI/d \Delta E} \ge 0$.
 %
-The neural network will be trained on an array of $\Delta E_I$ values within this interval and 
+The neural network will be trained on an array of $\Delta E_{\rm I}$ values within this interval and 
 the optimal choice will be determined {\it a posteriori} from the results.
 %
 Another important difference as compared to the training of the vacuum spectra is that each of the sample
-spectra will have different values of $\Delta E_{\rm min}$ and thus of $\Delta E_I$. 
+spectra will have different values of $\Delta E_{\rm min}$ and thus of $\Delta E_{\rm I}$. 
 %
 For this reason we calculate $\Delta E_{\rm min}$  for each of the sample spectra and we use the highest of these
-as the maximum value for the hyper-parameter $\Delta E_I$. 
+as the maximum value for the hyper-parameter $\Delta E_{\rm I}$. 
 %
-As we determine the best choice of $\Delta E_I$ after training for each of the spectra separately, 
+As we determine the best choice of $\Delta E_{\rm I}$ after training for each of the spectra separately, 
 we are sure to capture all suitable results and select the best value for each individual spectrum. 
 %
-Concerning $\Delta E_{II}$, its minimum value should mark the region where $I_{\rm ZLP}(\Delta E\to \infty)\to 0$. 
+Concerning $\Delta E_{\rm II}$, its minimum value should mark the region where $I_{\rm ZLP}(\Delta E\to \infty)\to 0$. 
 %
 In order to implement this constraint, similar to the previous section we look at the ratio 
 $I_{ZLP,i}^{(exp)}/ \sigma_i^{(exp)}$ to determine the energy loss $\Delta E_{\rm pd}$ at 
@@ -571,7 +571,7 @@ which the contributions from the ZLP vanish.
 %
 As a measure, we use the energy loss value where the ratio $I_{ZLP,io}^{(exp)}/\sigma_i^{(exp)}$ drops below 1. 
 %
-We set the value of $\Delta E_{II}$ equal to this energy loss and add pseudo-data points for $\Delta E \ge \Delta E_{II}$.
+We set the value of $\Delta E_{\rm II}$ equal to this energy loss and add pseudo-data points for $\Delta E \ge \Delta E_{\rm II}$.
 %
 Note that in this region the intensity of the ZLP is several orders of magnitude smaller than the intensity 
-of the elastic emissions and therefore the exact choice of $\Delta E_{II}$ does not listen too closely.
+of the elastic emissions and therefore the exact choice of $\Delta E_{\rm II}$ does not listen too closely.
