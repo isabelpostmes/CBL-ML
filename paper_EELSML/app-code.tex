@@ -16,7 +16,7 @@ The code requires a working installation of {\tt Python3} and the following
 libraries: {\tt NumPy}, {\tt TensorFlow}, ....
 
 \noindent
-\paragraph{Load\_data.py}
+\paragraph{\tt Load\_data.py}
 %
 This script reads the spectrum
 intensities and create data-frames to be used for training the neural network.
@@ -38,7 +38,7 @@ For each of the spectra the minimum and maximum value of the recorded energy
 loss need to be set manually in {\tt Eloss\_min} and {\tt Eloss\_max}.
 
 \noindent
-\paragraph{Fitter.py}
+\paragraph{\tt Fitter.py}
 %
 This script is used to run the neural network training on the data that was 
 uploaded using {\tt Load\_data.py}.
@@ -212,7 +212,7 @@ These can be loaded at a later stage
 to make predictions for an arbitrary set of input variables. 
 
 \noindent
-\paragraph{Analysis.py}
+\paragraph{\tt Analysis.py}
 This script is used to analyse the predictions from the trained
 neural networks that have been stored in the text files indicated above.
 
@@ -242,52 +242,50 @@ Once these datasets have been selected and stored in an array called {\tt use\_f
 we move on to the evaluation of the ZLP predictions. 
 
 \item {\it Subtraction.}
- At this step the code uses the function {\tt def matching()} to
-  implements the matching procedure
-  explained in Sect.~\ref{sec:results_sample}
-  and that  automatically selects the
-values of $\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ for the training session and defines the matching procedure
-correspondingly; and  {\tt def bandgap()},
-here we define how we fit the exponential function to the onset of the bandgap,
-which is equal to Eq.~\ref{eq:I1}. 
+ At this step the code uses the function {\tt matching()} to
+  implement the matching procedure
+  described in Sect.~\ref{sec:results_sample}.
+  %
+  It also automatically selects the
+  values of $\Delta E_{\rm I}$ and $\Delta E_{\rm II}$ for the training session.
+  %
+  If the user aims to extract the bandgap properties
+  from the onset of $I_{\rm inel}$, 
+  the  {\tt bandgap()} function can be used to
+  fit Eq.~\ref{eq:I1} to the onset region.
 
-We loop over the total of N$_{rep}$ replicas and read each corresponding prediction from the 
-extrapolation file. 
+Here the code loops over the $N_{\rm rep}$ replicas and reads each prediction from the extrapolation data file {\tt predict\_x}.
 %
-This means that we are reading out the prediction made for the vector {\tt predict\_x}. Note that
-this prediction is still the logarithm of the experimental intensity, so we take the exponential
-to translate this back.
-%
-For each replica {\tt k}, we create a datafile containing the original spectra intensities 
-({\tt original['x*']} and {\tt original['y*']}, the predicted ZLP for this replica ({\tt prediction y}) 
+For each replica {\tt k}, the code creates a datafile containing the original spectra intensities 
+({\tt original['x*']} and {\tt original['y*']}), the predicted ZLP for this replica ({\tt prediction y}) 
 and the predicted ZLP after matching with each spectrum ({\tt match *}). 
 %
-Ultimately, for each replica we subtract the matched spectrum from the original spectrum 
-to obtain the desired subtracted spectra: {\tt dif * = original * - match *}. 
+For each replica we subtract the matched spectrum from the original spectrum 
+to obtain the desired subtraction: {\tt dif * = original * - match *}. 
 %
-This is done for each of the total of N$_{rep}$ replicas and all these results are stored in one big 
-dataframe: {\tt total\_replicas}. 
+This is done for each of the total of the replicas and all these results are stored in the  {\tt total\_replicas} dataframe. 
 %
-This file is stored in the folder 'Data/Results/Replica\_files' such that we can retrieve it at any time
-later in the future. 
-%
-From this file, we will be able to calculate the
-statistical variables such as prediction means and uncertainties. 
+This file is saved in `Data/Results/Replica\_files' such that a user
+can retrieve them  at any time to calculate the
+statistical estimators such as prediction means and uncertainties. 
 
 \item {\it Evaluate the subtracted spectra.}
 %
-The last part is done in the final section, where we create a {\tt mean\_rep} file that contains
+Here the code creates a {\tt mean\_rep} file that contains
 all the median predictions and the upper and lower bounds of the 68\% confidence intervals for 
 the predicted ZLP, matched spectra and the subtracted spectra, for each of the original recorded
 spectra originally given as an input. 
 %
-This final piece of code creates a graphical representation
-of the results, showing the original spectrum, the matched
+A graphical representation
+of the result is then produced, showing the original spectrum, the matched
 ZLP and the ZLP-subtracted spectrum including uncertainty bounds. 
-
 
 \end{itemize}
 
+We emphasize that the {\tt Analysis.py} script can be executed stand-alone
+without the need to train again the neural networks, provided that
+the model parameters corresponding to some previous training with
+the desired input settings are available.
 
 
 
