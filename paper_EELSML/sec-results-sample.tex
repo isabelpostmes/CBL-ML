@@ -195,37 +195,6 @@ This difference could be ascribed to the fact that
 the vacuum spectra from samples A and B were recorded in proximity to the sample, and therefore
 to some extent the influence of the specimen is still felt.
 
-The optimal values of $\Delta E_{\rm I}$ listed in Table~\ref{table:sampledata_summary} can be
-determined as follows.
-%
-We evaluate the ratio
-between the derivative of the intensity distribution acquired on the specimen over the
-same quantity recorded in vacuum,
-\be
-\label{eq:rder}
-\mathcal{R}^{(j)}_{\rm der}(\Delta E) \equiv
-\la
-\frac{
-  dI_{\rm EEL}^{({\rm exp})(j)}(\Delta E)/ d\Delta E
-}{
-  dI_{\rm EEL}^{({\rm exp})(j')}(\Delta E) /d\Delta E
-} \ra_{N_{\rm sp}' } \, ,
-\ee
-where $j'$ labels one of the $N_{\rm sp}'$ vacuum spectra and the average is taken
-over all available values of $j'$.
-%
-This ratio allows one to identify a suitable value of $\Delta E_{\rm I}$ by establishing
-for which energy losses the shape (rather than the absolute value) of the intensity distributions 
-recorded on the specimen starts to differ significantly from their vacuum counterparts.
-%
-A sensible choice of $\Delta E_{\rm I}$ could for instance be given by
-$\mathcal{R}_{\rm der}(\Delta E_{\rm I}) \simeq 0.8$, for which derivatives differ
-at the 20\% level.
-%
-Note also that the leftmost value of the energy loss satisfying
-$\mathcal{R}_{\rm der}(\Delta E)=0$ in Eq.~(\ref{eq:rder}) corresponds to the position of the first
-local minimum of the spectrum.
-
 The end result of the  neural network training described in Sect.~\ref{sec:training} is
  a set of $N_{\rm rep}=500$ replicas
   parametrising the ZLP, $I_{\rm ZLP}^{({\rm mod})(k)}(\Delta E)$.
