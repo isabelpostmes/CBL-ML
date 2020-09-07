@@ -1,16 +1,27 @@
-\section{ZLP subtraction and bandgap determination in WS$_2$}
+\section{Mapping low-loss EELS in polytypic WS$_2$}
 \label{sec:results_sample}
 
 Following the discussion of the vacuum ZLP analysis, we now
 present the application of our machine learning strategy to parametrise the ZLP
-arising in EEL spectra recorded on specimens.
+arising in spectra recorded on specimens, specifically on
+EELS measurements acquired in different regions
+of the WS$_2$ nanostructures presented in Sect.~\ref{sec:tmd}.
 %
-Specifically, we will analyse EELS measurements acquired on different regions
-of the WS$_2$ nanoflowers reviewed in Sect.~\ref{sec:tmd}.
+The resulting ZLP parametrisation will then be applied to isolate the inelastic
+contribution in each spectrum.
 %
-The resulting ZLP parametrisation will then be used to isolate the inelastic
-contribution $I_{\rm inel}$ in each spectrum and determine the bandgap energy $E_{\rm BG}$ from
-its behaviour in the onset region.
+We will use these ZLP-subtracted spectra first to determine the bandgap energy $E_{\rm BG}$
+and type from the behaviour of the onset region, and second to identify excitonic
+transitions at ultra-low energy losses.
+
+In this section we begin by presenting the training dataset, composed by two sets of spectra recorded
+in thick and thin regions of the WS$_2$  nanoflowers respectively.
+%
+Then we discuss the subtraction procedure, the choice of hyper-parameters, and the error propagation
+to the physical predictions.
+%
+The resulting subtracted EEL spectra provide the input required to extract the value and type of the bandgap
+and to characterise excitonic transitions for different regions of these polytypic 2H/3R WS$_2$ nanostructures.
 
 \subsection{Training dataset}
 %
