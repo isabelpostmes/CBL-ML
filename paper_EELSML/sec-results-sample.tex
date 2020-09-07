@@ -318,7 +318,7 @@ by a direct~(indirect) bandgap.
  In the following, we will display the median and the 68\% confidence level intervals
  for these parameters to account for the fact that their distribution will be in general non-Gaussian.
 
- \subsection{Bandgap analysis}
+ \subsection{Bandgap analysis of polytypic 2H/3R WS$_2$}
 
 We present first the results of the bandgap analysis of sample A,
 taking location \#4 in Fig.~\ref{fig:ws2positions} as representative spectrum; compatible results
@@ -456,7 +456,7 @@ In this case, we find a value of $\Delta E_{\rm I}\simeq 1.4$ eV,
 The left panel of Fig.~\ref{fig:SubtractedEELS_plot_sp4} displays
 the original
 and subtracted spectra corresponding to the representative
-location \#4 of sample B,
+location sp4 of sample B
 together with the predictions of the ZLP model.
 %
 As in Fig.~\ref{fig:sp14_subtracted_spectrum}, the bands indicate the 68\% confidence level uncertainties
@@ -475,7 +475,7 @@ and the central value is the median.
      Right: comparison of the ZLP-subtracted spectra from locations sp4, sp5, and sp6 in sample B
      together with the corresponding model uncertainties.
     %
-     Note how the features of the subtracted spectra, such as the peaks as $\Delta E\simeq 1.5$,
+     Note how several features of the subtracted spectra, such as the peaks as $\Delta E\simeq 1.5$,
     1.7 and 2.0 are eV, are common across the three locations.
   }
 \label{fig:SubtractedEELS_plot_sp4}
@@ -484,76 +484,84 @@ and the central value is the median.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The main difference with respect to the spectra recorded in sample A is the appearance
-of well-defined features (peaks) in the subtracted spectrum already at very small values of $\Delta E$.
+of well-defined features (peaks) in the subtracted spectrum already for
+very small values of $\Delta E$.
 %
 In particular, we observe two marked peaks at $\Delta E\simeq 1.5$ and 2.0 eV and a
-softer one near $\Delta E=1.7$ eV (additional features arise also above 2.0 eV).
+softer one near $\Delta E \simeq 1.7$ eV.
 %
-There are two foremost explanations for the differences between the spectra recorded
+Further additional features arise also for higher values of the energy loss.
+%
+There are two main sources for the observed differences between the spectra recorded
 in the two samples.
 %
-The first is that, while sample A is much thicker (bulk material), sample B corresponds
+The first one is that, while sample A is much thicker (bulk material), sample B corresponds
 to thin, overlapping petals whose thicknesses can be as small as a few monolayers.
 %
 The second is that the EELS measurements taken in sample A used a TEM without monochromator,
-while those in sample B benefited from a monochromator thus achieving a much better
-spectral resolution (with an average FWHM of 85 meV to be compared with the 470 meV of sample A, see
+while those in sample B benefited from a monochromator thus achieving a
+superior
+spectral resolution (with an average FWHM of 87 meV to be compared with the 470 meV of sample A, see
 Table~\ref{table:sampledata}).
 %
-The combination of structural and morphological variations in the specimen on the one hand together
-with the operation conditions of the TEM on the other hand therefore accounts for the differences
+This combination of structural and morphological variations in the specimen together
+with the operation conditions of the TEM therefore should account for the
+most of differences
 between the two set of spectra.
+
+It is worth noting here that our ZLP parametrisation and subtraction strategy exhibits a satisfactory
+performance for all the spectra under consideration, irrespective of the spectral resolution of the TEM used
+for their acquisition.
 %
-It is worth noting at this point that our ZLP parametrisation and subtraction strategy works equally
-well for the spectra under consideration, irrespective of the spectral resolution.
-%
-By comparing Fig.~\ref{fig:SubtractedEELS_plot_sp4} with~\ref{fig:sp14_subtracted_spectrum}, one observes
-that  model uncertainties are larger in the latter than in the former, as expected from the
+By comparing Figs.~\ref{fig:SubtractedEELS_plot_sp4} and~\ref{fig:sp14_subtracted_spectrum}, one observes
+that  model uncertainties are larger in the latter case than in the former, as expected from the
 superior 
 spectral resolution of the EELS measurements taken on sample B.
 %
 Nevertheless, the same approach has been used in both cases without the need of any fine-tuning
 or {\it ad hoc} adjustments: of course, if the input
-spectra have been recorded with a superior spectral resolution, then the resulting ZLP model uncertainties
+spectra have been recorded with better spectral resolution, the resulting ZLP model uncertainties
 will improve accordingly without changing the procedure itself.
-%
+
 Given that the
 well-defined spectral features present in Fig.~\ref{fig:SubtractedEELS_plot_sp4}
-appear close to the onset of the inelastic emissions $I_{\rm inel}(\Delta E)$,
+appear close to the onset of the inelastic emissions, $I_{\rm inel}(\Delta E)$,
 these spectra are not suitable for bandgap determination analyses.
 %
-This relies on the fact that the method of~\cite{Rafferty:2000}
-used for sample A is only applicable under the assumption that there is a sufficient region in $\Delta E$
-after the onset to perform the polynomial fit of Eq.~(\ref{eq:I1}).
+The reason is that the method of~\cite{Rafferty:2000}
+used in sample A is only applicable under the assumption that there is a sufficiently wide region in $\Delta E$
+after the onset of $I_{\rm inel}$ to perform the polynomial fit of Eq.~(\ref{eq:I1}).
 %
-This is clearly not possible in this case, and indeed fits restricted to $\Delta E\le 1.4$ eV
-turn out to be numerically unstable.
+This is clearly not possible  for the spectra recorded in sample B, and indeed model fits restricted to $\Delta E\le 1.4$ eV
+display a marked numerical instability.
 %
-Instead of studying the bandgap properties, one could exploit the ZLP-subtracted results of sample B
-to study the local
-excitonic transitions that are expected in the ultra-low-loss region of the spectra.
-%
-At first glance, it might be argued that the peaks present in Fig.~\ref{fig:SubtractedEELS_plot_sp4} are not
+Instead of studying the bandgap properties, it is interesting to exploit the ZLP-subtracted results of sample B
+to characterise the local
+excitonic transitions of polytypic 2H/3R WS$_2$
+that are known to arise in the ultra-low-loss region of the spectra.
+
+Before being able to do this, however, one has to deal with the possible objection
+that the peaks present in Fig.~\ref{fig:SubtractedEELS_plot_sp4} are not
 genuine features, but rather fluctuations due to insufficient statistics
 that should be smoothed out before this region can be interpreted.
 %
-To address this possible objection, the right panel of Fig.~\ref{fig:SubtractedEELS_plot_sp4}
+To tackle this concern, the right panel of Fig.~\ref{fig:SubtractedEELS_plot_sp4}
 displays a
-comparison of the ZLP-subtracted spectra recorded in the (spatially separated) locations \#4, \#5 and \#6
+comparison of the ZLP-subtracted spectra recorded in the (spatially separated) locations sp4, sp5 and sp6
 in sample B
 together with their model uncertainties.
 %
 Both the position and the widths of the peaks at $\Delta E\simeq 1.5$,
 1.7 and 2.0 eV remain stable, confirming that these
 are genuine physical features rather than fluctuations.
-5
+
 These peaks in the ultra-low-loss region of the ZLP-subtracted EELS spectra recorded on thin, polytypic
 WS$_2$ nanostructures can be traced back to excitonic transitions.
 %
-Indeed the origin of such peaks can be attributed to the formation of an electron-hole pair mitigated
+Their origin can be attributed to the formation of an electron-hole pair mitigated
 by the dielectric screening from the surrounding lattice~\cite{Hanbicki:2016}.
 %
-In nanostructures with reduced dimensionality as well as in single layers of TMDs,
+In nanostructures with reduced dimensionality as well as in single layers of TMD materials,
 exciton peaks arise with binding energies up to ten times larger than for bulk structures.
 %
 In the optical spectra of TMDs, two strongly pronounced resonances denoted by A and B
@@ -563,12 +571,11 @@ excitons are often observed, appearing at binding energies of 300 and
 Interestingly, this prediction is in agreement with the observed peaks at
 $\Delta E\simeq 1.5$ and 1.7 eV if one takes into account the expected
 value of $E_{\rm BG}$ for ultra-thin  WS$_2$ nanostructures, see Table~\ref{table:bgvalues}
-%
+
 We can conclude that ZLP-subtracted spectra in sample $B$ have allowed
 a clean mapping of exciton peaks down to $\Delta E\simeq 1.5$ eV together with
-the associated uncertainty estimate that allows establishing their significance.
+the associated uncertainty estimate, which allows quantifying their statistical significance.
 %
-Further insights between the properties of the excition peaks in the ultra-low-loss region
+Further insights concerning the relationship between the exciton peaks in the ultra-low-loss region
 and the underlying crystalline structure and specimen morphology could be obtained
-by combining these results with {\it ab initio} calculations such as those based
-on density functional theory.
+by combining our findings with {\it ab initio} calculations such as density functional theory.
