@@ -3,70 +3,61 @@
 
 Following the discussion of the vacuum ZLP analysis, we now
 present the application of our machine learning strategy to parametrise the ZLP
-arising in spectra recorded on specimens, specifically on
+arising in spectra recorded on specimens, specifically for
 EELS measurements acquired in different regions
 of the WS$_2$ nanostructures presented in Sect.~\ref{sec:tmd}.
 %
-The resulting ZLP parametrisation will then be applied to isolate the inelastic
+The resulting ZLP parametrisation will be applied to isolate the inelastic
 contribution in each spectrum.
 %
-We will use these ZLP-subtracted spectra first to determine the bandgap energy $E_{\rm BG}$
-and type from the behaviour of the onset region, and second to identify excitonic
-transitions at ultra-low energy losses.
+We will use these subtracted spectra first to determine the bandgap type and energy 
+value from the behaviour of the onset region and second to identify excitonic
+transitions at very low energy losses.
 
-In this section we begin by presenting the training dataset, composed by two sets of spectra recorded
+In this section we begin by presenting the training dataset, composed by two groups of EEL spectra recorded
 in thick and thin regions of the WS$_2$  nanoflowers respectively.
 %
 Then we discuss the subtraction procedure, the choice of hyper-parameters, and the error propagation
 to the physical predictions.
 %
-The resulting subtracted EEL spectra provide the input required to extract the value and type of the bandgap
-and to characterise excitonic transitions for different regions of these polytypic 2H/3R WS$_2$ nanostructures.
+The resulting subtracted spectra provide the information
+required to extract the value and type of the bandgap
+and to characterise excitonic transitions for different regions of these polytypic WS$_2$ nanostructures.
 
 \subsection{Training dataset}
+
+Low-magnification TEM images (left panels) and the corresponding
+spectral images (right panels) of two representative regions of
+the WS$_2$ nanoflowers are displayed in Fig.~\ref{fig:ws2positions}.
 %
-Low-magnification TEM images of two representative regions of
-the WS$_2$ nanoflowers are displayed in Fig.~\ref{fig:ws2positions},
-denoted as sample A and sample B.
+We denote these two regions as sample A and sample B respectively.
 %
-In each image we indicate the specific locations where
+The spectral images have been recorded in the regions marked by a green square
+    in the associated TEM images, and contain an individual EEL spectrum in each pixel.
+%
+We indicate the specific locations where
 EEL spectra have been recorded, including in-vacuum measurements taken
 for calibration purposes.
 %
 Note that in sample B  the differences in contrast are related to the material
 thickness, with higher contrast corresponding to thinner regions.
-%
-The two samples exhibit different structural morphologies: while sample A is composed
-by a relatively thick region of WS$_2$, sample B corresponds to a thin petal region
-with possibly overlapping terraces.
-%
-In other words, sample A is composed by bulk WS$_2$ while in sample B some specific regions
-could be rather thinner, down to the few monolayers level.
-%
-This thickness information has been be determined
-by means of the {\tt Digital~Micrograph}  software.
-%
-Further, the measurements on each sample have
-been obtained with different electron microscopes and
-operation settings, and for this reason
-we analyse them independently.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
 \begin{centering}
-  \includegraphics[width=0.87\linewidth]{plots/Spectra_location.pdf}
+  \includegraphics[width=0.92\linewidth]{plots/Spectra_location.pdf}
   \caption{Low-magnification TEM images (left) and the corresponding
     spectral images (right panels) of two different regions of
-    the WS$_2$ nanoflowers, denoted as sample A and sample B respectively.
+    the WS$_2$ nanoflowers, denoted as sample A (upper) and sample B (lower panels) respectively.
     %
-    The spectral images have been recorded in the region marked by a green square
-    in the corresponding TEM images.
+    The spectral images have been recorded in the regions marked by a green square
+    in the associated TEM images, and contain an individual EEL spectrum in each pixel.
     %
     We indicate the locations where representative
     EEL spectra have been selected. 
     %
     In the left panel of sample B, the difference in contrast is correlated to the material
-    thickness, with higher contrast corresponding to thinner regions of the nanostructure.
+    thickness, with higher contrast indicating thinner regions of the nanostructure.
     %
     The morphological differences between the two samples are discussed in the text.
   }
@@ -75,19 +66,34 @@ we analyse them independently.
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+These two samples are characterised by rather different structural morphologies: while sample A is composed
+by a relatively thick region of WS$_2$, sample B corresponds to a region where thin petals
+overlap between them.
+%
+In other words, sample A is composed by bulk WS$_2$ while in sample B some specific regions
+could be rather thinner, down to the few monolayers level.
+%
+This thickness information has been be determined
+by means of the {\tt Digital~Micrograph}  software.
+%
+Further, we note that EELS measurements on each sample have
+been obtained with different electron microscopes and
+operation settings, and for this reason here
+we analyse them separately.
+
 In Table~\ref{table:sampledata} we collect the most relevant properties of the spectra collected
 in the locations indicated in Fig.~\ref{fig:ws2positions} using the same format as
 in Table~\ref{table:vacuumdata}.
 %
-Note that since the spectra from samples A and B
-have been acquired with different microscopes, features of the ZLP
+As we just mentioned, the spectra from samples A and B
+have been acquired with different microscopes and thus features of the ZLP
 such as the FWHM are expected to be different.
 %
 From this table one can observe how the ZLP for the spectra acquired on sample A exhibit
 a FWHM about five times larger as compared to those of sample B.
 %
-This difference in resolution can be understood from the fact that the EELS spectra from sample B, unlike those
-from sample A, were recorded with a TEM equipped with a monochromator.
+This difference in energy resolution can be understood from the fact that the EELS spectra from sample B, unlike those
+from sample A, were recorded with a TEM equipped with monochromator.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,13 +119,13 @@ B        &       190       &        60       &   10     &    2000    &     -0.9 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In the following we will present the results for representative spectra
-corresponding to each of the two samples.
+In the following we will present results for representative spectra
+corresponding to specific choices of the locations indicated in Fig.~\ref{fig:ws2positions}.
 %
-The full set of spectra is available together with {\tt EELSfitter},
-the code used to produce the results of this analysis,
+The full set of spectra is available  within {\tt EELSfitter},
+the code used to produce the results of this analysis, and
 whose installation
-and usage instructions are presented in Appendix~\ref{sec:installation}.
+and usage instructions are summarised in Appendix~\ref{sec:installation}.
 
 \subsection{Subtraction procedure}
 

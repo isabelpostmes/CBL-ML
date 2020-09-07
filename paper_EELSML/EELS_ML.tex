@@ -178,28 +178,34 @@ $^{2}$Nikhef Theory Group, Science Park 105, 1098 XG Amsterdam, The
 
 \end{center}
 
-  Electron energy-loss spectroscopy (EELS) within the
-  transmission electron microscope  provides valuable information on the structural, chemical, and electronic properties of materials at the nanoscale.
+Exploiting the information provided by electron energy-loss spectroscopy  (EELS)
+requires reliable access to the
+low-loss region ($\Delta E\lsim 5$ eV)
+where the zero-loss peak (ZLP) often overwhelms
+the contributions associated to the inelastic scatterings off the specimen.
 %
-Exploiting the information contained in EEL spectra requires
-reliable access to the
-low-loss region ($\Delta E\lsim 5$ eV),
-where the contribution from the zero-loss peak (ZLP) overwhelms
-that from the inelastic scatterings off the sample.
-%
-Here we deploy machine learning techniques, inspired by applications in particle physics,
-to realise a model-independent multidimensional determination of the ZLP
+Here we deploy machine learning techniques developed in particle physics
+to realise a model-independent, multidimensional determination of the ZLP
 with a faithful uncertainty estimate.
 %
-Our method is used to disentangle ZLP from
-sample contributions in  low-loss EEL spectra acquired
-in WS$_2$ nanostructures.
+This novel method 
+is used to disentangle the ZLP and
+specimen contributions in EEL spectra acquired
+in WS$_2$ nanostructures characterised by a flower-like morphology
+and a 2H/3R mixed polytypism.
 %
-This has made it possible to determine the value and nature of the WS$_2$ bandgap
-as a function of the underlying crystalline morphology of the nanostructures,
-as well as it has allowed for a clean mapping of exciton peaks down to 
-$\Delta E\simeq 1.5$ eV.
+From the resulting ZLP-subtracted spectra, we
+determine the type and value of the bandgap of polytypic bulk W$_2$,
+finding  $E_{\rm BG} = 1.6_{-0.2}^{+0.3}\,{\rm eV}$ with a clear preference for
+an indirect bandgap.
 %
+Further, we demonstrate how it is possible to robustly identify excitonic
+transitions down to very small energy losses.
+%
+Our approach has been implemented in an
+open source {\sc Python} package, dubbed {\tt EELSfitter} and based
+on {\tt TensorFlow} for the neural network training.
+
 
 
 \vspace{0.4cm}
