@@ -275,11 +275,11 @@ affecting the original EEL spectra.
 \label{eq:depdeltae}
 
 Having demonstrated that our neural network model provides a satisfactory description
-of all the input EEL spectra, we now present its  predictions for specific
+of the input EEL spectra, we now present its  predictions for specific
 choices of the input parameters.
 %
 First of all, we investigate the dependence of the results as a function of the
-electron energy loss $\Delta E$.
+electron energy loss.
 %
 Fig.~\ref{fig:EELS_vacuum_DeltaE} displays the central value and 68\% confidence level uncertainty band
 for the ZLP model as a function
@@ -288,9 +288,9 @@ evaluated using Eqns.~(\ref{eq:average}) and~(\ref{eq:standarddev}).
 %
 We display results corresponding to 
 three different values of $E_b$  and for both
-$t_{\rm exp}=10$ ms (left)  and $t_{\rm exp}=100$ ms (right panel).
+$t_{\rm exp}=10$ ms and  $100$ ms.
 %
-We emphasize that no training data with $E_b=120$ keV has been used and thus our prediction
+We emphasize that no measurements with $E_b=120$ keV have been used in the training and thus our prediction
 in that case arises purely from the model interpolation.
 %
 It is interesting to note how both the overall normalisation and the shape of
@@ -323,39 +323,40 @@ the corresponding relative uncertainty as a function of $\Delta E$
 for each of the three values of $E_b$.
 %
 Recall that in this work we allow for non-Gaussian distributions and thus the central
-value is the mean of the distribution while the error band in general will
+value is the median of the distribution and the error band in general will
 be asymmetric.
 %
 In the case of the $t_{\rm exp}=10$ ms results, we see how the model prediction
 at $E_b=120$ keV typically exhibits larger uncertainties than the predictions
 for the two values of $E_b$ for which we have training data.
 %
-In the case of $t_{\rm exp}=100$ ms instead the model predictions exhibit very similar
-uncertainties for the three values of $E_b$, which further more depend only mildly on $\Delta E$.
+In the case of $t_{\rm exp}=100$ ms instead, the model predictions exhibit very similar
+uncertainties for the three values of $E_b$, which furthermore depend only mildly on $\Delta E$.
 
-It is interesting to assess how the model results are modified once a subset of the data points
+It is important to assess how the model results are modified once a subset of the data points
 are excluded from the fit.
 %
-As illustrated in Fig.~\ref{fig:EELS_toy}, when training the model on sample spectra, a region
-with $\Delta E_I \le \Delta E \le \Delta E_{II}$ will be removed from the training dataset to avoid the
+As illustrated in Fig.~\ref{fig:EELS_toy}, when training the model on sample spectra, the
+region defined by
+with $\Delta E_{\rm I} \le \Delta E \le \Delta E_{\rm II}$ will be removed from the training dataset to avoid the
 contamination from the inelastic contributions.
 %
 To emulate the effects of such cut, 
-Fig.~\ref{fig:EELS_vacuum_DeltaE} displays
+Fig.~\ref{fig:EELS_vacuum_DeltaE_unc} displays
 the relative uncertainty in the model predictions for $I_{\rm ZLP}(\Delta E)$
-as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms (left)
-and 100 ms (right panel).
+as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms 
+and 100 ms.
 %
-We show results for three different sets of training: first of all, one without any cut
-in the training dataset, and then for the case where the data points with $\Delta E \ge \Delta E_{\rm cut}$
+We show results for three different cases: first of all, one without any cut
+in the training dataset, and then for two cases where data points with $\Delta E \ge \Delta E_{\rm cut}$
 are removed from the training dataset.
 %
 We consider two values of $\Delta E_{\rm cut}$, namely 50 meV and 100 meV, indicated
 with vertical dash-dotted lines.
 %
 In both cases, data points are removed up until $\Delta E =$ 800 meV. The pseudo-data points 
-that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
-in all three cases in the region 800 meV $\le \Delta E \le 1 eV$. 
+that enforce the $I_{\rm EEL}(\Delta E)\to 0$ condition are present
+in all three cases in the region 800 meV $\le \Delta E \le 1~{\rm eV}$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
@@ -366,18 +367,18 @@ in all three cases in the region 800 meV $\le \Delta E \le 1 eV$.
       as a function of the energy loss for $E_b=200$ keV and $t_{\rm exp}=10$ ms (left)
       and 100 ms (right panel).
       %
-      We show results for three different sets of trainings: without any cut
-      in the training dataset, and for the case where the data points with $\Delta E \ge \Delta E_{\rm cut}$
+      We show results for three different cases: without any cut
+      in the training dataset, and where the data points with $\Delta E \ge \Delta E_{\rm cut}$
       are removed from the training dataset for two different values
       of $\Delta E_{\rm cut}$.
       %
-      Note that the same pseudo-data points that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
+      The same pseudo-data points that enforce $I_{\rm EEL}(\Delta E)\to 0$ are present
       in all three cases.
-      \label{fig:EELS_vacuum_DeltaE}}
+      \label{fig:EELS_vacuum_DeltaE_unc}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-From this comparison we can observe how the model predictions become markedly more uncertain
+From this comparison, one can observe how the model predictions become markedly more uncertain
 once a subset of the training data is cut away, as expected due to the effect of the information
 loss.
 %
@@ -387,30 +388,30 @@ uncertainties are small to begin with), rather more dramatic effects are observe
 for a value of the cut $\Delta E_{\rm cut}=50$ meV.
 %
 This comparison highlights how ideally we would like to keep as many data points
-in the training set for the ZLP model, provided of course we can verify that the
+in the training set for the ZLP model, provided of course one can verify that the
 possible contributions to the spectra related to inelastic scatterings from the
 sample can be neglected.
 
-\subsection{Dependence on  beam energy  and exposure time }
+\subsection{Dependence on beam energy and exposure time }
 \label{eq:depebeam}
-
 
 As indicated in Table~\ref{table:vacuumdata}, the training dataset contains
 spectra taken at two values of the electron beam energy, $E_b=60$ keV and 200 keV.
 %
-The left panel of Fig.~\ref{fig:extrapolbeam} displays  model predictions for the FWHM of the zero loss peak
-      (and its corresponding uncertainty) as a function of the beam energy $E_b$
-      for two values of the exposure time, $t_{\rm exp}=10$ ms and 100 ms.
-      %
-      The vertical dashed lines indicate the values of $E_b$ for which training data is available.
-      %
-      This comparison illustrates how the model uncertainty vary in the data region
-      (near $E_b=60$ keV and 200 keV), the interpolation region (for $E_b$ between 60 and 200 keV),
-      and the extrapolation regions (for $E_b$ below 60 keV and above 200 keV).
-      %
-      For $t_{\rm exp}=100$ ms, we observe that the model interpolates reasonably well
-      between the measured values of $E_b$ and then uncertainties increase
-      markedly in the extrapolation region above $E_b=200$ keV.
+The left panel of Fig.~\ref{fig:extrapolbeam} displays the predictions for the FWHM of the zero loss peak
+(and its corresponding uncertainty) as a function of the beam energy $E_b$
+for two values of the exposure time, $t_{\rm exp}=10$ ms and 100 ms.
+%
+The vertical dashed lines indicate the two values of $E_b$ for which spectra
+are part of the training dataset.
+%
+This comparison illustrates how the model uncertainty vary in the data region
+(near $E_b=60$ keV and 200 keV), the interpolation region (for $E_b$ between 60 and 200 keV),
+and the extrapolation regions (for $E_b$ below 60 keV and above 200 keV).
+%
+In the case of $t_{\rm exp}=100$ ms for example, we observe that the model interpolates reasonably well
+between the measured values of $E_b$ and then uncertainties increase
+markedly in the extrapolation region above $E_b=200$ keV.
       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
@@ -418,12 +419,12 @@ The left panel of Fig.~\ref{fig:extrapolbeam} displays  model predictions for th
     \includegraphics[width=0.49\textwidth]{plots/Ebeam_extrapolation.pdf}
     \includegraphics[width=0.49\textwidth]{plots/time_extrapolation.pdf}
     \caption{\small The model predictions for the FWHM of the zero loss peak
-      (and its corresponding uncertainty) as a function of the beam energy $E_b$
+      with its corresponding uncertainty as a function of the beam energy $E_b$
       for two values of the exposure time (left panel)
       and as a function of $t_{\rm exp}$ for two values of $E_b$ (right panel).
       %
       The vertical dashed lines indicate the values of the
-      corresponding parameter for which training data is available.
+      corresponding microscope parameter for which training data is available.
     }
     \label{fig:extrapolbeam}
 \end{figure}
@@ -436,23 +437,32 @@ The uncertainties increase but only in a moderate way in in the interpolation re
 the model can be reliable applied to predict the features of the ZLP other values of the electron
 energy beam (assuming that all other operation conditions of the microscope are unchanged).
 %
-The errors increase rapidly in the extrapolation region, which is a characteristic feature of
-these neural network models.
+The errors then increase rapidly in the extrapolation region, which is a characteristic
+(and desirable) feature of  neural network models.
 %
 Indeed, as soon as the model departs from the data region there exist a very large
 number of different functional form models for $I_{\rm ZLP}(\Delta E)$ that can describe equally well
 the training dataset, and hence a blow up of the extrapolation uncertainties is generically expected.
 
-The network was trained on data with exposure times of $10$ and $100$ ms,
-so interpolation and extrapolation is possible. Similar to the predictions for varying beam energy, also for exposure time the uncertainties grow bigger as the value deviates more from the training inputs.
+In the same way as in the case of the electron beam energy $E_b$, while our ZLP model
+was trained on data with only exposure times of $t_{\rm exp}=10$ and $100$ ms,
+it can be used to reliably inter- and extrapolate to other values of $t_{\rm exp}$.
 %
-The right panel of Fig.~\ref{fig:extrapolbeam} displays a similar model
-comparison as in the left one but now and as a function of $t_{\rm exp}$ for two values of $E_b$ (right panel).
+The right panel of Fig.~\ref{fig:extrapolbeam} displays the same
+comparison as in the left one now as a function of $t_{\rm exp}$ for
+$E_b=60$ keV and $E_b=200$ keV.
 %
 We observe that the FWHM increases roughly in a linear manner with the exposure time, indicating
-that lower values of $t_{\rm exp}$ allow for an improved spectral resolution.
+that lower values of $t_{\rm exp}$ allow for an improved spectral resolution, and that the model
+predictions are approximately independent of $E_b$.
 %
-Further, also in this case we find that the model uncertainties grow rapidly in the
-extrapolation region beyond that covered for the training dataset.
+Similarly to the predictions for varying beam energies, also for the exposure time the uncertainties grow bigger as the value of this parameter deviates more from the training inputs,
+specially for large values of $t_{\rm exp}$.
+
+All in all, we conclude that the predictions of the ZLP model based on vacuum spectra
+behave as they ought to: the smallest uncertainties correspond to the parameter values
+that are included in the training dataset, while the largest uncertainties arise
+in the extrapolation regions when probing regions of the parameter space far from those
+present in the training set.
 
 
