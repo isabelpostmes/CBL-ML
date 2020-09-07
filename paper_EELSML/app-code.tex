@@ -13,7 +13,8 @@ The code is available from its GitHub repository
 and is composed by a number of {\tt Python} scripts.
 %
 The code requires a working installation of {\tt Python3} and the following
-libraries: {\tt NumPy}, {\tt TensorFlow}, ....
+libraries: {\tt NumPy}, {\tt TensorFlow}, {\tt pandas}, {\tt SciPy} and {\tt scikit-learn}.  
+
 
 \noindent
 \paragraph{\tt Load\_data.py}
@@ -38,10 +39,10 @@ For each of the spectra the minimum and maximum value of the recorded energy
 loss need to be set manually in {\tt Eloss\_min} and {\tt Eloss\_max}.
 
 \noindent
-\paragraph{\tt Fitter.py}
+\paragraph{\tt Fitter.ipynb}
 %
 This script is used to run the neural network training on the data that was 
-uploaded using {\tt Load\_data.py}.
+uploaded using {\tt load\_data.py}.
 %
 It involves a number of pre-processing steps to determine the hyper-parameters $\Delta E_{\rm I}$
 and $\Delta E_{\rm II}$ and then
@@ -211,8 +212,16 @@ Futher, we store the optimal network parameters after each training session in t
 These can be loaded at a later stage
 to make predictions for an arbitrary set of input variables. 
 
+Running the loop over all replicas in series, using an input array of \~50 training points 
+and a total number of training epochs of 25000 per session,
+takes approximately 20 seconds per optimization (~200 replicas per hour).
+
+
+
+
+
 \noindent
-\paragraph{\tt Analysis.py}
+\paragraph{\tt Predictions.ipynb}
 This script is used to analyse the predictions from the trained
 neural networks that have been stored in the text files indicated above.
 
@@ -265,7 +274,7 @@ to obtain the desired subtraction: {\tt dif * = original * - match *}.
 %
 This is done for each of the total of the replicas and all these results are stored in the  {\tt total\_replicas} dataframe. 
 %
-This file is saved in `Data/Results/Replica\_files' such that a user
+This file is saved in `Data/results/replica\_files' such that a user
 can retrieve them  at any time to calculate the
 statistical estimators such as prediction means and uncertainties. 
 
@@ -282,7 +291,7 @@ ZLP and the ZLP-subtracted spectrum including uncertainty bounds.
 
 \end{itemize}
 
-We emphasize that the {\tt Analysis.py} script can be executed stand-alone
+We emphasize that the {\tt predictions.ipynb} script can be executed stand-alone
 without the need to train again the neural networks, provided that
 the model parameters corresponding to some previous training with
 the desired input settings are available.
