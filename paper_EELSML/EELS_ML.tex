@@ -189,13 +189,13 @@ to realise a model-independent, multidimensional determination of the ZLP
 with a faithful uncertainty estimate.
 %
 This novel method 
-is used to disentangle the ZLP and
-specimen contributions in EEL spectra acquired
-in WS$_2$ nanostructures characterised by a flower-like morphology
-and a 2H/3R mixed polytypism.
+is then applied to disentangle the ZLP from the
+specimen contributions for EEL spectra acquired in 
+flower-like WS$_2$
+nanostructures characterised by  a 2H/3R mixed polytypism.
 %
-From the resulting ZLP-subtracted spectra, we
-determine the type and value of the bandgap of polytypic bulk W$_2$,
+From the resulting ZLP-subtracted spectra we
+determine the type and value of the bandgap of polytypic WS$_2$,
 finding  $E_{\rm BG} = 1.6_{-0.2}^{+0.3}\,{\rm eV}$ with a clear preference for
 an indirect bandgap.
 %
@@ -203,43 +203,24 @@ Further, we demonstrate how it is possible to robustly identify excitonic
 transitions down to very small energy losses.
 %
 Our approach has been implemented in an
-open source {\sc Python} package, dubbed {\tt EELSfitter} and based
-on {\tt TensorFlow} for the neural network training.
-
-
+open source {\sc Python} package, dubbed {\tt EELSfitter} and built upon
+{\tt TensorFlow} for the neural network training.
 
 \vspace{0.4cm}
 \noindent{\it Keywords:} {\small Transmission Electron Microscopy,
-Electron Energy Loss Spectroscopy, Neural Networks, Bandgap, Transition
+Electron Energy Loss Spectroscopy, Neural Networks, Machine Learning, Transition
 Metal Dichalcogenides.}\\
 
-
-
-%% The words table and figure should be written in full and not abbreviaged to tab. and fig. Do not include ‘eq.’, ‘equation’ etc before an equation number or ‘ref.’ ‘reference’ etc before a reference number.
-
-% Table of contents
 \clearpage
 \tableofcontents
 
-% General introduction
+
 \input{sec-introduction.tex}
-
-% Review of TMDs and WS2
 \input{sec-tmd.tex}
-
-% Discuss the methodology that we are going to use
 \input{sec-methodology.tex}
-
-% Discussion of results in vacuum
-% including closure test validation
 \input{sec-results-vacuum.tex}
-
-% Discussion of the results in sample
 \input{sec-results-sample.tex}
-
-% Summary and outlook
 \input{sec-summary.tex}
-
 \appendix
 \input{app-code.tex}
 
