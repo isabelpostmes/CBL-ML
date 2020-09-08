@@ -58,7 +58,7 @@ for i, file in enumerate([file10_60, file100_60, file100_200, file10_200]):
     plt.axvline(x = .25, color='black',ls="dashed",alpha=0.2)
     plt.axvline(x = .9, color='black',ls="dashed",alpha=0.2)
     plt.xlabel('Energy loss (eV)', fontsize=16)
-    plt.ylabel(r'$I^{(\rm exp)}_{\rm EEL}/\sigma^{(\rm exp)}~(\Delta E)$', fontsize=16)
+    plt.ylabel(r'$\mathcal{R}_{\rm sig}(\Delta E) = I^{(\rm exp)}_{\rm EEL}/\sigma^{(\rm exp)}$', fontsize=16)
     plt.xticks(fontsize=11)
     plt.yticks(fontsize=11)
 
