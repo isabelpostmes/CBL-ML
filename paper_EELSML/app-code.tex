@@ -131,9 +131,6 @@ one-dimensional input, so dim=1.
 These placeholders are used to define {\tt predictions}, which is in fact a placeholder that is used 
 later to make predictions on inputs {\tt x}. 
 %
-Next, the dataset is split into 80\% training and
-20\% validation data.
-%
 Also, we define a vector {\tt predict\_x} that is used to make a direct prediction after training
 on each of the replicas. It consists of $N_{\rm pred}$ data points in the energy loss range
 {\tt [pred\_min, pred\_max]}. 
@@ -160,9 +157,11 @@ save the network parameters after each optimization.
 We start a loop over {\tt Nrep} replicas to initiate a training session on each of the individual replicas
 in series. 
 %
-For each iteration, the $k$-th replicas {\tt train\_y} and {\tt test\_y} are
-selected from the sample of $N_{\rm rep}$ replicas
-and used as training and validation labels. 
+For each iteration, the $k$-th replica is selected from the sample of $N_{\rm rep}$ replicas.
+%
+The data is split into 80\% training and 20\% validation data, this partition is done 
+at random for each replica. The resulting {\tt train\_y} and {\tt test\_y} arrays are used
+as training and validation labels.
 %
 The total number of training epochs per session is defined in {\tt training\_epochs}.
 %
