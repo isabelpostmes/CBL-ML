@@ -87,10 +87,10 @@ and dropping the points with higher energy losses.
 Experimental central values and uncertainties are calculated by means of equal width 
 discretization, for which the number of bins has to be set as {\tt nbins}. 
 %
-The default value is 32, which means that we use 32 training inputs spread equally
+The default value is 32, which means that 32 training inputs are spread equally
 over the range [$ \Delta E_{\rm min}, \Delta E_{\rm I}$]. 
 %
-Note that we use the logarithm of the intensity as training inputs, because this facilitates
+Note that the logarithm of the intensity is used as training inputs, because this facilitates
 the optimization of the neural network ($I_{\rm EEL}$ being a steeply falling function
 of $\Delta E$).
 %
@@ -125,8 +125,8 @@ allow us to create our operations and
 build our computation graph, without needing the data itself. 
 %
 The dimension of the placeholder is defined by {\tt $[{\bf None}, dim]$} where 'dim'
-should be set to the dimension of the corresponding variable. In our case we use a 
-one-dimensional input, so dim=1. 
+should be set to the dimension of the corresponding variable. In this case the input is 
+one-dimensional, so dim=1. 
 %
 These placeholders are used to define {\tt predictions}, which is in fact a placeholder that is used 
 later to make predictions on inputs {\tt x}. 
@@ -211,16 +211,16 @@ Futher, we store the optimal network parameters after each training session in t
 These can be loaded at a later stage
 to make predictions for an arbitrary set of input variables. 
 
-Running the loop over all replicas in series, using an input array of \~50 training points 
+Running the loop over all replicas in series, using an input array of $\sim$50 training points 
 and a total number of training epochs of 25000 per session,
-takes approximately 20 seconds per optimization (~200 replicas per hour).
+takes approximately 20 seconds per optimization ($\sim$200 replicas per hour).
 
 
 
 
 
 \noindent
-\paragraph{\tt Predictions.ipynb}
+\paragraph{\tt predictions.ipynb}
 This script is used to analyse the predictions from the trained
 neural networks that have been stored in the text files indicated above.
 
@@ -290,10 +290,15 @@ ZLP and the ZLP-subtracted spectrum including uncertainty bounds.
 
 \end{itemize}
 
-We emphasize that the {\tt predictions.ipynb} script can be executed stand-alone
+We emphasize that the {\tt predictions_pretrained_net.ipynb} script is similar to the 
+{\tt predictions.ipynb} script, but 
+can be executed stand-alone
 without the need to train again the neural networks, provided that
 the model parameters corresponding to some previous training with
 the desired input settings are available.
+The item {\bf load result files} is now replaced by {\bf create result files}, 
+which can be done by importing the pre-trained nets from the {\tt Models} folder. 
+
 
 
 
