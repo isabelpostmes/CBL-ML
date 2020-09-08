@@ -30,7 +30,7 @@ of atomic-level structural information~\cite{10.1145/2834892.2834896},
 the extraction of chemical information
 and defect classification~\cite{doi:10.1021/acsnano.7b07504},
 and spatial resolution enhancement
-using  using generative adversarial networks~\cite{cite-key}.
+by means of generative adversarial networks~\cite{cite-key}.
 %
 To the best of our knowledge, this is
 the first time that neural networks are used as 
@@ -83,7 +83,7 @@ ZLP background model to the measured intensity spectra,
 \label{eq:ZLPseparation}
 I_{\rm inel}(\Delta E) \simeq I_{\rm EEL}(\Delta E) - I_{\rm ZLP}^{\rm (mod)}(\Delta E) \, ,
 \ee
-and thus be able to exploit the physical information contained in $I_{\rm inel}$ in
+which enables us to exploit the physical information contained in $I_{\rm inel}$ in
 the low-loss region.
 %
 Crucially, we aim to faithfully estimate and propagate all the relevant sources of uncertainty associated
@@ -193,10 +193,11 @@ I^{\rm (exp)}_{{\rm ZLP},i}\lp \{ z_i  \}\rp = I^{\rm (exp)}_{{\rm ZLP},i}\lp
 \Delta E_i, E_{b,i}, t_{{\rm exp},i},\ldots \rp
 \,, \quad i=1,\ldots,n_{\rm dat} \, .
 \ee
-The Monte Carlo method is based on the generation
-of a large number $N_{\rm rep}$ of Monte Carlo replicas of these original data points
-by means of a multi-Gaussian distribution, with the central values and covariance matrices
-from the input measurements,
+From these measurements, we can generate a large sample of artificial data points that
+will be used as training inputs for the neural nets by means of the   Monte Carlo replica method.
+%
+In such approach, one generates  $N_{\rm rep}$ Monte Carlo replicas of the original data points
+by means of a multi-Gaussian distribution, with the central values and covariance matrices taken from the input measurements,
 \be
 \label{eq:MCreplicaGen}
   I_{{\rm ZLP},i}^{{\rm (art)}(k)}  =  I^{\rm (exp)}_{{\rm ZLP},i} + r_i^{({\rm stat},k)}\sigma_i^{\rm (stat)}
@@ -245,8 +246,7 @@ that is, as the standard deviation over the $N_{\rm sp}$ spectra.
 This uncertainty is separately evaluated for each set of microscope operation conditions
 for which data available.
 %
-In the absence of correlations, Eqns.~(\ref{eq:MCreplicaGen}) and~(\ref{eq:expcovariance}) thus
-simplify to
+In the absence of correlations, Eqns.~(\ref{eq:MCreplicaGen}) and~(\ref{eq:expcovariance})  simplify to
 \be
  I_{{\rm ZLP},i}^{{\rm (art)}(k)}  =  I^{\rm (exp)}_{{\rm ZLP},i} + r_i^{({\rm tot},k)}\sigma_i^{\rm (exp)}
  \,, \quad \forall i
@@ -524,7 +524,7 @@ the following categorisation should de adopted:
 
 \begin{enumerate}
 
-\item For energy losses such that $\Delta E \le \Delta E_{\rm I}$ (region $\rm I$),
+\item For energy losses $\Delta E \le \Delta E_{\rm I}$ (region $\rm I$),
   the model training  proceeds in exactly the same way as for the vacuum case
   via the minimisation of Eq.~(\ref{eq:chi2})
 

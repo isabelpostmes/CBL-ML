@@ -81,9 +81,9 @@ from 26 meV to 50 meV depending on the specific operation conditions of the micr
 with an standard deviation between 2 and 7 meV.
 %
 The value of the FWHM varies only mildly with the value of the beam energy $E_b$
-but grows by around a factor two for spectra collected at larger exposure times $t_{\rm exp}$.
+but grows rapidly for spectra collected with larger exposure times $t_{\rm exp}$.
 %
-A total of almost $7\times 10^4$ independent measurements will be thus used for the ZLP model
+A total of almost $7\times 10^4$ independent measurements will be used for the ZLP model
 training on the vacuum spectra.
 %
 As will be highlighted in Sects.~\ref{eq:depdeltae} and~\ref{eq:depebeam}, one of the advantages of our ZLP model is that it can extrapolate its predictions
@@ -163,10 +163,9 @@ for arbitrary values of $\Delta E$,  $E_{b}$, and $t_{\rm exp}$.
 Eq~(\ref{eq:modelreplicas})
 provides the sought-for representation of the probability density in the space of ZLP models.
 %
-By means of this sample of replicas one can evaluate
+By means of this sample of replicas, one can evaluate
 statistical estimators such as averages, variances, and correlations (as well
-as higher moments) by means of
-the usual expressions, for instance
+as higher moments) as follows:
 \be
 \label{eq:average}
 \la I_{\rm ZLP}^{\rm (mod)}( \{z_1\}) \ra = \frac{1}{N_{\rm rep}}\sum_{k=1}^{N_{\rm rep}}
@@ -295,7 +294,7 @@ We emphasize that no measurements with $E_b=120$ keV have been used in the train
 in that case arises purely from the model interpolation.
 %
 It is interesting to note how both the overall normalisation and the shape of
-the predicted ZLP depend on the specific operation conditions.
+the predicted ZLP depend on the specific operating conditions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[t]
@@ -340,7 +339,8 @@ for $|\Delta E| \lsim 100~{\rm meV}$.
 
 
 
-It is important to assess how the model results are modified once a subset of the data points
+For the purpose of the second part of this work, it is important
+to assess how the model results are modified once a subset of the data points
 are excluded from the fit.
 %
 As illustrated in Fig.~\ref{fig:EELS_toy}, when training the model on sample spectra, the
@@ -418,7 +418,7 @@ This comparison illustrates how the model uncertainty differs between the data r
 and the extrapolation regions (for $E_b$ below 60 keV and above 200 keV).
 %
 In the case of $t_{\rm exp}=100$ ms for example, we observe that the model interpolates reasonably well
-between the measured values of $E_b$ and then uncertainties increase
+between the measured values of $E_b$ and that uncertainties increase
 markedly in the extrapolation region above $E_b=200$ keV.
       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -438,17 +438,17 @@ markedly in the extrapolation region above $E_b=200$ keV.
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-From this comparison one can also observe how as expected the uncertainty in the  prediction for FWHM
-of the ZLP is the smallest close to the values of $E_b$ for which one has training data.
+From this comparison one can also observe how as expected the uncertainty in the  prediction for
+the FWHM of the ZLP is the smallest close to the values of $E_b$ for which one has training data.
 %
 The uncertainties increase but only in a moderate way in the interpolation region, indicating that
-the model can be reliable applied to predict the features of the ZLP other values of the electron
+the model can be applied to reliably predict the features of the ZLP for other values of the electron
 energy beam (assuming that all other operation conditions of the microscope are unchanged).
 %
 The errors then increase rapidly in the extrapolation region, which is a characteristic
 (and desirable) feature of  neural network models.
 %
-Indeed, as soon as the model departs from the data region there exist a very large
+Indeed, as soon as the model departs from the data region there exists a very large
 number of different functional form models for $I_{\rm ZLP}(\Delta E)$ that can describe equally well
 the training dataset, and hence a blow up of the extrapolation uncertainties is generically expected.
 
