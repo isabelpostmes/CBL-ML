@@ -3,11 +3,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:summary}
 
-In this work we have presented a novel model-independent strategy to parametrise and subtract
+In this work we have presented a novel, model-independent strategy to parametrise and subtract
 the ubiquitous zero-loss peak that dominates  the low-loss region
 of EEL spectra.
 %
-Our strategy is based on machine learning and provides a faithful estimate of the
+Our strategy is based on machine learning techniques and provides a faithful estimate of the
 uncertainties associated to both the input data and the procedure itself,
 which can  then be propagated to physical predictions  without any  approximations.
 %
@@ -32,14 +32,12 @@ strategy to EEL spectra recorded in  WS$_2$ nanoflowers characterised by a
 2H/3R polytypic crystalline structure.
 %
 First of all, measurements taken in a relatively
-thick region of the specimen were used to estimate the local value of the bandgap energy $E_{\rm BG}$
-and to determine whether this bandgap is direct or indirect.
+thick region of the specimen were used to determine
+the local value of the bandgap energy $E_{\rm BG}$
+and to assess whether this bandgap is direct or indirect.
 %
 A model fit to the onset of the inelastic intensity distribution obtains
 $E_{\rm BG} \simeq 1.6^{+0.3}_{-0.2}\,{\rm eV}$ and exhibits a marked preference for an indirect bandgap.
-%
-Compatible results are found for the other location
-in sample A where spectra have been acquired.
 %
 Our findings are consistent with previous studies, both of theoretical
 and of experimental nature, concerning the bandgap structure of bulk WS$_2$.
@@ -79,7 +77,7 @@ with actual measurements.
 Concerning the physical interpretation of the low-loss region of EEL
 spectra, our method could be applied to study the bandgap properties 
 for different types
-of nanostructures built upon 2D layered materials, such as MoS$_2$ nanowalls~\cite{nanowalls}
+of nanostructures built upon TMD materials, such as MoS$_2$ nanowalls~\cite{nanowalls}
 and 
 vertically-oriented nano-sheets~\cite{D0NR00755B} or
 WS$_2$/MoS$_2$ arrays, heterostructures, and ternary alloys.
@@ -110,7 +108,7 @@ human intervention (no need to process each spectrum individually) and then dete
 how these features vary as we move along different regions of the
 nanostructure.
 %
-Such application would combine two important families of machine learning algorithms,
+Such an approach would combine two important families of machine learning algorithms,
 those used for regression, in order to quantify the properties of spectral
 features such as width and significance, and those for classification, to identify categories
 of distinct features across the spectral image.
@@ -141,17 +139,16 @@ The authors declare that they have no known competing financial interests or per
 
 \subsection*{Methods}
 
-The EEL spectra used for the training of the vacuum ZLP model presented in
-Sect.~\ref{sec:results_vacuum} were collected in a ARM200F Mono-JEOL microscope equipped
-with a GIF continuum spectrometer and operated at 60 kV and 200 kV. For these measurements,
-a slit in the monochromator of 2.8 $\mu$m was used.
+{\justify
+The EEL spectra used for the training of the vacuum ZLP model presented in Sect.~\ref{sec:results_vacuum} were collected in a ARM200F Mono-JEOL microscope equipped with a GIF continuum spectrometer and operated at 60 kV and 200 kV. For these measurements, a slit in the monochromator of 2.8 $\mu$m was used.
 %
 The TEM and EELS measurements acquired in Specimen A for the results presented in
-Sect.~\ref{sec:results_sample} were acquired in a JEOL 2100F microscope with a cold field-emission
+Sect.~\ref{sec:results_sample} were recorded in a JEOL 2100F microscope with a cold field-emission
 gun equipped with aberration corrector operated at 60 kV. A Gatan GIF Quantum was used for
 the EELS analyses. The convergence and collection semi-angles were 30.0 mrad and 66.7 mrad respectively.
 %
 The TEM and EELS measurements acquired for Specimen B in Sect.~\ref{sec:results_sample}
 were recorded using a JEM ARM200F monochromated microscope operated at 60 kV and equipped with
 a GIF quantum ERS. The convergence and collection semi-angles were 24.6 mrad and 58.4 mrad respectively
-in this case, and the aperture of the spectrometer was set to 5 mm. 
+in this case, and the aperture of the spectrometer was set to 5 mm.}
+
