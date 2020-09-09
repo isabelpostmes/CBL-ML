@@ -12,6 +12,33 @@
 
 \maketitle
 
+\section{Obtaining the single scattering distribution}
+
+\subsection{Build-up of measured spectrum}
+When electrons go through the sample, the intensity of electrons that has no inelastic scattering is given by the zero-loss peak: $I_{ZLP}(E)$. The intensity of the electrons that do scatter, $I_{EEL}(E)$, is than dividable in the single scatter intensity, $I_1(E)$, the double scatter intensity, $I_2(E)$, the triple scatter intensity, $I_3(E)$, etc:
+
+\begin{equation}
+    I_{ZLP}(E) = I_{ZLP}(E) + I_{EEL}(E) = I_{ZLP}(E) + \Sigma_0^\infty I_n(E).
+\end{equation}
+
+
+MAYBE DISREGARD?
+The integrated intensity of each n-scattering spectrum $N_n$ \textcolor{red}{is this a logical choice of letter?} depends on the total integrated intensity $N$, assuming independed scattering events, through the bionomal distribution:
+
+\begin{equation}
+    N_n =  \frac{N}{n!} \left(\frac{t}{\lambda}\right)^n \exp{[-t/\lambda]} .
+\end{equation}
+END DISREGARD
+
+Since we know the zero-loss-peak due to Lau \cite{lau}, the response function of the instrument, $R(E)$, is easily deducted by:
+
+\begin{equation}
+    R(E) = I_{ZLP}/N_{ZLP},
+\end{equation}
+
+where $N_{ZLP}$ is the integrated intensity of $I_{ZLP}$.
+
+
 \section{Kramer-Kronig relations}
 The Kramer-Kronig relations are two functions that relate the imaginary part of an complex function to the real part and vice versa. The relations hold as long as the complex function is analytic in the upper half-plane.
 The relations for function $\chi(\omega)=\chi_{1}(\omega)+i \chi_{2}(\omega)$, with $\omega$ a complex variable are given by \cite{wikipedia_2020}:
@@ -70,7 +97,7 @@ Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\vare
 
 
 
-\paragraph{QUESTIONs on my end} Will we be working with $J(E)$, and is there the need for a Fourier method, or is $J^1(E)$ provided? Are additional angular corrections needed? Where does the 1 come from in eq \eqref{eq_kkr_eps}
+\paragraph{QUESTIONs on my end} Will we be working with $J(E)$, and is there the need for a Fourier method, or is $J^1(E)$ provided? Are additional angular corrections needed? Where does the 1 come from in eq \eqref{eq_kkr_eps}, is it due to the minus sign in the Im[$-1/\varepsilon$]?
 
 \subsection{Step 1: rescaling intensity}
 The first step of the K-K analysis is now to rewrite Eq. \eqref{eq_S_E} to:
@@ -117,10 +144,23 @@ This value of $K$, which is constant over $E$, can than in turn be used to retri
 \textcolor{red}{need to add other estimations of $K$?}
 
 \subsection{Step 4: retrieving $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ }
-Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the steps above, one can now use eq. \eqref{eq_kkr_eps} to obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$, where one must pay attention to avoid including $E=E'$ in the discrete integral over the spectrum, as this is a singularity.
+Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the steps above, one can now use eq. \eqref{eq_kkr_eps} to obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$, where one must pay attention to avoid including $E=E'$ in the discrete integral over the spectrum, as this is a singularity. To avoid this singularity in a discrete signal, a couple of approaches are possible:
+\begin{itemize}
+    \item In the integral (for discrete signals: summation) in eq. \eqref{eq_kkr_eps}, simply exclude the $E = E'$ values.
+    \item Shift the values of $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ to values at $E''_i = (E_i + E_{i+1})$, to make sure to avoid $E'' = E'$ in the summation.
+    \item As 
+    \begin{equation}
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] = \mathcal{C}\{1/\varepsilon(t) - \delta(t)\} = \mathcal{F}\{p(t)\},
+    \end{equation}
+    and 
+    \begin{equation}
+        \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] = \mathcal{S}\{1/\varepsilon(t) - \delta(t)\} = \frac{1}{i}\mathcal{F}\{q(t)\},
+    \end{equation}
+    where $\mathcal{C}$ and $\mathcal{S}$ are the cosine and sine Fourier transforms respectivily, 
+\end{itemize}
 
 \subsection{Step 5: retrieving $\boldsymbol\varepsilon$}
-The dielectric function can than be obtained from:
+The dielectric function  can subsequently be obtained from:
 
 \begin{equation}
     \varepsilon(E)=\varepsilon_{1}(E)+i \varepsilon_{2}(E)=\frac{\operatorname{Re}[1 / \varepsilon(E)]+i \operatorname{Im}[-1 / \varepsilon(E)]}{\{\operatorname{Re}[1 / \varepsilon(E)]\}^{2}+\{\operatorname{Im}[-1 / \varepsilon(E)]\}^{2}}.
