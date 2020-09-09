@@ -6,29 +6,14 @@ Created on Sun Sep  6 23:39:39 2020
 @author: juan, isabel
 """
 import numpy as np
-from numpy import loadtxt
 import math
-import scipy
-#import sklearn
-from scipy import optimize
-from scipy import signal
-from scipy import interpolate
-from scipy.optimize import leastsq
-from io import StringIO
-from numpy import linalg as LA
-from numpy.linalg import inv
-from scipy.interpolate import UnivariateSpline
 import matplotlib.pyplot as plt
-import os,sys
 #import lhapdf
-import matplotlib.pyplot as py
-import shutil
-from matplotlib import gridspec
 from  matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text',usetex=True)
-from pylab import *
-#get_ipython().run_line_magic('matplotlib', 'inline')
+from numpy import fft
+
 
 # Model for ZLP
 def IZLP(DeltaE):
@@ -193,26 +178,58 @@ Im_eps = EELsample_extrp/K #Im[-1/eps(E)]
 
 #step 4: retreiving Re[1/eps(E)]
 
-Re_eps = np.zeros(sem_inf) # Re[1/eps(0)]
+method = 2  #1: integration at datapoints, except deltaE = deltaE'
+            #2: integration between datapoints deltaE_i = (deltaE_i + deltaE_i+1)/2
+            #3: FT
+
+deltaE_extrp_Re = deltaE_extrp
+Re_eps = np.zeros(sem_inf) 
 
 #integrate around each energy (to avoid singularities)
-for i in range(deltaE_extrp.size):
-    deltaE_i = deltaE_extrp[i]
-    select = (deltaE_extrp != deltaE_i)
-    Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps[select]*deltaE_extrp[select]/(np.power(deltaE_extrp[select],2)-deltaE_i**2))
+if method == 1:
+    deltaE_extrp_Re = deltaE_extrp
+    Re_eps = np.zeros(sem_inf) 
+    for i in range(deltaE_extrp.size):
+        deltaE_i = deltaE_extrp[i]
+        select = (deltaE_extrp != deltaE_i)
+        Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps[select]*deltaE_extrp[select]/(np.power(deltaE_extrp[select],2)-deltaE_i**2))
+elif method ==2:
+    deltaE_extrp_Re = np.zeros(sem_inf-1) 
+    Re_eps = np.zeros(sem_inf-1) 
+    for i in range(deltaE_extrp.size-1):
+        deltaE_i = (deltaE_extrp[i]+deltaE_extrp[i+1])/2
+        deltaE_extrp_Re = deltaE_i
+        Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps*deltaE_extrp/(np.power(deltaE_extrp,2)-deltaE_i**2))
+else: 
+    if method != 3:
+        print("you have selected a wrong method, please select 1,2, or 3. FT method used.")
+    FT_Im_eps = np.real(fft.ifft(Im_eps))
+    sgn = np.ones(Im_eps.shape)
+    half = math.floor(Im_eps.size/2)
+    sgn[:half] *= -1
+    FT_Re_eps = sgn * FT_Im_eps
+    Re_eps = fft.fft(FT_Re_eps)
+
 
 
 #step 6: retreiving ε
-eps1 = Re_eps / (Re_eps**2 + Im_eps**2)
-eps2 = Im_eps / (Re_eps**2 + Im_eps**2)
-eps = eps1 + 1j*eps2
+if method ==2:
+    #Re_eps and Im_eps shifted with respect to eachother: what makes sense?
+    eps1 = Re_eps / (Re_eps**2 + Im_eps[:-1]**2)
+    eps2 = Im_eps[:-1] / (Re_eps**2 + Im_eps[:-1]**2)
+    eps = eps1 + 1j*eps2
+else: #method == 1 || method == 3:
+    eps1 = Re_eps / (Re_eps**2 + Im_eps**2)
+    eps2 = Im_eps / (Re_eps**2 + Im_eps**2)
+    eps = eps1 + 1j*eps2
+
 
 
 plt.figure()
 plt.plot(deltaE_extrp[:2*l], eps1[:2*l], label = r"$\varepsilon_1$")
 plt.plot(deltaE_extrp[:2*l], eps2[:2*l], label = r"$\varepsilon_2$")
 plt.plot(deltaE_extrp[:2*l], np.absolute(eps[:2*l]), label = r"$|\varepsilon|$")
-plt.title(r"$dielectric function$")
+plt.title(r"dielectric function")
 plt.legend()
 plt.xlabel(r"$\Delta E$")
 plt.ylabel(r"$\varepsilon$")
