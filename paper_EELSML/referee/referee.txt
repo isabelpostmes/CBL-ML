@@ -1,0 +1,11 @@
+-------------------------------------------------------------
+
+* Evidence that BG fits are stable for different locations
+=> bg_stability.pdf 
+
+* Subtract plot for sp5 in Sample A
+=> SubtractedEELS_plot_sp15.pdf
+
+
+
+-------------------------------------------------------------
