@@ -122,7 +122,7 @@ R.~D. Ball et~al., {\it {Parton distributions with LHC data}},  {\em
 \bibitem{SabryaWS2}
   S.~E. van Heijst, M.~Masaki, E.~Okunishi, H.~Hashiguchi,
   L.~I. Roest, L.~Maduro, J.~Rojo, and S.~Conesa-Boj,
-  {\it {Fingerprinting 2H/3R Polytypism in WS$_2$
+  {\it {Fingerprinting 2H/3R Polytypism in WS2
   Nanoflowers from Plasmons and Excitons to Phonons}} (2020), in preparation.
 
 \bibitem{Bangert:2003}
@@ -161,35 +161,25 @@ M.~Chhowalla, H.~S. Shin, G.~Eda, L.-J. Li, K.~P. Loh, and H.~Zhangs, {\it {The
 
 \bibitem{Splendiani:2010}
 A.~Splendiani, L.~Sun, T.~Li, et~al., {\it {Emerging Photoluminescence in
-  Monolayer MoS$_2$}},  {\em Nano Lett.} {\bf 10} (2010) 1271–1275.
-
-\bibitem{Zhao2013}
-W.~Zhao, Z.~Ghorannevis, L.~Chu, M.~Toh, C.~Kloc, P.-H. Tan, and G.~Eda, {\it
-  Evolution of electronic structure in atomically thin sheets of WS$_2$ and WSe$_2$},
-   {\em ACS Nano} {\bf 7} (01, 2013) 791--797.
+  Monolayer MoS2}},  {\em Nano Lett.} {\bf 10} (2010) 1271–1275.
 
 \bibitem{Bhandavat:2012}
 R.~Bhandavat, L.~David, and G.~Singh, {\it {Synthesis of Surface-Functionalized
-  WS$_2$ Nanosheets and Performance as Li-Ion Battery Anodes}},  {\em J. Phys.
+  WS2 Nanosheets and Performance as Li-Ion Battery Anodes}},  {\em J. Phys.
   Chem. Lett.} {\bf 3} (2012) 1523–1530.
 
 \bibitem{Na:2018}
 W.~Na, K.~Kim, J.-U. Lee, and H.~Cheong, {\it {Davydov splitting and polytypism
-  in few-layer MoS$_2$}},  {\em 2D Materials} {\bf 6} (2018) 015004.
+  in few-layer MoS2}},  {\em 2D Materials} {\bf 6} (2018) 015004.
 
 \bibitem{Lee:2016}
 J.-U. Lee, K.~Kim, S.~Han†, G.~H. Ryu, Z.~Lee, and H.~Cheong, {\it {Raman
   Signatures of Polytypism in Molybdenum Disulfide}},  {\em ACS Nano} {\bf 10}
   (2016) 1948–1953.
 
-\bibitem{XIA20171}
-J.~Xia, J.~Yan, and Z.~X. Shen, {\it Transition metal dichalcogenides:
-  structural, optical and electronic property tuning via thickness and
-  stacking},  {\em FlatChem} {\bf 4} (2017) 1 -- 19.
-
 \bibitem{Braga:2012}
 D.~Braga, I.~G. Lezama, H.~Berger, and A.~F. Morpurgo, {\it {Quantitative
-  Determination of the Band Gap of WS$_2$ with Ambipolar Ionic Liquid-Gated
+  Determination of the Band Gap of WS2with AmbipolarIonic Liquid-Gated
   Transistors}},  {\em NanoLetters} {\bf 12} (2012) 5218.
 
 \bibitem{Jo:2014}
@@ -209,7 +199,7 @@ K.~Kam and B.~Parkinson, {\it {Detailed photocurrent spectroscopy of the
 
 \bibitem{Shi:2013}
 H.~Shi, H.~Pan, Y.-W. Zhang, and B.~I. Yakobson, {\it {Quasiparticle band
-  structures and optical properties of strained monolayer MoS$_2$ and WS$_2$}},  {\em
+  structures and optical properties of strained monolayer MoS2 and WS2}},  {\em
   PHYSICAL REVIEW B} {\bf 87} (2013) 155304.
 
 \bibitem{Rojo:2018qdd}
@@ -321,7 +311,7 @@ S.~Schamm and G.~Zanchi, {\it {Study of the dielectric properties near the band
 \bibitem{Hanbicki:2016}
 A.~Hanbicki, M.Currie, G.Kioseoglou, A.L.Friedman, and B.T.Jonker, {\it
   {Measurement of high exciton binding energy in the monolayer transition-metal
-  dichalcogenides WS$_2$ and WSe$_2$}},  {\em Solid State Communications} {\bf 204}
+  dichalcogenides WS2 and WSe2}},  {\em Solid State Communications} {\bf 204}
   (2016) 16--20.
 
 \bibitem{Karivaj:2019}
@@ -331,12 +321,12 @@ B.~Kaviraj and D.~Sahoo, {\it {Physics of excitons and their transport in two
 
 \bibitem{nanowalls}
 M.~Tinoco, L.~Maduro, and S.~Conesa-Boj, {\it Metallic edge states in zig-zag
-  vertically-oriented MoS$_2$ nanowalls},  {\em Scientific Reports} {\bf 9}
+  vertically-oriented mos2 nanowalls},  {\em Scientific Reports} {\bf 9}
   (2019), no.~1 15602.
 
 \bibitem{D0NR00755B}
 M.~Bolhuis, J.~Hernandez-Rueda, S.~E. van Heijst, M.~Tinoco~Rivas, L.~Kuipers,
-  and S.~Conesa-Boj, {\it Vertically-oriented MoS$_2$ nanosheets for nonlinear
+  and S.~Conesa-Boj, {\it Vertically-oriented mos2 nanosheets for nonlinear
   optical devices},  {\em Nanoscale} {\bf 12} (2020) 10491--10497.
 
 \end{thebibliography}\endgroup
