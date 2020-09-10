@@ -33,10 +33,10 @@ END DISREGARD
 Since we know the zero-loss-peak due to Lau \cite{lau}, the response function of the instrument, $R(E)$, is easily deducted by:
 
 \begin{equation}
-    R(E) = I_{ZLP}/N_{ZLP},
+    R(E) = I_{ZLP}(E)/N_{ZLP},
 \end{equation}
 
-where $N_{ZLP}$ is the integrated intensity of $I_{ZLP}$.
+where $N_{ZLP}$ is the integrated intensity of $I_{ZLP}(E)$.
 
 
 \section{Kramer-Kronig relations}
@@ -148,15 +148,23 @@ Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from 
 \begin{itemize}
     \item In the integral (for discrete signals: summation) in eq. \eqref{eq_kkr_eps}, simply exclude the $E = E'$ values.
     \item Shift the values of $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ to values at $E''_i = (E_i + E_{i+1})$, to make sure to avoid $E'' = E'$ in the summation.
-    \item As 
+    \item  The dielectric function in the energy domain relate to the dielectric response function $1/\varepsilon(t) -\delta(t)$ through:
     \begin{equation}
-        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] = \mathcal{C}\{1/\varepsilon(t) - \delta(t)\} = \mathcal{F}\{p(t)\},
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] = \mathcal{C}\left\{\frac{1}{\varepsilon(t)} - \delta(t)\right\} = \mathcal{F}\{p(t)\},
     \end{equation}
     and 
     \begin{equation}
-        \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] = \mathcal{S}\{1/\varepsilon(t) - \delta(t)\} = \frac{1}{i}\mathcal{F}\{q(t)\},
+        \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] = \mathcal{S}\left\{\frac{1}{\varepsilon(t)} - \delta(t)\right\} = i\mathcal{F}\{q(t)\},
     \end{equation}
-    where $\mathcal{C}$ and $\mathcal{S}$ are the cosine and sine Fourier transforms respectivily, 
+    where $p(t)$ and $q(t)$ are the even and odd parts respectively of the dielectric response function, and $\mathcal{C}$ and $\mathcal{S}$ are the cosine and sine Fourier transforms respectively. Since the dielectric response function is a response function and therefor causal, it is $0$ for $t<0$. This results in:
+    \begin{equation}
+        p(t) = \operatorname{sgn}[q(t)].
+    \end{equation}
+    Combining all this means that one can also obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ from $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ by:
+    
+    \begin{equation}
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] =\mathcal{F}\left\{\operatorname{sgn}\left[\mathcal{F}^{-1}\left\{-i \operatorname{Im}\left[\frac{-1}{ \varepsilon(E)}\right]\right\}\right]\right\}.
+    \end{equation}
 \end{itemize}
 
 \subsection{Step 5: retrieving $\boldsymbol\varepsilon$}
