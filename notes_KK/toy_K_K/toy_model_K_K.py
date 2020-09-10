@@ -178,7 +178,7 @@ Im_eps = EELsample_extrp/K #Im[-1/eps(E)]
 
 #step 4: retreiving Re[1/eps(E)]
 
-method = 2  #1: integration at datapoints, except deltaE = deltaE'
+method = 3  #1: integration at datapoints, except deltaE = deltaE'
             #2: integration between datapoints deltaE_i = (deltaE_i + deltaE_i+1)/2
             #3: FT
 
@@ -203,7 +203,13 @@ elif method ==2:
 else: 
     if method != 3:
         print("you have selected a wrong method, please select 1,2, or 3. FT method used.")
-    FT_Im_eps = np.real(fft.ifft(Im_eps))
+    FT_Im_eps = fft.ifft(-1j*Im_eps)
+    plt.figure()
+    plt.plot(deltaE_extrp[:2*l], np.real(FT_Im_eps[:2*l]), label = r"$F(Im)_1$")
+    plt.plot(deltaE_extrp[:2*l], np.imag(FT_Im_eps[:2*l]), label = r"$F(Im)_2$")
+    plt.plot(deltaE_extrp[:2*l], np.absolute(FT_Im_eps[:2*l]), label = r"$|F(Im)|$")
+    
+    
     sgn = np.ones(Im_eps.shape)
     half = math.floor(Im_eps.size/2)
     sgn[:half] *= -1
