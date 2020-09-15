@@ -13,6 +13,7 @@ from  matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text',usetex=False)
 from numpy import fft
+import scipy
 
 
 # Model for ZLP
@@ -46,6 +47,10 @@ def Isample_der(DeltaE):
     if(DeltaE > Ebg):
         isample = b/(DeltaE-Ebg) * Isample(DeltaE)
     return isample
+
+
+
+
 
 import matplotlib.pyplot as plt
 fig = plt.figure(figsize=(5,3.5))
@@ -129,7 +134,7 @@ inset.grid(True)
 ### ISABEL TAKES OVER
 shape_J = 100
 
-
+#%%
 
 
 #step 1: modulate intensity
@@ -175,6 +180,11 @@ K = 2*int_EELsample_over_deltaE/(math.pi*(1-Re_eps0))
 
 Im_eps = EELsample_extrp/K #Im[-1/eps(E)]
 
+plt.figure()
+plt.plot(np.real(Im_eps[:100]), label = "real")
+plt.plot(np.imag(Im_eps[:100]), label = "imag")
+plt.legend()
+plt.title("real and imag part Im_eps")
 
 #step 4: retreiving Re[1/eps(E)]
 
@@ -184,7 +194,7 @@ method = 3  #1: integration at datapoints, except deltaE = deltaE'
 
 deltaE_extrp_Re = deltaE_extrp
 Re_eps = np.zeros(sem_inf) 
-
+#%%
 #integrate around each energy (to avoid singularities)
 if method == 1:
     deltaE_extrp_Re = deltaE_extrp
@@ -203,21 +213,37 @@ elif method ==2:
 else: 
     if method != 3:
         print("you have selected a wrong method, please select 1,2, or 3. FT method used.")
+    #q_t = fft.ifft(-1j*Im_eps)
     FT_Im_eps = fft.ifft(-1j*Im_eps)
     plt.figure()
     plt.plot(deltaE_extrp[:2*l], np.real(FT_Im_eps[:2*l]), label = r"$F(Im)_1$")
     plt.plot(deltaE_extrp[:2*l], np.imag(FT_Im_eps[:2*l]), label = r"$F(Im)_2$")
     plt.plot(deltaE_extrp[:2*l], np.absolute(FT_Im_eps[:2*l]), label = r"$|F(Im)|$")
-    
+    plt.legend()
     
     sgn = np.ones(Im_eps.shape)
     half = math.floor(Im_eps.size/2)
     sgn[:half] *= -1
+    
     FT_Re_eps = sgn * FT_Im_eps
     Re_eps = fft.fft(FT_Re_eps)
+    
+    
+    q_t = scipy.fft.idst(Im_eps)
+    p_t = sgn*q_t
+    Re_eps =  scipy.fft.dct(p_t)
+    
+    plt.figure()
+    plt.plot(deltaE_extrp[:2*l], np.real(FT_Im_eps[:2*l]), label = r"$F(Im)_1$")
+    plt.plot(deltaE_extrp[:2*l], np.imag(FT_Im_eps[:2*l]), label = r"$F(Im)_2$")
+    plt.plot(deltaE_extrp[:2*l], np.absolute(FT_Im_eps[:2*l]), label = r"$|F(Im)|$")
+    plt.legend()
+    
+    
+    
 
 
-
+#%%
 #step 6: retreiving ε
 if method ==2:
     #Re_eps and Im_eps shifted with respect to eachother: what makes sense?
