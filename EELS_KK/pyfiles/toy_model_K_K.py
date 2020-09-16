@@ -132,9 +132,33 @@ inset.grid(True)
 #plt.savefig("EELS_toy.pdf")
 
 ### ISABEL TAKES OVER
-shape_J = 100
-
 #%%
+z_nu = scipy.fft.fft(EELZLP)
+i_nu = scipy.fft.fft(EELsample)
+N_ZLP = 1 #arbitrary units??? np.sum(EELZLP)
+
+s_nu = N_ZLP*np.log(i_nu/z_nu)
+S_E = scipy.fft.ifft(s_nu)
+
+
+
+plt.figure()
+plt.plot(deltaE,EELtot,linewidth=2.5,color="black",label=r"${\rm total}$")
+plt.plot(deltaE,EELZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
+plt.plot(deltaE,EELsample,linewidth=2.5,color="red",ls="dashdot",label=r"${\rm sample}$")
+plt.plot(deltaE,S_E,linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+plt.legend()
+# Now produce the plot        
+plt.xlabel(r"${\rm Energy~loss~(eV)}$",fontsize=17)
+plt.ylabel(r"${\rm Intensity~(a.u.)}$",fontsize=17)
+plt.xlim(1.45,2.0)
+plt.ylim(0,0.09)
+
+plt.figure()
+plt.plot(deltaE,S_E,linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+
+
+#%% KRAMER-KRONIG ANALYSIS
 
 
 #step 1: modulate intensity
@@ -213,31 +237,16 @@ elif method ==2:
 else: 
     if method != 3:
         print("you have selected a wrong method, please select 1,2, or 3. FT method used.")
-    #q_t = fft.ifft(-1j*Im_eps)
-    FT_Im_eps = fft.ifft(-1j*Im_eps)
-    plt.figure()
-    plt.plot(deltaE_extrp[:2*l], np.real(FT_Im_eps[:2*l]), label = r"$F(Im)_1$")
-    plt.plot(deltaE_extrp[:2*l], np.imag(FT_Im_eps[:2*l]), label = r"$F(Im)_2$")
-    plt.plot(deltaE_extrp[:2*l], np.absolute(FT_Im_eps[:2*l]), label = r"$|F(Im)|$")
-    plt.legend()
-    
     sgn = np.ones(Im_eps.shape)
     half = math.floor(Im_eps.size/2)
     sgn[:half] *= -1
-    
-    FT_Re_eps = sgn * FT_Im_eps
-    Re_eps = fft.fft(FT_Re_eps)
+
     
     
     q_t = scipy.fft.idst(Im_eps)
     p_t = sgn*q_t
     Re_eps =  scipy.fft.dct(p_t)
     
-    plt.figure()
-    plt.plot(deltaE_extrp[:2*l], np.real(FT_Im_eps[:2*l]), label = r"$F(Im)_1$")
-    plt.plot(deltaE_extrp[:2*l], np.imag(FT_Im_eps[:2*l]), label = r"$F(Im)_2$")
-    plt.plot(deltaE_extrp[:2*l], np.absolute(FT_Im_eps[:2*l]), label = r"$|F(Im)|$")
-    plt.legend()
     
     
     
