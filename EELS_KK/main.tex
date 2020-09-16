@@ -232,7 +232,7 @@ The complete recorded spectrum, neglecting any surface plasmons, is than given b
 
 Since a convolution in energy domain translates to a multiplication in the frequency domain, it makes sense to take the Fourier transform (FT) of the above equation. Eq. \eqref{eq_I_E} than becomes, using the taylor expansion of the exponential function:
 
-\begin{equation}\label{i_nu_exp}
+\begin{equation}\label{eq_i_nu_exp}
     \begin{aligned}
 i(\nu) &=z(\nu)\left\{1+s(\nu) / N_{ZLP}+[s(\nu)]^{2} /\left(2 ! N_{ZLP}^{2}\right)+[s(\nu)]^{3} /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right\} \\
 &=z(\nu)\prod_{n=0}^\infty\frac{s(\nu)^n}{n! N_{ZLP}^n}\\
@@ -241,6 +241,21 @@ i(\nu) &=z(\nu)\left\{1+s(\nu) / N_{ZLP}+[s(\nu)]^{2} /\left(2 ! N_{ZLP}^{2}\rig
 \end{equation}
 
 where $i(\nu)$ is the FT of the intensity spectrum, $z(\nu)$ is the FT of the zero-loss peak, and $s(\nu)$ is the FT of the single-scattering distribution.
+
+
+The single scattering distribution can than be retrieved by rewriting eq. \eqref{eq_i_nu_exp}, and taking the inverse Fourier transform:
+
+\begin{equation}
+    s(\nu) = N_{ZLP} \operatorname{ln}\left(\frac{i(\nu)}{z(\nu)}\right),
+\end{equation}
+
+\begin{equation}
+    \begin{aligned}
+    S(E) &= \mathcal{F}^{-1}\left\{s(\nu)\right\} \\
+    &= \mathcal{F}^{-1}\left\{\operatorname{ln}\left[\frac{i(\nu)}{z(\nu)}\right]\right\} \\
+    &= \mathcal{F}^{-1}\left\{\operatorname{ln}\left[\frac{\mathcal{F}\left\{I(E)\right\}}{\mathcal{F}\left\{I_{ZLP}(E)\right\}}\right]\right\}
+    \end{aligned}
+\end{equation}
 
 
 \paragraph{Discussion points} What is the most official way to calculate the errors in R(E), from the errors in the ZLP? Just calculate for each ZLP and take the std of those, or can you use the error of the ZLP to calculate it at once? Because it comes back in the $N_{ZLP}$ as well.
