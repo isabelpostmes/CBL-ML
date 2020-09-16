@@ -133,12 +133,41 @@ inset.grid(True)
 
 ### ISABEL TAKES OVER
 #%%
-z_nu = scipy.fft.fft(EELZLP)
-i_nu = scipy.fft.fft(EELsample)
+
+#extend everything?
+#step 2: extrapolation
+r = 3 #Drude model, can also use estimation from exp. data
+A = EELsample[-1]
+n_times_extra = 10
+sem_inf = l*(n_times_extra+1)
+
+ddeltaE = (deltaE[-1]-deltaE[0])/deltaE.size
+
+EELsample_extrp = np.zeros(sem_inf)
+EELZLP_extrp = np.zeros(sem_inf)
+deltaE_extrp = np.linspace(deltaE[0], sem_inf*ddeltaE+ddeltaE, sem_inf)
+
+EELZLP_extrp[:len(EELZLP)] = EELZLP
+
+EELsample_extrp[:l] = EELsample
+deltaE_extrp[:l] = deltaE
+
+EELsample_extrp[l:] = A*np.power(1+deltaE_extrp[l:]-deltaE_extrp[l],-r)
+
+
+
+
+
+z_nu = scipy.fft.fft(EELZLP_extrp)
+i_nu = scipy.fft.fft(EELsample_extrp)
 N_ZLP = 1 #arbitrary units??? np.sum(EELZLP)
 
 s_nu = N_ZLP*np.log(i_nu/z_nu)
-S_E = scipy.fft.ifft(s_nu)
+
+s_nu_2 = s_nu
+s_nu_2[np.isnan(s_nu)] = 0 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
+
+S_E = scipy.fft.ifft(s_nu_2)
 
 
 
@@ -146,7 +175,7 @@ plt.figure()
 plt.plot(deltaE,EELtot,linewidth=2.5,color="black",label=r"${\rm total}$")
 plt.plot(deltaE,EELZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(deltaE,EELsample,linewidth=2.5,color="red",ls="dashdot",label=r"${\rm sample}$")
-plt.plot(deltaE,S_E,linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+plt.plot(deltaE,S_E[:len(EELZLP)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
 plt.legend()
 # Now produce the plot        
 plt.xlabel(r"${\rm Energy~loss~(eV)}$",fontsize=17)
@@ -155,7 +184,10 @@ plt.xlim(1.45,2.0)
 plt.ylim(0,0.09)
 
 plt.figure()
-plt.plot(deltaE,S_E,linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+plt.plot(deltaE_extrp[:2*l],S_E[:2*l],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+plt.plot(deltaE_extrp[:2*l],EELZLP_extrp[:2*l],linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
+plt.plot(deltaE_extrp[:2*l],EELsample_extrp[:2*l],linewidth=2.5,color="red",label=r"${\rm sample}$")
+plt.ylim(0,0.3)
 
 
 #%% KRAMER-KRONIG ANALYSIS
@@ -192,7 +224,7 @@ deltaE_extrp = np.linspace(deltaE[0], sem_inf*ddeltaE+ddeltaE, sem_inf)
 EELsample_extrp[:l] = EELsample_ac
 deltaE_extrp[:l] = deltaE
 
-EELsample_extrp[l:] = A*np.power(deltaE_extrp[l:],r)
+EELsample_extrp[l:] = A*np.power(1+deltaE_extrp[l:]-deltaE_extrp[l],-r)
 
 
 #step 3: normalisation and retreiving Im[1/eps(E)]
@@ -212,7 +244,7 @@ plt.title("real and imag part Im_eps")
 
 #step 4: retreiving Re[1/eps(E)]
 
-method = 3  #1: integration at datapoints, except deltaE = deltaE'
+method = 13  #1: integration at datapoints, except deltaE = deltaE'
             #2: integration between datapoints deltaE_i = (deltaE_i + deltaE_i+1)/2
             #3: FT
 
