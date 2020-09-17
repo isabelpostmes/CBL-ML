@@ -14,39 +14,6 @@ import os
 
 
 
-def load_spectra(path, rg):
-    """
-    INPUT:
-        path: path to directory with spectra, please make sure these are the 
-                only files in this directory
-        rg: [Eloss_min, Eloss_max], range over which the spectra are measured, 
-                in eV
-                
-    OUTPUT:
-        df_spectra: pandas data frame with all vacuum spectra
-    
-    This function loads all the spectra in the input directories.
-    """
-    #TODO: add possibility for different ranges??
-    #delta_dE = (range_vacuum[1]-range_vacuum[0])/len(spectra_vacuum[0])
-    
-    
-    #TODO: change x & y to more explainatory values?
-    df_spectra = pd.DataFrame(columns = ['x', 'y'])
-    for filename in os.listdir(path):
-        #DO STUFF
-        if filename.endswith(".txt"):
-            spectrum = np.loadtxt(path + '/' + filename)
-            dE = np.linspace(rg[0], rg[1], len(spectrum))
-            
-            df_spectra = df_spectra.append({'x': dE, 'y': spectrum}, ignore_index = True)
-    
-    
-    return df_spectra
-    
-
-
-
 def load_data(path_vacuum, path_sample, range_vacuum, range_sample = False, pr = False):
     """
     INPUT:
@@ -78,21 +45,12 @@ def load_data(path_vacuum, path_sample, range_vacuum, range_sample = False, pr =
     spectra_vacuum = load_spectra(path_vacuum, range_vacuum)
     spectra_sample = load_spectra(path_sample, range_sample)
     
-    
     spectra_vacuum = shift_norm(spectra_vacuum)
     spectra_sample = shift_norm(spectra_sample)
-    
-    spectra_vacuum = spectra_vacuum.dropna()
-    spectra_sample = spectra_sample.dropna()
-    
-    #TODO: figure out what these lines should do
-    #spectra_vacuum = spectra_vacuum.sort_values('x').reset_index().drop('index', axis=1)#.dropna()
-    #spectra_sample = spectra_sample.sort_values('x').reset_index().drop('index', axis=1)
 
     #TODO evaluate if this column is needed
     #spectra_sample['log_y'] = np.log(spectra_sample['y'])
-    
-    
+
     
     if(pr):
         print('\n Total samples file: "df" \n', spectra_sample.describe())
@@ -100,6 +58,37 @@ def load_data(path_vacuum, path_sample, range_vacuum, range_sample = False, pr =
     
     return spectra_vacuum, spectra_sample
 
+
+
+
+def load_spectra(path, rg):
+    """
+    INPUT:
+        path: path to directory with spectra, please make sure these are the 
+                only files in this directory
+        rg: [Eloss_min, Eloss_max], range over which the spectra are measured, 
+                in eV
+                
+    OUTPUT:
+        df_spectra: pandas data frame with all vacuum spectra
+    
+    This function loads all the spectra in the input directories.
+    """
+    #TODO: add possibility for different ranges??
+    #delta_dE = (range_vacuum[1]-range_vacuum[0])/len(spectra_vacuum[0])
+    
+    #TODO: change x & y to more explainatory values?
+    df_spectra = pd.DataFrame(columns = ['x', 'y'])
+    for filename in os.listdir(path):
+        #DO STUFF
+        if filename.endswith(".txt"):
+            spectrum = np.loadtxt(path + '/' + filename)
+            dE = np.linspace(rg[0], rg[1], len(spectrum))
+            
+            df_spectra = df_spectra.append({'x': dE, 'y': spectrum}, ignore_index = True)
+    
+    return df_spectra
+    
 
 
 def shift_norm(df_spectra):
@@ -119,9 +108,6 @@ def shift_norm(df_spectra):
     df_sn = pd.DataFrame(columns = ['x', 'y', 'x_shifted', 'y_norm'])
     
     for i in df_spectra.index:
-        
-        
-        print(df_spectra.iloc[i].x)
         
         
         df_sn = df_sn.append(df_spectra.iloc[i])
