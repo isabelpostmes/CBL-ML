@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}Obtaining the single scattering distribution}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Build-up of measured spectrum}{2}{subsection.1.1}%
+\contentsline {paragraph}{Discussion points}{3}{section*.2}%
+\contentsline {section}{\numberline {2}Kramer-Kronig relations}{3}{section.2}%
+\contentsline {section}{\numberline {3}Spectrum analysis}{4}{section.3}%
+\contentsline {paragraph}{QUESTIONs on my end}{4}{section*.3}%
+\contentsline {subsection}{\numberline {3.1}Step 1: rescaling intensity}{5}{subsection.3.1}%
+\contentsline {paragraph}{QUESTIONs on my end}{5}{section*.4}%
+\contentsline {subsection}{\numberline {3.2}Step 2: extrapolating}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Step 3: normalisation and retrieving $\operatorname {Im}\left [{{1}\over {\varepsilon (E)}}\right ]$}{5}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Step 4: retrieving $\operatorname {Re}\left [{{1}\over {\varepsilon (E)}}\right ]$ }{5}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Step 5: retrieving $\varepsilon $}{6}{subsection.3.5}%

@@ -1,0 +1,9 @@
+\BOOKMARK [1][-]{section.1}{Obtaining the single scattering distribution}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Build-up of measured spectrum}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Kramer-Kronig relations}{}% 3
+\BOOKMARK [1][-]{section.3}{Spectrum analysis}{}% 4
+\BOOKMARK [2][-]{subsection.3.1}{Step 1: rescaling intensity}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.2}{Step 2: extrapolating}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.3}{Step 3: normalisation and retrieving Im[1\(E\)]}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.4}{Step 4: retrieving Re[1\(E\)] }{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.5}{Step 5: retrieving }{section.3}% 9

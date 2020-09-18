@@ -1,0 +1,19 @@
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{1}
+
+\bibitem{lau}
+Lau, {\it amazing article}, .
+
+\bibitem{wikipedia_2020}
+{\it Kramers–kronig relations},  Jun, 2020.
+
+\bibitem{egerton_2011}
+R.~F. Egerton, {\em Electron energy-loss spectroscopy in the electron
+  microscope}.
+\newblock Springer, 2011.
+
+\bibitem{Dapor2017}
+M.~Dapor, {\em Appendix G: The Kramers--Kronig Relations and the Sum Rules},
+  pp.~175--178.
+\newblock Springer International Publishing, Cham, 2017.
+
+\end{thebibliography}\endgroup
