@@ -1,0 +1,95 @@
+\subsection{Obtaining the single scattering distribution}
+
+\subsubsection{Build-up of measured spectrum}
+When electrons go through the sample, the intensity of electrons that has no inelastic scattering is given by the zero-loss peak: $I_{ZLP}(E)$. The intensity of the electrons that do scatter, $I_{EEL}(E)$, is than dividable in the single scatter intensity, $I_1(E)$, the double scatter intensity, $I_2(E)$, the triple scatter intensity, $I_3(E)$, etc:
+
+\begin{equation}\label{eq_I}
+    I(E) = I_{ZLP}(E) + I_{EEL}(E) = I_{ZLP}(E) + \sum_{n=0}^\infty I_n(E).
+\end{equation}
+
+
+MAYBE DISREGARD?
+The integrated intensity of each n-scattering spectrum $N_n$ \textcolor{red}{is this a logical choice of letter?} depends on the total integrated intensity $N$, assuming independed scattering events, through the bionomal distribution:
+
+\begin{equation}\label{eq_N_n}
+    N_n =  \frac{N}{n!} \left(\frac{t}{\lambda}\right)^n \exp{[-t/\lambda]} .
+\end{equation}
+
+Here $t$ is the thickness of the sample, and $\lambda$ is the mean free path of electrons in the sample. 
+END DISREGARD
+
+Since we know the zero-loss-peak due to Lau \cite{lau}, the response function of the instrument, $R(E)$, is easily deducted by:
+
+\begin{equation}
+    R(E) = I_{ZLP}(E)/N_{ZLP},
+\end{equation}
+
+where $N_{ZLP}$ is the integrated intensity of $I_{ZLP}(E)$. 
+
+
+Now we will show how the total recorded spectrum is build up from single-scattering distribution $S(E)$, and the above defined response function $R(E)$. 
+
+
+The spectrum recorded due to the single scattering events, $J^1(E)$, is these two distributions convoluted:
+
+\begin{equation}
+    I_{1}(E)=R(E)^{*} S(E) \equiv \int_{-\infty}^{\infty} R\left(E-E^{\prime}\right) S\left(E^{\prime}\right) d E^{\prime}.
+\end{equation}
+
+
+It can be easily seen, that as a double-scattering event, is a series of two single-scattering event, the double-scattering intensity is given by the self convolution of the single-scattering intensity, normalised to match eq. \eqref{eq_N_n}, and once again convoluted with the response function:
+
+\begin{equation}
+    I_{2}(E)=R(E)^{*} S(E)^{*} S(E) /\left(2 ! N_{ZLP}\right).
+\end{equation}
+
+For higher order scattering spectra, this generalises to \textcolor{red}{HOW TO WRITE DOWN A SUCCESSION OF CONVOLUTIONS?}:
+
+
+\begin{equation}
+    I_{n}(E)=R(E)^{*} S(E)\big[^{*} S(E)\big]^{n-1} /\left(n ! N_{ZLP}^{n-1}\right).
+\end{equation}
+
+The complete recorded spectrum, neglecting any surface plasmons, is than given by (analogous to eq. \eqref{eq_I}):
+\begin{equation} \label{eq_I_E}
+    \begin{aligned}
+        I(E) &=I_{ZLP}(E)+I^{1}(E)+I^{2}(E)+I^{3}(E)+\cdots \\
+        &=I_{ZLP}(E)^{*}\left[\delta(E)+S(E) / N_{ZLP}+S(E)^{*} S(E) /\left(2 ! N_{ZLP}^{2}\right)\right.\\
+        &\left.+S(E)^{*} S(E)^{*} S(E) /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right]\\
+        &= I_{ZLP}(E)^{*}\left[\delta(E)+ \sum_{n=1}^\infty R(E)^{*} S(E)\big[^{*} S(E)\big]^{n-1} /\left(n ! N_{ZLP}^{n-1}\right) \right].
+        \end{aligned}
+\end{equation}
+
+Since a convolution in energy domain translates to a multiplication in the frequency domain, it makes sense to take the Fourier transform (FT) of the above equation. Eq. \eqref{eq_I_E} than becomes, using the taylor expansion of the exponential function:
+
+\begin{equation}\label{eq_i_nu_exp}
+    \begin{aligned}
+i(\nu) &=z(\nu)\left\{1+s(\nu) / N_{ZLP}+[s(\nu)]^{2} /\left(2 ! N_{ZLP}^{2}\right)+[s(\nu)]^{3} /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right\} \\
+&=z(\nu)\sum_{n=0}^\infty\frac{s(\nu)^n}{n! N_{ZLP}^n}\\
+&=z(\nu) \exp \left[s(\nu) / N_{ZLP}\right],
+\end{aligned}
+\end{equation}
+
+where $i(\nu)$ is the FT of the intensity spectrum, $z(\nu)$ is the FT of the zero-loss peak, and $s(\nu)$ is the FT of the single-scattering distribution.
+
+
+The single scattering distribution can than be retrieved by rewriting eq. \eqref{eq_i_nu_exp}, and taking the inverse Fourier transform:
+
+\begin{equation}
+    s(\nu) = N_{ZLP} \operatorname{ln}\left(\frac{i(\nu)}{z(\nu)}\right),
+\end{equation}
+
+\begin{equation}
+    \begin{aligned}
+    S(E) &= \mathcal{F}^{-1}\left\{s(\nu)\right\} \\
+    &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{i(\nu)}{z(\nu)}\right]\right\} \\
+    &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{\mathcal{F}\left\{I(E)\right\}}{\mathcal{F}\left\{I_{ZLP}(E)\right\}}\right]\right\}
+    \end{aligned}.
+\end{equation}
+
+
+\paragraph{Discussion points} What is the most official way to calculate the errors in R(E), from the errors in the ZLP? Just calculate for each ZLP and take the std of those, or can you use the error of the ZLP to calculate it at once? Because it comes back in the $N_{ZLP}$ as well.
+
+There are in NaN values in the $s(\nu)$ calculation in the python file, how best to handle those, just set them to 0?
+
+Looking at the $S(E)$ vs $I_{ZLP}$ etc plot, there are some things that don't make sense

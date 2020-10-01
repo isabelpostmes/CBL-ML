@@ -1,0 +1,131 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{none/global//global/global}
+  \entry{egerton_article}{article}{}
+    \name{author}{1}{}{%
+      {{hash=ERF}{%
+         family={Egerton},
+         familyi={E\bibinitperiod},
+         given={R\bibnamedelima F},
+         giveni={R\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{ERF1}
+    \strng{fullhash}{ERF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \verb{doi}
+    \verb 10.1088/0034-4885/72/1/016502
+    \endverb
+    \field{number}{1}
+    \field{pages}{016502}
+    \field{title}{Electron energy-loss spectroscopy in the TEM}
+    \field{volume}{72}
+    \field{journaltitle}{Reports on Progress in Physics}
+    \field{year}{2008}
+  \endentry
+
+  \entry{lau}{article}{}
+    \name{author}{1}{}{%
+      {{hash=L}{%
+         family={Lau},
+         familyi={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{L1}
+    \strng{fullhash}{L1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{amazing article}
+  \endentry
+
+  \entry{wikipedia_2020}{online}{}
+    \list{publisher}{1}{%
+      {Wikimedia Foundation}%
+    }
+    \field{labeltitlesource}{title}
+    \field{title}{Kramers–Kronig relations}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/Kramers–Kronig_relations
+    \endverb
+    \field{journaltitle}{Wikipedia}
+    \field{year}{2020}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{egerton_2011}{book}{}
+    \name{author}{1}{}{%
+      {{hash=ERF}{%
+         family={Egerton},
+         familyi={E\bibinitperiod},
+         given={R.\bibnamedelima F.},
+         giveni={R\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{ERF2}
+    \strng{fullhash}{ERF2}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{Electron energy-loss spectroscopy in the electron microscope}
+    \field{year}{2011}
+  \endentry
+
+  \entry{Dapor2017}{inbook}{}
+    \name{author}{1}{}{%
+      {{hash=DM}{%
+         family={Dapor},
+         familyi={D\bibinitperiod},
+         given={Maurizio},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer International Publishing}%
+    }
+    \strng{namehash}{DM1}
+    \strng{fullhash}{DM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{abstract}{%
+    In this chapter, the response of a material to applied electromagnetic
+  radiations is discussed. In particular, the complex dielectric function is
+  the response function of the medium corresponding to the electric
+  polarization induced by an applied electric field.%
+    }
+    \field{booktitle}{Transport of Energetic Electrons in Solids: Computer
+  Simulation with Applications to Materials Analysis and Characterization}
+    \verb{doi}
+    \verb 10.1007/978-3-319-47492-2_16
+    \endverb
+    \field{isbn}{978-3-319-47492-2}
+    \field{pages}{175\bibrangedash 178}
+    \field{title}{Appendix G: The Kramers--Kronig Relations and the Sum Rules}
+    \verb{url}
+    \verb https://doi.org/10.1007/978-3-319-47492-2_16
+    \endverb
+    \list{location}{1}{%
+      {Cham}%
+    }
+    \field{year}{2017}
+  \endentry
+\enddatalist
+\endinput

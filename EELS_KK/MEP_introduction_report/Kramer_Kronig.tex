@@ -1,0 +1,135 @@
+\subsection{Kramer-Kronig relations}
+The Kramer-Kronig relations are two functions that relate the imaginary part of an complex function to the real part and vice versa. The relations hold as long as the complex function is analytic in the upper half-plane.
+The relations for function $\chi(\omega)=\chi_{1}(\omega)+i \chi_{2}(\omega)$, with $\omega$ a complex variable are given by \cite{wikipedia_2020}:
+
+\begin{equation}
+    \chi_{1}(\omega)=\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime}.
+\end{equation}
+
+Here $\mathcal{P}$ denotes the Cauchy principal value of the integral. For causal functions, due to (anti)symmetries arrising from its causality, these can be rewritten to \cite{wikipedia_2020}:
+
+\begin{equation}\label{eq_ch1_1}
+    \chi_{1}(\omega)=\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega^{\prime} \chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega \chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime}.
+\end{equation}
+
+
+Since the single scattering spectrum of a medium can be related to the imaginary part of the complex permittivity, the Kramer-Kronig relations can be used to retrieve energy dependence of the real permittivity \cite{egerton_2011}. 
+
+
+
+
+\subsubsection{Spectrum analysis}
+If one ignores the instrumental broadening, surface-mode scattering and the retardation effects, the single scattering spectrum is approached by the single scattering distribution, which in place can be obtained from the recorded energy loss spectrum by the Fourier log method. \cite{egerton_2011}
+
+\begin{equation}\label{eq_S_E}
+\begin{aligned}
+I_{1}(E) & \approx S(E)=\frac{2 N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \int_{0}^{\beta} \frac{\theta d \theta}{\theta^{2}+\theta_{E}^{2}} \\
+\\
+&=\frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]
+\end{aligned}
+\end{equation}
+
+In this equation is $J^1(E)$ the single scattering distribution, $S(E)$ the single scattering spectrum, $N_{ZLP}$ the zero-loss intensity, $t$ the sample thickness, $v$ the velocity of the incoming electron, $\beta$ the collection semi angle, $\alpha$ the angular divergence of the incoming beam, and $\theta_E$ the characteristic scattering angle for energy loss $E$. In this equation $\alpha$ is assumed small in comparison with $\beta$. If this is not the case, additional angular corrections are needed. Furthermore, $\theta_E$ is given by:
+
+\begin{equation} \label{eq_th_E}
+    \theta_E = E/(\gamma m_0v^2) .
+\end{equation}
+
+
+Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\varepsilon(E)\right]$ from $\operatorname{Im}\left[-1/\varepsilon(E)\right]$, equation \eqref{eq_ch1_1} should be rewritten to \cite{Dapor2017}:
+
+\begin{equation}\label{eq_kkr_eps}
+    \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]=1-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon\left(E^{\prime}\right)}\right] \frac{E^{\prime} d E^{\prime}}{E^{\prime 2}-E^{2}}.
+\end{equation}
+
+
+
+\paragraph{QUESTIONs on my end} Will we be working with $J(E)$, and is there the need for a Fourier method, or is $J^1(E)$ provided? Are additional angular corrections needed? Where does the 1 come from in eq \eqref{eq_kkr_eps}, is it due to the minus sign in the Im[$-1/\varepsilon$]?
+
+\subsubsection{Step 1: rescaling intensity}
+The first step of the K-K analysis is now to rewrite Eq. \eqref{eq_S_E} to:
+
+\begin{equation}\label{eq_J_ac}
+    I_{1,ac}(E) = \frac{I_1(E)}{\ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]} =\frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}}  \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] .
+\end{equation}
+
+
+As $\theta_E$ scales linearly with $E$, see eq. \eqref{eq_th_E}, the intensity in on the left side of the equation above now relatively increases for high energy loss with respect to low energy loss. \textcolor{red}{SOMETHING about aperture correction, is that relevant? }
+
+
+\paragraph{QUESTIONs on my end} I assume $\beta$ and $v$ are known, and that we do not take a distribution for $v$? 
+
+
+\subsubsection{Step 2: extrapolating}
+Since the upcoming integrals all extend to infinity, but the data acquisition is inherently up to a finite energy, the spectra need to be extrapolated. An often used form is $AE^{-r}$, where $r=3$ if you follow the Drude-model, or $r$ can be deducted from experimental data.
+
+
+
+\subsubsection{Step 3: normalisation and retrieving $\operatorname{Im}\left[\frac{1}{\varepsilon(E)}\right]$}
+
+Taking $E' = 0$ in \eqref{eq_kkr_eps}, one obtains:
+
+\begin{equation}
+    1-\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right]=\frac{2}{\pi} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \frac{d E}{E}.
+\end{equation}
+
+Now dividing both sides of Eq. \eqref{eq_J_ac} by the energy, and subsequently integrating them over energy results in a comparable integral:
+
+\begin{equation}\label{eq_J_ac}
+    \int_{0}^{\infty} I_{1,ac}(E) \frac{d E}{E}=  \frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}}  \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right]   \frac{d E}{E} .
+\end{equation}
+
+Combining the two leads to:
+
+\begin{equation}
+    \frac{\int_{0}^{\infty} I_{1,ac}(E) \frac{d E}{E}}{\frac{\pi}{2}(1-\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right])} = \frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \equiv K ,
+\end{equation}
+in which $K$ is the proportionality constant, used to estimate the absolute thickness if the zero-loss integral and the indicent energy are known. This formula requires $\operatorname{Re}\left[\frac{1}{\varepsilon(0)}\right]$ to be known, as is the case in for example metals ($\operatorname{Re}\left[\frac{1}{\varepsilon_{metal}(0)}\right]\approx 0$). If this is not the case, other options to estimate $K$ will be discussed later on.
+
+This value of $K$, which is constant over $E$, can than in turn be used to retrieve the function of $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the observed single scattering energy distribution $J^1(E)$ with eq. \eqref{eq_J_ac}.
+
+\textcolor{red}{need to add other estimations of $K$?}
+
+\subsubsection{Step 4: retrieving $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ }
+Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the steps above, one can now use eq. \eqref{eq_kkr_eps} to obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$, where one must pay attention to avoid including $E=E'$ in the discrete integral over the spectrum, as this is a singularity. To avoid this singularity in a discrete signal, a couple of approaches are possible:
+\begin{itemize}
+    \item In the integral (for discrete signals: summation) in eq. \eqref{eq_kkr_eps}, simply exclude the $E = E'$ values.
+    \item Shift the values of $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ to values at $E''_i = (E_i + E_{i+1})$, to make sure to avoid $E'' = E'$ in the summation.
+    \item  The dielectric function in the energy domain relate to the dielectric response function $1/\varepsilon(t) -\delta(t)$ through:
+    \begin{equation}
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] = \mathcal{C}\left\{\frac{1}{\varepsilon(t)} - \delta(t)\right\} = \mathcal{F}\{p(t)\},
+    \end{equation}
+    and 
+    \begin{equation}
+        \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] = \mathcal{S}\left\{\frac{1}{\varepsilon(t)} - \delta(t)\right\} = i\mathcal{F}\{q(t)\},
+    \end{equation}
+    where $p(t)$ and $q(t)$ are the even and odd parts respectively of the dielectric response function, and $\mathcal{C}$ and $\mathcal{S}$ are the cosine and sine Fourier transforms respectively. Since the dielectric response function is a response function and therefor causal, it is $0$ for $t<0$. This results in:
+    \begin{equation}
+        p(t) = \operatorname{sgn}[q(t)].
+    \end{equation}
+    Combining all this means that one can also obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ from $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ by:
+    
+    \begin{equation}
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] =\mathcal{C}\left\{\operatorname{sgn}\left[\mathcal{S}^{-1}\left\{\operatorname{Im}\left[\frac{-1}{ \varepsilon(E)}\right]\right\}\right]\right\}.
+    \end{equation}
+\end{itemize}
+
+\subsubsection{Step 5: retrieving $\varepsilon$}
+The dielectric function  can subsequently be obtained from:
+
+\begin{equation}
+    \varepsilon(E)=\varepsilon_{1}(E)+i \varepsilon_{2}(E)=\frac{\operatorname{Re}[1 / \varepsilon(E)]+i \operatorname{Im}[-1 / \varepsilon(E)]}{\{\operatorname{Re}[1 / \varepsilon(E)]\}^{2}+\{\operatorname{Im}[-1 / \varepsilon(E)]\}^{2}}.
+\end{equation}
+
