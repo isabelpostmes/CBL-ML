@@ -11,7 +11,7 @@ import numpy as np
 from scipy import integrate
 import pandas as pd
 import os
-
+from functions_revised import smooth
 
 
 def load_data(path_vacuum, path_sample, range_vacuum, range_sample = False, pr = False):
@@ -42,12 +42,18 @@ def load_data(path_vacuum, path_sample, range_vacuum, range_sample = False, pr =
     if not range_sample:
         range_sample = range_vacuum
     
+    slash = '/'
+    path_vacuum +=  slash * (not path_vacuum[-1] == slash)
+    path_sample +=  slash * (not path_sample[-1] == slash)
+        
+    
     spectra_vacuum = load_spectra(path_vacuum, range_vacuum)
     spectra_sample = load_spectra(path_sample, range_sample)
     
     spectra_vacuum = shift_norm(spectra_vacuum)
     spectra_sample = shift_norm(spectra_sample)
-
+    
+    
     #TODO evaluate if this column is needed
     #spectra_sample['log_y'] = np.log(spectra_sample['y'])
 
@@ -78,14 +84,14 @@ def load_spectra(path, rg):
     #delta_dE = (range_vacuum[1]-range_vacuum[0])/len(spectra_vacuum[0])
     
     #TODO: change x & y to more explainatory values?
-    df_spectra = pd.DataFrame(columns = ['x', 'y'])
+    df_spectra = pd.DataFrame(columns = ['filename', 'x', 'y'])
     for filename in os.listdir(path):
         #DO STUFF
         if filename.endswith(".txt"):
             spectrum = np.loadtxt(path + '/' + filename)
+            #TODO: plus 0.5dE??? dat doet lau...
             dE = np.linspace(rg[0], rg[1], len(spectrum))
-            
-            df_spectra = df_spectra.append({'x': dE, 'y': spectrum}, ignore_index = True)
+            df_spectra = df_spectra.append({'filename': filename, 'x': dE, 'y': spectrum}, ignore_index = True)
     
     return df_spectra
     
@@ -105,26 +111,24 @@ def shift_norm(df_spectra):
     value of 'y'.
     """
     
-    df_sn = pd.DataFrame(columns = ['x', 'y', 'x_shifted', 'y_norm'])
+    df_spectra[['x_shifted', 'y_norm']] = np.empty
     
     for i in df_spectra.index:
-        
-        
-        df_sn = df_sn.append(df_spectra.iloc[i])
         i_max_y = np.argmax(df_spectra.iloc[i].y)
         zeropoint = df_spectra.iloc[i].x[i_max_y]
-        x_shifted = df_spectra.iloc[i].x - float(zeropoint)
-        
+        x_shifted = df_spectra.iloc[i].x - zeropoint
         y = df_spectra.iloc[i].y
         y_int = integrate.cumtrapz(y, x_shifted, initial=0)
         normalization = y_int[-1]
         
-        
-        df_sn.at[i, 'x_shifted'] = x_shifted
-        df_sn.at[i, 'y_norm'] = y/float(normalization)
-    
+        df_spectra.at[i, 'x_shifted'] = x_shifted
+        df_spectra.at[i, 'y_norm'] = y/normalization
+    return df_spectra
 
-    return df_sn
+
+
+
+
 
 
 #TODO: delete below
