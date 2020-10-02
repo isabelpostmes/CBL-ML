@@ -42,3 +42,22 @@ Done this week:
 To do:
 - work out dielectic function implementation and stuff
 - continue cleaning up lau's programs
+
+28 SEPT:-------------------------------------------------------------
+
+To do last week(s):
+- work out dielectic function implementation and stuff, started, not finished
+- continue cleaning up lau's programs, continued, not finished
+
+Done this week(s):
+- continued cleaning Lau's program, including discussing how to rebuild
+- continued working on FD, started to implement with actual spectrum, still significant errors
+- started writing Introduction Report
+
+To do:
+- continue on everything: report, Lau program and FD and KK program.
+
+
+
+
+
