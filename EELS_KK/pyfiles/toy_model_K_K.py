@@ -18,13 +18,13 @@ import scipy
 
 # Model for ZLP
 def IZLP(DeltaE):
-    sigma = 0.3 # eV (variance)
+    sigma = 0.0003 # eV (variance)
     A = 1e10 # normalisation
     izlp = A*math.exp( -DeltaE**2/sigma**2 )
     return izlp
 
 def IZLP_der(DeltaE):
-    sigma = 0.3 # eV (variance)
+    sigma = 0.0003 # eV (variance)
     A = 1e10 # normalisation
     izlp = -2*DeltaE/sigma**2 * IZLP(DeltaE)
     return izlp
@@ -144,6 +144,7 @@ sem_inf = l*(n_times_extra+1)
 ddeltaE = (deltaE[-1]-deltaE[0])/deltaE.size
 
 EELsample_extrp = np.zeros(sem_inf)
+EELtot_extrp = np.zeros(sem_inf)
 EELZLP_extrp = np.zeros(sem_inf)
 deltaE_extrp = np.linspace(deltaE[0], sem_inf*ddeltaE+ddeltaE, sem_inf)
 
@@ -154,28 +155,49 @@ deltaE_extrp[:l] = deltaE
 
 EELsample_extrp[l:] = A*np.power(1+deltaE_extrp[l:]-deltaE_extrp[l],-r)
 
-
+EELtot_extrp = EELsample_extrp + EELZLP_extrp
 
 
 
 z_nu = scipy.fft.fft(EELZLP_extrp)
-i_nu = scipy.fft.fft(EELsample_extrp)
+i_nu = scipy.fft.fft((EELsample_extrp+EELZLP_extrp))
+abs_i_nu = np.absolute(i_nu)
+max_i_nu = np.max(abs_i_nu)
+i_nu_copy = np.copy(i_nu)
+#i_nu[abs_i_nu<max_i_nu*0.00000000000001] = 0
 N_ZLP = 1 #arbitrary units??? np.sum(EELZLP)
 
 s_nu = N_ZLP*np.log(i_nu/z_nu)
+j1_nu = z_nu*s_nu/N_ZLP
+
+
+plt.figure()
+plt.plot(z_nu, label = "z_nu")
+#plt.plot(i_nu, label = "i_nu")
+plt.legend()
 
 s_nu_2 = s_nu
-s_nu_2[np.isnan(s_nu)] = 0 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
+s_nu_2[np.isnan(s_nu)] = 0#1E10 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
 
 S_E = scipy.fft.ifft(s_nu_2)
+J1_E = np.real(scipy.fft.ifft(j1_nu))
 
 
+
+plt.figure()
+plt.plot(z_nu)
+plt.figure()
+plt.plot(i_nu)
+
+plt.figure()
+plt.plot(i_nu/z_nu)
 
 plt.figure()
 plt.plot(deltaE,EELtot,linewidth=2.5,color="black",label=r"${\rm total}$")
 plt.plot(deltaE,EELZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(deltaE,EELsample,linewidth=2.5,color="red",ls="dashdot",label=r"${\rm sample}$")
 plt.plot(deltaE,S_E[:len(EELZLP)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+plt.plot(deltaE,J1_E[:len(EELZLP)],linewidth=2.5,color="green",ls="dotted",label=r"${\rm J^1(E)}$")
 plt.legend()
 # Now produce the plot        
 plt.xlabel(r"${\rm Energy~loss~(eV)}$",fontsize=17)
@@ -187,6 +209,8 @@ plt.figure()
 plt.plot(deltaE_extrp[:2*l],S_E[:2*l],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
 plt.plot(deltaE_extrp[:2*l],EELZLP_extrp[:2*l],linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(deltaE_extrp[:2*l],EELsample_extrp[:2*l],linewidth=2.5,color="red",label=r"${\rm sample}$")
+plt.plot(deltaE_extrp[:2*l],J1_E[:2*l],linewidth=2.5,color="green",ls="dotted",label=r"${\rm J^1(E)}$")
+
 plt.ylim(0,0.3)
 
 
@@ -244,7 +268,7 @@ plt.title("real and imag part Im_eps")
 
 #step 4: retreiving Re[1/eps(E)]
 
-method = 13  #1: integration at datapoints, except deltaE = deltaE'
+method = 3  #1: integration at datapoints, except deltaE = deltaE'
             #2: integration between datapoints deltaE_i = (deltaE_i + deltaE_i+1)/2
             #3: FT
 

@@ -91,17 +91,20 @@ abs_i_nu = np.absolute(i_nu)
 max_i_nu = np.max(abs_i_nu)
 i_nu_copy = np.copy(i_nu)
 #i_nu[abs_i_nu<max_i_nu*0.00000000000001] = 0
-N_ZLP = scipy.integrate.cumtrapz(y_ZLP, x, initial=0)#1 #arbitrary units??? np.sum(EELZLP)
+N_ZLP = scipy.integrate.cumtrapz(y_ZLP, x, initial=0)[-1]#1 #arbitrary units??? np.sum(EELZLP)
 
 s_nu = N_ZLP*np.log(i_nu/z_nu)
-
-s_nu_2 = s_nu
-s_nu_2[np.isnan(s_nu)] = 0#1E10 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
+j1_nu = z_nu*s_nu/N_ZLP
+#s_nu_2 = s_nu
+#s_nu_2[np.isnan(s_nu)] = 0#1E10 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
 
 plt.figure()
 plt.plot(s_nu)
+plt.plot(j1_nu)
 #s_nu[150:1850] = 0
-S_E = np.real(scipy.fft.ifft(s_nu_2))
+S_E = np.real(scipy.fft.ifft(s_nu))
+J1_E = np.real(scipy.fft.ifft(j1_nu))
+
 
 plt.figure()
 plt.plot(z_nu)
@@ -117,7 +120,9 @@ plt.figure()
 plt.plot(x,y,linewidth=2.5,color="black",label=r"${\rm total}$")
 plt.plot(x,y_ZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(x,y_EEL,linewidth=2.5,color="red",ls="dashdot",label=r"${\rm sample}$")
-plt.plot(x,S_E[:len(x)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+#plt.plot(x,S_E[:len(x)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+plt.plot(x,J1_E,linewidth=2.5,color="green",ls="dashdot",label=r"${\rm J^1(E)}$")
+
 plt.legend()
 # Now produce the plot        
 plt.xlabel(r"${\rm Energy~loss~(eV)}$",fontsize=17)
@@ -130,7 +135,13 @@ plt.figure()
 plt.plot(x,S_E,linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
 plt.plot(x,y_ZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(x,y_EEL,linewidth=2.5,color="red",label=r"${\rm sample}$")
+plt.plot(x,J1_E,linewidth=2.5,color="green",ls="dotted",label=r"${\rm J^1(E)}$")
+
 plt.ylim(0,0.3)
+
+plt.figure()
+plt.plot(x,y_EEL,linewidth=0.5,color="red",label=r"${\rm sample}$")
+plt.plot(x,J1_E,linewidth=0.5,color="green", label=r"${\rm S(E)}$")
 
 
 """
