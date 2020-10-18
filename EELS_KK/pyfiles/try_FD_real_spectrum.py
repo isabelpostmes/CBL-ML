@@ -83,7 +83,9 @@ plt.plot(x[:tot], y_EEL[:tot])
 #plt.xlim(-10,100) 
 plt.ylim(0,0.02)
 
-
+try_only_ZLP = True
+if try_only_ZLP:
+    y = y_ZLP
 
 z_nu = scipy.fft.fft(y_ZLP)
 i_nu = scipy.fft.fft((y))
@@ -120,7 +122,7 @@ plt.figure()
 plt.plot(x,y,linewidth=2.5,color="black",label=r"${\rm total}$")
 plt.plot(x,y_ZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(x,y_EEL,linewidth=2.5,color="red",ls="dashdot",label=r"${\rm sample}$")
-#plt.plot(x,S_E[:len(x)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+plt.plot(x,S_E[:len(x)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
 plt.plot(x,J1_E,linewidth=2.5,color="green",ls="dashdot",label=r"${\rm J^1(E)}$")
 
 plt.legend()

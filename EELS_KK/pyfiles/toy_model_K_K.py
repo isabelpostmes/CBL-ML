@@ -18,7 +18,7 @@ import scipy
 
 # Model for ZLP
 def IZLP(DeltaE):
-    sigma = 0.0003 # eV (variance)
+    sigma = 0.3 # eV (variance)
     A = 1e10 # normalisation
     izlp = A*math.exp( -DeltaE**2/sigma**2 )
     return izlp
@@ -28,6 +28,16 @@ def IZLP_der(DeltaE):
     A = 1e10 # normalisation
     izlp = -2*DeltaE/sigma**2 * IZLP(DeltaE)
     return izlp
+
+def gauss(DeltaE, sigma, A, shift = 0):
+    izlp = A*np.exp( -np.power((DeltaE-shift),2)/np.power(sigma,2) )
+    return izlp
+
+
+def gauss_der(DeltaE, sigma, A, shift = 0):
+    izlp = -2*(DeltaE-shift)/np.power(sigma,2) * gauss(DeltaE, sigma, A, shift = shift)
+    return izlp
+
 
 # Model for signal
 def Isample(DeltaE):
@@ -55,8 +65,13 @@ def Isample_der(DeltaE):
 import matplotlib.pyplot as plt
 fig = plt.figure(figsize=(5,3.5))
 
+
+
+
+
+
 # Min and max values of the EEL spectra
-deltaE_min = -4 # eV, adjust for each spectrum
+deltaE_min = -1 # eV, adjust for each spectrum
 deltaE_max = 5 # eV, adjust for each spectrum
 l=2000
 deltaE = np.zeros(l)
@@ -75,6 +90,27 @@ for i in range(l):
     EELZLP_der[i] = IZLP_der(deltaE[i])
     EELsample_der[i] = Isample_der(deltaE[i])
 
+
+#variables ZLP
+sigma_ZLP = 0.3 # eV (variance)
+A_ZLP = 1e10 # normalisation
+EELZLP = gauss(deltaE,sigma_ZLP,A_ZLP)
+EELZLP_der = gauss_der(deltaE, sigma_ZLP, A_ZLP)
+
+zlp_is_delta = True
+if zlp_is_delta:
+    arg_zero = np.argmin(np.absolute(deltaE))
+    EELZLP = np.zeros(l)
+    EELZLP[arg_zero] = A_ZLP
+    
+
+
+
+EELsample = gauss(deltaE, 0.25, 0.08, 3)
+EELsample_der = gauss_der(deltaE, 0.25, 0.08, 3)
+
+EELtot = EELZLP+EELsample
+EELtot_der = EELZLP_der+EELsample_der
 
 plt.plot(deltaE,EELtot,linewidth=2.5,color="black",label=r"${\rm total}$")
 plt.plot(deltaE,EELZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
@@ -154,8 +190,15 @@ EELsample_extrp[:l] = EELsample
 deltaE_extrp[:l] = deltaE
 
 EELsample_extrp[l:] = A*np.power(1+deltaE_extrp[l:]-deltaE_extrp[l],-r)
-
+#print(EELsample_extrp.size, EELsample_extrp.size, EELtot_extrp.size)
 EELtot_extrp = EELsample_extrp + EELZLP_extrp
+#print(EELsample_extrp.size, EELsample_extrp.size, EELtot_extrp.size)
+
+dont_extrp = True
+if dont_extrp:
+    EELZLP_extrp = EELZLP
+    EELsample_extrp = EELsample
+    deltaE_extrp = deltaE
 
 
 
@@ -165,16 +208,21 @@ abs_i_nu = np.absolute(i_nu)
 max_i_nu = np.max(abs_i_nu)
 i_nu_copy = np.copy(i_nu)
 #i_nu[abs_i_nu<max_i_nu*0.00000000000001] = 0
-N_ZLP = 1 #arbitrary units??? np.sum(EELZLP)
+N_ZLP = np.sum(EELZLP)#1 #arbitrary units??? np.sum(EELZLP)
+
+#precautionary for nan values in s_nu and j1_nu
+very_small_value = 1E-8
+print(z_nu[z_nu == 0].size, i_nu[i_nu == 0].size)
+z_nu[z_nu == 0] = very_small_value
+i_nu[i_nu == 0] = very_small_value
 
 s_nu = N_ZLP*np.log(i_nu/z_nu)
+#s_nu[np.isnan(s_nu)] = 0
 j1_nu = z_nu*s_nu/N_ZLP
 
+#j1_nu[np.isnan(j1_nu)] = 0 #do something with nanvalues...
 
-plt.figure()
-plt.plot(z_nu, label = "z_nu")
-#plt.plot(i_nu, label = "i_nu")
-plt.legend()
+
 
 s_nu_2 = s_nu
 s_nu_2[np.isnan(s_nu)] = 0#1E10 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
@@ -185,19 +233,24 @@ J1_E = np.real(scipy.fft.ifft(j1_nu))
 
 
 plt.figure()
-plt.plot(z_nu)
+plt.title("z_nu")
+plt.plot(np.absolute(z_nu))
 plt.figure()
-plt.plot(i_nu)
+plt.title("i_nu")
+plt.plot(np.absolute(i_nu))
 
 plt.figure()
-plt.plot(i_nu/z_nu)
+plt.title("i_nu/z_nu")
+plt.plot(np.absolute(i_nu/z_nu))
 
 plt.figure()
 plt.plot(deltaE,EELtot,linewidth=2.5,color="black",label=r"${\rm total}$")
 plt.plot(deltaE,EELZLP,linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(deltaE,EELsample,linewidth=2.5,color="red",ls="dashdot",label=r"${\rm sample}$")
-plt.plot(deltaE,S_E[:len(EELZLP)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
 plt.plot(deltaE,J1_E[:len(EELZLP)],linewidth=2.5,color="green",ls="dotted",label=r"${\rm J^1(E)}$")
+#plt.plot(deltaE,S_E[::-1][:len(EELZLP)],linewidth=2.5,color="pink",ls="dashdot",label=r"${\rm S(-E)}$")
+plt.plot(deltaE,S_E[:len(EELZLP)],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
+
 plt.legend()
 # Now produce the plot        
 plt.xlabel(r"${\rm Energy~loss~(eV)}$",fontsize=17)
@@ -206,11 +259,13 @@ plt.xlim(1.45,2.0)
 plt.ylim(0,0.09)
 
 plt.figure()
-plt.plot(deltaE_extrp[:2*l],S_E[:2*l],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
 plt.plot(deltaE_extrp[:2*l],EELZLP_extrp[:2*l],linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")
 plt.plot(deltaE_extrp[:2*l],EELsample_extrp[:2*l],linewidth=2.5,color="red",label=r"${\rm sample}$")
 plt.plot(deltaE_extrp[:2*l],J1_E[:2*l],linewidth=2.5,color="green",ls="dotted",label=r"${\rm J^1(E)}$")
+#plt.plot(deltaE_extrp[:2*l],S_E[::-1][:2*l],linewidth=2.5,color="pink",ls="dashdot",label=r"${\rm S(-E)}$")
+plt.plot(deltaE_extrp[:2*l],S_E[:2*l],linewidth=2.5,color="grey",ls="dotted",label=r"${\rm S(E)}$")
 
+plt.legend()
 plt.ylim(0,0.3)
 
 
