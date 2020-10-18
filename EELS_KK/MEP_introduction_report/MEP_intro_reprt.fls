@@ -234,6 +234,10 @@ OUTPUT MEP_intro_reprt.toc
 INPUT TEM_EELS.tex
 INPUT TEM_EELS.tex
 INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
+INPUT dielectric_function.tex
+INPUT dielectric_function.tex
+INPUT CFT_to_DFT.tex
+INPUT CFT_to_DFT.tex
 INPUT deconvolution.tex
 INPUT deconvolution.tex
 INPUT Kramer_Kronig.tex
@@ -254,6 +258,7 @@ INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
 INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb
 INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb
 INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
+INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
 INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb

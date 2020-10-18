@@ -1,3 +1,4 @@
+\newpage
 \subsection{Obtaining the single scattering distribution}
 
 \subsubsection{Build-up of measured spectrum}
@@ -79,13 +80,18 @@ The single scattering distribution can than be retrieved by rewriting eq. \eqref
     s(\nu) = N_{ZLP} \operatorname{ln}\left(\frac{i(\nu)}{z(\nu)}\right),
 \end{equation}
 
-\begin{equation}
+\begin{equation}\label{eq_S_E}
     \begin{aligned}
     S(E) &= \mathcal{F}^{-1}\left\{s(\nu)\right\} \\
     &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{i(\nu)}{z(\nu)}\right]\right\} \\
     &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{\mathcal{F}\left\{I(E)\right\}}{\mathcal{F}\left\{I_{ZLP}(E)\right\}}\right]\right\}
     \end{aligned}.
 \end{equation}
+
+
+However, eq. \eqref{eq_S_E} only works for an ``''ideal" spectrum. Any noise on the spectrum will blow up, as 
+
+
 
 
 \paragraph{Discussion points} What is the most official way to calculate the errors in R(E), from the errors in the ZLP? Just calculate for each ZLP and take the std of those, or can you use the error of the ZLP to calculate it at once? Because it comes back in the $N_{ZLP}$ as well.
