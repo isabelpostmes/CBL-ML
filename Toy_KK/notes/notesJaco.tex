@@ -1,0 +1,206 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\linespread{1.3}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+%opening
+\title{Notes EESL}
+\author{Jaco ter Hoeve}
+
+\begin{document}
+
+\maketitle
+
+
+%\textbf{Goal:} we want to find the single scattering distribution $S(E)$ from a Gaussian signal $J(E)$ that got smeared out by a Gaussian zero loss peak (ZLP).\\
+%
+%\section{All orders calculation}
+%
+%As our definitions of the Fourier Transform we take
+%
+%\begin{align}
+% f(E) &= \int_{-\infty}^{\infty}d\nu\hat{f}(\nu)e^{-2\pi i \nu E}\\ 
+% \hat{f}(\nu)&= \int_{-\infty}^{\infty}dEf(E)e^{2\pi i \nu E}.
+%\end{align}
+%
+%
+%According to eq. (4.8) in Egerton, the Fourier transforms of the zero-loss peak $Z(E)$, the single scattering distribution $S(E)$ and the recorded spectrum $J(E)$ are related as
+%\begin{equation}
+% s(\nu) = I_0 \log \left[\frac{j(\nu)}{z(\nu)}\right],
+% \label{eq:FTSSD}
+%\end{equation}
+%where the Fourier transforms have been written in lower case.\\
+%
+%Next, we want to find $z(\nu)$ and $j(\nu)$. Since $Z(E)$ is a Gaussian centered around zero, we have
+%\begin{equation}
+% Z(E) = \frac{I_0}{\sqrt{2\pi \sigma_B^2}}e^{-E^2/2\sigma_B^2}.
+%\end{equation}
+%The recorded spectrum is also Gaussian, but centered around $E_s \neq 0$:
+%\begin{equation}
+% J(E) = \frac{I_s}{\sqrt{2\pi \sigma_s^2}}e^{-(E-E_s)^2/2\sigma_s^2}.
+% \label{eq:recordedSpec}
+%\end{equation}
+%Let us Fourier transform $Z(E)$ in order to find $z(\nu)$:
+%\begin{align}
+% \nonumber z(\nu) &= \frac{I_0}{\sqrt{2\pi \sigma_B^2}}\int dE \exp \left[-E^2/2\sigma_B^2\right]\exp[2\pi i \nu E]\\
+% \nonumber&=\frac{I_0}{\sqrt{2\pi \sigma_B^2}}\int dE\exp\left[-\frac{1}{2\sigma_B^2}(E^2-4\pi i \sigma_B^2 \nu E)\right]\\
+% \nonumber&= \frac{I_0}{\sqrt{2\pi \sigma_B^2}}\int dE\exp\left[-\frac{1}{2\sigma_B^2}\left((E-2\pi i \sigma_B^2\nu)^2+4\pi^2\sigma_B^4\nu^2\right)\right]\\
+% \nonumber&= \frac{I_0}{\sqrt{2\pi \sigma_B^2}}\sqrt{2\pi \sigma_B^2}\exp[-2\pi^2\sigma_B^2\nu^2]\\
+% &= I_0\exp[-2\pi^2\sigma_B^2\nu^2],
+% \label{eq:FTZLP}
+%\end{align}
+%which is another Gaussian. The Fourier Transform of $J(E)$ can readily be found by noting that the Fourier transform of a translated function $f$ is related to the Fourier transform of the original function by a complex phase multiplication:
+%\begin{equation}
+% \mathcal{F}[f(E-E_s)] = e^{2\pi i \nu E_s}\mathcal{F}[f(E)]
+% \label{eq:FourierTranslation}
+%\end{equation}
+%We will quickly show this. 
+%\begin{align}
+% f(E-E_s) &= \int d\nu \hat{f}(\nu)e^{-2\pi i \nu (E-E_s)}\\
+% &= \int d\nu \hat{f}(\nu)e^{2\pi i \nu E_s}e^{-2\pi i \nu E}\\
+% &= \int d\nu \mathcal{F}[f(E-E_s)]e^{-2\pi i \nu E},
+%\end{align}
+%which proves ($\ref{eq:FourierTranslation}$). Therefore, using identity ($\ref{eq:FourierTranslation}$) together with equations ($\ref{eq:recordedSpec}$) and ($\ref{eq:FTZLP}$) gives
+%\begin{equation}
+% j(\nu) = I_s e^{2\pi i \nu E_s}e^{-2\pi^2\sigma_s^2\nu^2}.
+% \label{eq:FTrecordedSpec}
+%\end{equation}
+%Note that the Fourier transform of a shifted Gaussian is no longer real. We now substitute ($\ref{eq:FTZLP}$) and ($\ref{eq:FTrecordedSpec}$) into (\ref{eq:FTSSD}) to find
+%\begin{align}
+% \nonumber \frac{s(\nu)}{I_0} &= \log j(\nu) - \log z(\nu)\\
+% \nonumber &= -2\pi^2 \sigma_s^2 \nu^2 + 2\pi i \nu E_s + 2\pi^2 \sigma_B^2 \nu^2 +\log \frac{I_s}{I_0}\\
+% &= 2\pi^2\nu^2(\sigma_B^2-\sigma_s^2) + 2\pi i \nu E_s +\log \frac{I_s}{I_0}.
+% \label{eq:FTSSD2}
+%\end{align}
+%Neglecting noise effects, we can recover $S(E)$ by inverting $s(\nu)$ using the inverse Fourier transform. This requires us to first find $\mathcal{F}^{-1}[\nu]$ and $\mathcal{F}^{-1}[\nu^2]$. Our starting point here is the integral representation of the dirac delta function:
+%\begin{equation}
+% \delta(E) = \int d\nu e^{-2\pi i \nu E}.
+%\end{equation}
+%Differentiating once and twice with respect to $E$, gives respectively
+%\begin{align}
+% \delta'(E) &= -2\pi i \int d\nu \nu e^{-2\pi i \nu E}\\
+% \delta''(E) &= -4\pi^2 \int d\nu \nu^2 e^{-2\pi i \nu E}.
+%\end{align}
+%Hence,
+%\begin{equation}
+% \mathcal{F}^{-1}[\nu] = \frac{i\delta'(E)}{2\pi}\qquad \text{and}\qquad\mathcal{F}^{-1}[\nu^2] = \frac{i\delta''(E)}{4\pi^2}.
+%\end{equation}
+%Taking the inverse Fourier transform of ($\ref{eq:FTSSD2}$), then leads to
+%\begin{equation}
+% \frac{S(E)}{I_0} = \log\left( \frac{I_s}{I_0}\right)\delta(E) -E_s\delta'(E) + \frac{(\sigma_B^2-\sigma_s^2)}{2}\delta''(E).
+%\end{equation}
+%
+%\section{Finite order calculation}
+%
+%Let us calculate $S(E)$ neglecting contributions $J^n(E)$ with $n>1$. In other words,
+%\begin{align}
+% \nonumber J(E) &= Z(E) + J^1(E) + \dots\\
+% &= I_0 R(E)*\delta(E) + R(E)*S(E) + \dots
+%\end{align}
+%Taking the Fourier transform results in
+%\begin{align}
+% \nonumber j(\nu) &= z(\nu) +\frac{z(\nu)}{I_0}s(\nu)+\dots\\
+% &= z(\nu)\left[1+\frac{s(\nu)}{I_0}\right] + \dots,
+%\end{align}
+%where the dots represent higher order scatterings. Eliminating $s(\nu)$ gives
+%\begin{equation}
+% s(\nu) = I_0\left(\frac{j(\nu)}{z(\nu)}-1\right) + \dots,
+% \label{eq:FiniteOrderSSD}
+%\end{equation}
+%which can also be found by expanding eq. ($\ref{eq:FTSSD}$) up to first order in $j(\nu)/z(\nu)$. From now on we will no longer write the dots. Upon substituting eq. ($\ref{eq:FTrecordedSpec}$) and ($\ref{eq:FTZLP}$) into ($\ref{eq:FiniteOrderSSD}$), we obtain
+%\begin{align}
+% \nonumber s(\nu)&= I_s \exp[-2\pi^2\nu^2(\sigma_s^2-\sigma_B^2)+2\pi i \nu E_s]- I_0\\
+% \nonumber&= I_s \exp\left[-2\pi^2(\sigma_s^2-\sigma_B^2)\left(\nu^2-\frac{2\pi i \nu E_s}{2\pi^2 (\sigma_s^2-\sigma_B^2)}\right)\right]-I_0\\
+% \nonumber &= I_s \exp\left[-2\pi^2(\sigma_s^2-\sigma_B^2)\left(\left[\nu-\frac{iE_s}{2\pi(\sigma_s^2-\sigma_B^2)}\right]^2+\left[\frac{E_S}{2\pi(\sigma_s^2-\sigma_B^2)}\right]^2\right)\right]-I_0\\
+% \intertext{Extracting the $\nu$ dependence gives}
+% \nonumber s(\nu) &= I_s\exp\left[-\frac{E_s^2}{2(\sigma_s^2-\sigma_B^2)}\right]\cdot \exp\left[-2\pi(\sigma_s^2-\sigma_B^2)\left(\nu - \frac{iE_s}{2\pi(\sigma_s^2-\sigma_B^2)}\right)^2\right] - I_0.
+%\end{align}
+%Hence, 
+%\begin{equation*}
+% S(E) = I_s\exp\left[-\frac{E_s^2}{2(\sigma_s^2-\sigma_B^2)}\right]\mathcal{F}^{-1}\left\{\exp\left[-2\pi(\sigma_s^2-\sigma_B^2)\left(\nu - \frac{iE_s}{2\pi(\sigma_s^2-\sigma_B^2)}\right)^2\right]\right\}- I_0 \delta(E).
+%\end{equation*}
+%By shifting $\nu \rightarrow \nu + i E_s/2\pi(\sigma_s^2-\sigma_B^2)$, we find
+%\begin{align}
+% \nonumber S(E) &= I_s\exp\left[-\frac{E_s^2}{2(\sigma_s^2-\sigma_B^2)}\right]\exp\left[\frac{E_s E}{\sigma_s^2-\sigma_B^2}\right]\mathcal{F}^{-1}\left\{\exp[-2\pi^2(\sigma_s^2-\sigma_B^2)\nu^2]\right\} - I_0 \delta(E)\\
+% \nonumber &= I_s\exp\left[\cdot\right]\exp\left[\cdot\right]\frac{1}{\sqrt{2\pi(\sigma_s^2-\sigma_B^2)}}\exp\left[-\frac{E^2}{2(\sigma_s^2-\sigma_B^2)}\right] - I_0 \delta(E)\\
+% \nonumber&= \frac{I_s}{\sqrt{2\pi(\sigma_s^2-\sigma_B^2)}}\exp\left[-\frac{E_s^2}{2(\sigma_s^2-\sigma_B^2)}\right]\exp\left[-\frac{E^2-2EE_s}{2(\sigma_s^2-\sigma_B^2)}\right] - I_0 \delta(E).\\
+% \intertext{After completing the square in the last exponential, we obtain}
+% S(E) &= \frac{I_s}{\sqrt{2\pi(\sigma_s^2-\sigma_B^2)}}\exp\left[-\frac{(E-E_s)^2}{2(\sigma_s^2-\sigma_B^2)}\right] - I_0\delta(E).
+%\end{align}
+%Note that the recovered single scattering distribution is still centered around $E_s$. It also has a smaller width than the experimental signal $J(E)$. The spread transforms as $\sigma_s^2 \rightarrow \sigma_s^2 - \sigma_B^2$ upon deconvolution up to first order. Furthermore, for $\sigma_s \gg \sigma_B $ and $I_s \gg I_0$, the SSD $S(E)$ reduces to $J(E)$. 
+
+\section{Analytical Calculation}
+Let us first remind ourselves of the task at hand. Given a total recorded signal $J(E)$ with a known zero-loss peak $Z(E)$, we want to recover the single scattering distribution $S(E)$ via deconvolution. Note that these are related by
+\begin{align}
+\nonumber J(E) &= Z(E) + J^1(E) + J^2(E) + J^3(E) + \dots\\
+\nonumber&= Z(E) + \frac{Z(E)}{I_0}*S(E) + \frac{Z(E)}{2!I_0^2}*S(E)*S(E) + \dots\\
+&\equiv Z(E) + J_{\mathrm{in}}(E),
+\label{eq:recordedSpec}
+\end{align}
+where we have defined $J_{\mathrm{in}}(E)$ to absorb all the inelastic scattering contributions. Upon transforming eq. ($\ref{eq:recordedSpec}$) to Fourier space, the convolutions become products and we obtain
+\begin{align}
+\nonumber j(\nu) &= z(\nu) + \frac{z(\nu)s(\nu)}{I_0} + \frac{z(\nu)s(\nu)^2}{2!I_0^2}+\dots\\
+\nonumber&= z(\nu)\left[1+\frac{s(\nu)}{I_0}+\frac{1}{2!}\left(\frac{s(\nu)}{I_0}\right)^2+\dots\right]\\
+&=z(\nu)\exp\left[\frac{s(\nu)}{I_0}\right]
+\label{eq:recordedSpecFourier}
+\end{align}
+From the definition of $J_{\mathrm{in}}(E)$ in eq. ($\ref{eq:recordedSpec}$) we also have
+\begin{equation}
+j(\nu) = z(\nu) + j_{\mathrm{in}}(\nu).
+\label{eq:recordedSpecFourierDef}
+\end{equation}
+Combining eq. ($\ref{eq:recordedSpecFourier}$) and ($\ref{eq:recordedSpecFourierDef}$) therefore gives
+\begin{equation}
+j_{\mathrm{in}}(\nu) + z(\nu) = z(\nu)\exp\left[\frac{s(\nu)}{I_0}\right] \implies s(\nu) = I_0\log\left[1+ \frac{j_{\mathrm{in}}(\nu)}{z(\nu)}\right].
+\label{eq:snu}
+\end{equation}
+In our toy model we take Gaussians for both $J(E)$ and $Z(E)$, that is
+\begin{align}
+\label{eq:Jin}
+J_{\mathrm{in}}(E) &= \frac{I_s}{\sqrt{2\pi\sigma_s^2}}\exp\left[-\frac{(E-E_s)^2}{2\sigma_s^2}\right]\\
+Z(E) &= \frac{I_0}{\sqrt{2\pi\sigma_B^2}}\exp\left[-\frac{E^2}{2\sigma_B^2}\right].
+\label{eq:ZLP}
+\end{align}
+Here, the zero-loss peak $Z(E)$ and the inelastic scattering distribution $J_{\mathrm{in}}$ are centered about zero and $E_s$ respectively. In addition, we have $\sigma_B \ll \sigma_s$, meaning that the background has a much tighter peak than the signal by various orders of magnitude. 
+
+In the following we will need the Fourier transform of eq. ($\ref{eq:Jin}$) and ($\ref{eq:ZLP}$). They are
+\begin{align}
+\label{eq:jinnu}
+j_{\mathrm{in}}(\nu) &= I_s\exp[2\pi i \nu E_s]\exp[-2\pi^2\sigma_s^2\nu^2]\\
+z(\nu)&=I_0\exp[-2\pi^2\sigma_B^2\nu^2].
+\label{eq:znu}
+\end{align}
+The idea is now to find $S(E)$ by expanding eq. ($\ref{eq:snu}$) and taking the inverse Fourier transform of each term in the expansion. Let us first show how to expand eq. ($\ref{eq:snu}$). After defining $g(\nu)\equiv j_{\mathrm{in}}(\nu)/z(\nu)$, we get
+\begin{equation}
+s(\nu) = I_0\left(g(\nu)-\frac{g(\nu)^2}{2!}+\frac{g(\nu)^3}{3!}-\dots\right).
+\label{eq:snuExp}
+\end{equation}
+Note that each term in this expansion corresponds to a Gaussian, with subsequent terms getting an increasingly smaller spread. To be specific, from eq. ($\ref{eq:jinnu}$) and ($\ref{eq:znu}$) we find
+\begin{align}
+\nonumber g(\nu ) &= \frac{I_s}{I_0}\exp[-2\pi^2(\sigma_s^2-\sigma_B^2)\nu^2 + 2\pi i \nu E_s]\\
+&= \frac{I_s}{I_0}\exp\left[-\frac{E_s^2}{2(\sigma_s^2-\sigma_B^2)}\right]\exp\left[-2\pi^2(\sigma_s^2-\sigma_B^2)\left(\nu - \frac{iE_s}{2\pi(\sigma_s^2-\sigma_B^2)}\right)^2\right],
+\end{align}
+where we have completed the square on the last line. If we furthermore define $\sigma_g^2 \equiv \sigma_s^2-\sigma_B^2$, the $k^{\mathrm{th}}$ order contribution to $s(\nu)$ from eq. ($\ref{eq:snuExp}$) can be written as
+\begin{equation}
+g^k(\nu) = \left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[-2k\pi^2\sigma_g^2\left(\nu - \frac{iE_s}{2\pi\sigma_g^2}\right)^2\right].
+\end{equation}
+Next, we take the inverse Fourier transform of $g^k(\nu)$ and shift $\nu \rightarrow \nu + iE_s/2\pi\sigma_g^2$:
+\begin{align}
+\nonumber G_{k}(E) &= \left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\mathcal{F}^{-1}\left\{\exp\left[-2k\pi^2\sigma_g^2\left(\nu - \frac{iE_s}{2\pi\sigma_g^2}\right)^2\right]\right\}\\
+\nonumber&= \left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[\frac{E_sE}{\sigma_g^2}\right]\mathcal{F}^{-1}\left\{\exp[-2k\pi^2\sigma_g^2\nu^2]\right\}\\
+&=\left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[\frac{E_sE}{\sigma_g^2}\right]\frac{1}{\sqrt{2k\pi\sigma_g^2}}\exp\left[-\frac{E^2}{2k\sigma_g^2}\right].
+\label{eq:GkE}
+\end{align}
+As can be seen from ($\ref{eq:GkE}$) we get another Gaussian for $G_k(E)$. This can be made explicit by completing the square:
+\begin{align}
+\nonumber G_k(E) &= \frac{1}{\sqrt{2k \pi \sigma_g^2}}\left(\frac{I_s}{I_0}\right)^k \exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[-\frac{(E-kE_s)^2}{2k\sigma_g^2}\right]\exp\left[\frac{kE_s^2}{2\sigma_g^2}\right]\\
+&=\frac{1}{\sqrt{2k \pi \sigma_g^2}}\left(\frac{I_s}{I_0}\right)^k \exp\left[-\frac{(E-kE_s)^2}{2k\sigma_g^2}\right].
+\end{align}
+Hence, the single scattering distribution $S(E)$ becomes
+\begin{align}
+\nonumber S(E) &= I_0\left(G_1(E)-\frac{G_2(E)}{2!}+\frac{G_3(E)}{3!}-\dots\right)\\
+&= \frac{I_s}{\sqrt{2\pi(\sigma_s^2-\sigma_B^2)}}\exp\left[-\frac{(E-E_s)^2}{2(\sigma_s^2-\sigma_B^2)}\right]-\frac{I_s^2/I_0}{2\sqrt{4\pi(\sigma_s^2-\sigma_B^2)}}\exp\left[-\frac{(E-2E_s)^2}{4(\sigma_s^2-\sigma_B^2)}\right]+\dots
+\end{align}
+As a sanity check, we notice that $S(E)\rightarrow J_{\mathrm{in}}(E)$ if $I_0\gg I_s$ and $\sigma_s \gg \sigma_B$. 
+\end{document}
