@@ -1,8 +1,0 @@
-PWD /Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/MEP_introduction_report
-INPUT /usr/local/texlive/2020basic/texmf.cnf
-INPUT /usr/local/texlive/2020basic/texmf-dist/web2c/texmf.cnf
-INPUT /usr/local/texlive/2020basic/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT CFT_to_DFT.tex
-OUTPUT CFT_to_DFT.log
-OUTPUT CFT_to_DFT.pdf
-INPUT /usr/local/texlive/2020basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map
