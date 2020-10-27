@@ -41,6 +41,47 @@
     \field{year}{2008}
   \endentry
 
+  \entry{reimer_1989}{book}{}
+    \name{author}{1}{}{%
+      {{hash=RL}{%
+         family={Reimer},
+         familyi={R\bibinitperiod},
+         given={Ludwig},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer-Verlag}%
+    }
+    \strng{namehash}{RL1}
+    \strng{fullhash}{RL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{Transmission electron microscopy: physics of image formation
+  and microanalysis}
+    \field{year}{1989}
+  \endentry
+
+  \entry{egerton_book}{book}{}
+    \name{author}{1}{}{%
+      {{hash=ERF}{%
+         family={Egerton},
+         familyi={E\bibinitperiod},
+         given={R.\bibnamedelima F.},
+         giveni={R\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{ERF2}
+    \strng{fullhash}{ERF2}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{Electron energy-loss spectroscopy in the electron microscope}
+    \field{year}{2011}
+  \endentry
+
   \entry{lau}{article}{}
     \name{author}{1}{}{%
       {{hash=L}{%
@@ -67,26 +108,6 @@
     \field{journaltitle}{Wikipedia}
     \field{year}{2020}
     \warn{\item Invalid format of field 'month'}
-  \endentry
-
-  \entry{egerton_2011}{book}{}
-    \name{author}{1}{}{%
-      {{hash=ERF}{%
-         family={Egerton},
-         familyi={E\bibinitperiod},
-         given={R.\bibnamedelima F.},
-         giveni={R\bibinitperiod\bibinitdelim F\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Springer}%
-    }
-    \strng{namehash}{ERF2}
-    \strng{fullhash}{ERF2}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Electron energy-loss spectroscopy in the electron microscope}
-    \field{year}{2011}
   \endentry
 
   \entry{Dapor2017}{inbook}{}

@@ -33,7 +33,7 @@ Now we will show how the total recorded spectrum is build up from single-scatter
 
 The spectrum recorded due to the single scattering events, $J^1(E)$, is these two distributions convoluted:
 
-\begin{equation}
+\begin{equation} \label{eq_I_1}
     I_{1}(E)=R(E)^{*} S(E) \equiv \int_{-\infty}^{\infty} R\left(E-E^{\prime}\right) S\left(E^{\prime}\right) d E^{\prime}.
 \end{equation}
 
@@ -89,7 +89,7 @@ The single scattering distribution can than be retrieved by rewriting eq. \eqref
 \end{equation}
 
 
-However, eq. \eqref{eq_S_E} only works for an ``''ideal" spectrum. Any noise on the spectrum will blow up, as 
+However, eq. \eqref{eq_S_E} only works for an ``ideal" spectrum. Any noise on the spectrum will blow up, as noise normally preveals itself at higher frequencies, and $i(\nu)$ tends towards zero for high frequencies. Therefor, it is advised to calculate not $S(E)$, but $I_1(E)$, by convoluting once more with $I_{ZLP}(E)$, see eq. \eqref{eq_I_1}. \cite{egerton_book}
 
 
 
@@ -99,3 +99,141 @@ However, eq. \eqref{eq_S_E} only works for an ``''ideal" spectrum. Any noise on 
 There are in NaN values in the $s(\nu)$ calculation in the python file, how best to handle those, just set them to 0?
 
 Looking at the $S(E)$ vs $I_{ZLP}$ etc plot, there are some things that don't make sense
+
+
+
+\subsubsection{Analytical analysis of possible recorded spectra}
+To be able to analyse a deconvolution program, it is usefull to create some toymodels which represent different possible $I(E)$, of which we know what the expected outcome is, so we can validate the program written.
+
+
+\paragraph{Single scattering distribution as Gaussian}
+One of the interesting approximations of a spectrum to review as toy model, is a spectrum in which the zero loss peak is a gaussian such that:
+
+\begin{equation}\label{eq_ZLP_gauss}
+I_{ZLP}(E) = A_{ZLP} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]},
+\end{equation}
+
+and the single scattering distribution is a gaussian, given by:
+
+\begin{equation}\label{eq_S_gauss_conv}
+S(E) = A_{S} \exp{[-(x-\mu_{S})/(2\sigma_{S}^2)]}.
+\end{equation}
+
+
+By combining eq. \eqref{eq_I}, and \eqref{eq_gauss_conv}, you obtain for complete recorded spectrum $I(E)$:
+
+\begin{equation}\label{eq_I_gauss_conv}
+\begin{aligned}
+I(E) &= \sum_{n=0}^{\infty}  A_{n} \exp{[-(x-\mu_{n})/(2\sigma_{n}^2)]},\\
+A_{n} &= 
+\begin{cases}
+\begin{aligned}
+A_{ZLP}, &n=0, \\ 
+A_{ZLP} \frac{\left(\sqrt{2 \pi} A_S\right)^n}{\left(\frac{1}{\sigma_{ZLP}^{2}}+\sum_{i=0}^n \frac{1}{\sigma_g^{2}}\right)^{1/2}}, &n>0, \\
+\end{aligned}
+\end{cases}\\
+\mu_{ZLP} &= \mu_{ZLP} + \sum_{i=0}^n \mu_S,\\
+\sigma_{ZLP} &= (\sigma_{ZLP}^2 + \sum_{i=0}^n \sigma_S^2)^{1/2}.
+\end{aligned}
+\end{equation}
+
+This means that for an $I_{ZLP}$ constructed as the equation above, with our program, we hope to retrieve $S(E)$ as given by \eqref{eq_S_gauss_conv}.
+
+
+
+\paragraph{Recorded inelastic scattering spectrum as Gaussian}
+Starting the other way around, with again an $I_{ZLP}(E)$ as given as eq. \eqref{eq_ZLP_gauss}, but now $I_{EEL}(E)$ is also given itself a gaussian, instead of a summation over convolutions of gaussians. Now, we need to follow the route given in the section above to obtain the single scattering distribution $S(E)$:
+
+\begin{equation}
+\begin{aligned}
+I(E) &= I_{ZLP}(E) + I_{EEL}(E),\\
+&= A_{ZLP} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]} +A_{EEL} \exp{[-(x-\mu_{EEL})^2/(2\sigma_{EEL}^2)]}.
+\end{aligned}
+\end{equation}
+
+Following eq. \eqref{eq_S_E}, we need the Fourier transforms of both the $I_{ZLP}(E)$, and $I(E)$, for which we can use eq. \eqref{eq_FT_gauss}:
+
+\begin{equation}\label{eq_i_nu_gauss}
+    \mathcal{F}\{I_{ZLP}(E)\} \equiv z(\nu) = A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]},
+\end{equation}
+
+\begin{equation}\label{eq_i_EEL_gauss}
+    \mathcal{F}\{I_{EEL}\} \equiv i_{EEL}(\nu) = A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]},
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\mathcal{F}\{I(E)\} \equiv i(\nu) &= z(\nu) + i_{EEL}(\nu) \\
+&= A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]} + \\
+& \quad \quad A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]}.
+\end{aligned}
+\end{equation}
+
+
+
+Now eq. \eqref{eq_S_E} becomes:
+
+\begin{equation}\label{eq_S_gauss}
+\begin{aligned}
+S(E) &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[\frac{i(\nu)}{z(\nu)}\right]\right\} \\
+&= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[1+ i_{EEL}/z_{\nu}\right]\right\}.
+\end{aligned}
+\end{equation}
+
+Since both $i_{EEL}(\nu)$ and $z(\nu)$ are gaussians with mean $\mu = 0$, the devision of the two is also an gaussian given by:
+
+\begin{equation}
+\begin{aligned}
+i_{EEL}/z_{\nu} &= \frac{A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]}}{A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]}} ,\\
+&= \frac{A_{EEL} \sigma_{EEL} \exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]}}{A_{ZLP} \sigma_{ZLP}} \exp{\left[-2 \pi^{2} (\sigma_{EEL}^{2} - \sigma_{ZLP}^{2}) \nu^{2}\right]},
+\end{aligned}
+\end{equation}
+
+which can be written as:
+
+\begin{equation}\label{eq_gauss_conv}
+\begin{aligned}
+i_{EEL}(\nu)/z(\nu) &= A_d \exp{[-x^2/(2\sigma_d^2)]},\\
+A_d &= \frac{A_{EEL} \sigma_{EEL} \exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]}}{A_{ZLP} \sigma_{ZLP}},\\
+\sigma_d &= \frac{1}{2\pi(\sigma_{EEL}^2 - \sigma_{ZLP}^2)^{1/2}}.
+\end{aligned}
+\end{equation}
+
+
+Now realising that $z(\nu)$ is always exponentially bigger than $i_{EEL}(\nu)$, we can use a Taylor expansion to approximate $Log(z+1)$ (with Log(z) the primitive value of the complex logaritm):
+
+\begin{equation}
+Log(z+1) = \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} z^n.
+\end{equation}
+
+
+With the equations above, we can rewrite eq. \eqref{eq_S_gauss}:
+
+\begin{equation}\label{eq_S_gauss_verder}
+\begin{aligned}
+S(E) &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[1+ i_{EEL}/z_{\nu}\right]\right\},\\
+&= \mathcal{F}^{-1}\left\{     \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} \left(A_d \exp{[-x^2/(2\sigma_d^2)]}\right)^n  \right\},\\
+&= \mathcal{F}^{-1}\left\{ A_d \exp{[-x^2/(2\sigma_d^2)]} \right\} - \mathcal{F}^{-1}\left\{ \frac{ \left(A_d^2 \exp{[-2x^2/(2\sigma_d^2)]}\right)}{2} \right\} \\
+& \quad \quad \quad \quad+ \mathcal{F}^{-1}\left\{ \frac{ \left(A_d^3 \exp{[-3x^2/(2\sigma_d^2)]}\right)}{3} \right\} +... ,\\
+&= \mathcal{F}^{-1}\left\{ F_1(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_2(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_3(\nu) \right\} + ...
+\end{aligned}
+\end{equation}
+
+
+All these inverse Fourier transform of gaussians return gaussians on their part, resulting in a single scattering distribution which is a summation of gaussians, with alterating posive and negative amplitude. These gaussians are given by:
+
+\begin{equation}
+\begin{aligned}
+\mathcal{F}^{-1}\left\{ F_n(\nu) \right\} &= A_n \exp{[-(x-\mu_n)^2/(2\sigma_n^2)]}, \\
+A_n &= \left( \frac{ A_{EEL} \sigma_{EEL} }{\sqrt{\pi}A_{ZLP} \sigma_{ZLP} (\sigma_{EEL} - \sigma{ZLP})^{1/2} }\right)^n, \\
+\sigma_n &= \frac{1}{n\sqrt{\pi}(\sigma_{EEL} - \sigma{ZLP})^{1/2}},\\
+\mu_n &= n(\mu_{EEL}-\mu{ZLP}).
+\end{aligned}
+\end{equation}
+
+
+
+
+
+
+

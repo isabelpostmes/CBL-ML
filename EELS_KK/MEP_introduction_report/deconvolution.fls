@@ -1,0 +1,7 @@
+PWD /Users/isabel/Documents/Studie/MEP/CBL-ML/EELS_KK/MEP_introduction_report
+INPUT /usr/local/texlive/2020basic/texmf.cnf
+INPUT /usr/local/texlive/2020basic/texmf-dist/web2c/texmf.cnf
+INPUT /usr/local/texlive/2020basic/texmf-var/web2c/pdftex/pdflatex.fmt
+INPUT deconvolution.tex
+OUTPUT deconvolution.log
+INPUT /usr/local/texlive/2020basic/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
