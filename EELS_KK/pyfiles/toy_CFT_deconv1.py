@@ -47,7 +47,7 @@ def DFT(x_n, y_n):
         exp = np.exp(exp_factor*x_n)
         s_DFT_k = np.sum(y_n*exp)*deltax
         s_DFT[k] = s_DFT_k
-    return s_DFT
+    return s_DFT 
 
 def iDFT(x_n, y_n, A = 1):
     N = len(x_n)
@@ -70,7 +70,30 @@ def iDFT(x_n, y_n, A = 1):
         exp = np.exp(exp_factor*omega_n)
         s_DFT_k = np.sum(y_n*exp)/(N*deltax)
         s_DFT[k] = s_DFT_k
-    return s_DFT
+    return s_DFT 
+
+def DFT(x, y):
+    x_0 = np.min(x)
+    x_max = np.max(x)
+    N_0 = np.argmin(np.absolute(x))
+    N = len(x)
+    delta_x = (x_max-x_0)/N
+    k = np.linspace(0, N-1, N)
+    cont_factor = np.exp(2j*np.pi*N_0*k/N) #np.exp(-1j*(x_0)*k*delta_omg)*delta_x 
+    F_k = cont_factor * np.fft.fft(y)
+    return F_k *delta_x
+
+def iDFT(x, Y_k):
+    x_0 = np.min(x)
+    N_0 = np.argmin(np.absolute(x))
+    x_max = np.max(x)
+    N = len(x)
+    delta_x = (x_max-x_0)/N
+    k = np.linspace(0, N-1, N)
+    cont_factor = np.exp(-2j*np.pi*N_0*k/N)
+    f_n = np.fft.ifft(cont_factor*Y_k) ##np.exp(-2j*np.pi*x_0*k)
+    return f_n
+
 
 
 #-------------------
@@ -236,7 +259,7 @@ if zlp_is_delta:
         EELsample[arg_peak] = A_sample
 
 single_scat = EELsample
-n_scattering = 10
+n_scattering = 15
 EELsample = 0
 semi = False
 for i in range(1, n_scattering+1):
@@ -327,7 +350,7 @@ plt.legend()
 plt.xlabel(r"${\rm Energy~loss~(eV)}$",fontsize=17)
 plt.ylabel(r"${\rm Intensity~(a.u.)}$",fontsize=17)
 plt.xlim(shift_sample-3*sigma_sample,shift_sample+6*sigma_sample)
-plt.ylim(0,1.5*A_sample)
+plt.ylim(0,100.5*A_sample)
 
 plt.figure()
 plt.title("$\sigma_{ZLP} = " + str(sigma_ZLP) + "$, $\sigma_{sample} = " + str(sigma_sample) + "$")
@@ -337,7 +360,7 @@ plt.plot(deltaE[:2*l],EELsample[:2*l],linewidth=2.5,color="red",label=r"${\rm sa
 plt.plot(deltaE[:2*l],J1_E[:2*l],linewidth=2.5,color="green",ls="dotted",label=r"${\rm J^1(E)}$")
 #plt.plot(deltaE[:2*l],iDFT(deltaE,z_nu)[:2*l],linewidth=2.5,color="pink",ls="dotted",label=r"${\rm ZLP}$")
 plt.legend()
-plt.ylim(0,2*A_sample)
+plt.ylim(0,200*A_sample)
 
 plt.figure()
 plt.plot(deltaE[:2*l],EELZLP[:2*l],linewidth=2.5,color="blue",ls="dashed",label=r"${\rm ZLP}$")

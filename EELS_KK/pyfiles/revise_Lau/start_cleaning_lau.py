@@ -61,7 +61,7 @@ df_vac_der['dE2'] = np.nan
 df_sam_der['dE2'] = np.nan
 for i in df_sam_der.index:
     df_sam_der.at[i,'ratio'] = np.divide(df_sam_der.iloc[i].dy_dx, vac_avg)
-    df_sam_der.at[i,'dE2'] = df_sam_der.iloc[i].x_shifted[((df_sam_der.iloc[i]['ratio'] > 0 & df_sam_der.iloc[i]['ratio'] < 1)].min()
+    df_sam_der.at[i,'dE2'] = df_sam_der.iloc[i].x_shifted[(df_sam_der.iloc[i]['ratio'] > 0 & df_sam_der.iloc[i]['ratio'] < 1)].min()
 for i in df_vac_der.index:    
     df_vac_der.at[i,'ratio'] = np.divide(df_vac_der.iloc[i].dy_dx, sam_avg)
     df_vac_der.at[i,'dE2'] = df_vac_der.iloc[i].x_shifted[df_vac_der['ratio'] < 1].min()
