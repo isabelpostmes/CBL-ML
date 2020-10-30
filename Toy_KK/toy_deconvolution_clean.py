@@ -109,7 +109,7 @@ plt.plot(x,I_E, label = "I(E)")
 plt.plot(x,S_Ec, linewidth = 2.5,label = "calculated S(E)")
 plt.plot(x,S_E, '--', linewidth = 1.5, label = "original S(E)")
 plt.xlim(0,10)
-plt.ylim(0,A_S*1.5)
+plt.ylim(0,A_S*1.7)
 plt.legend()
 plt.title("decovolution of convoluted gaussian")
 
@@ -129,7 +129,7 @@ i2_nu = CFT(x,I_E2)
 i2_nu[i2_nu == 0] = 1E-14
 deconv2 = N_ZLP*np.log(i2_nu/z_nu)
 deconv2[250:-250] = 0 #SUPPRESS NOISE
-S_Ec2 = iCFT(x,deconv)
+S_Ec2 = iCFT(x,deconv2)
 
 
 plt.plot(x, I_E, label="I(E)")
@@ -137,7 +137,7 @@ plt.plot(x,I_E, label = "convoluted I(E)")
 plt.plot(x,I_E2, label = "calculated I(E)")
 plt.plot(x,S_E, linewidth = 1.5, label = "original S(E)")
 plt.plot(x,S_Ec2, '--', linewidth = 2.5,label = "calculated S(E)")
-plt.ylim(0,A_S*1.5)
+plt.ylim(0,A_S*1.7)
 plt.xlim(0,10)
 plt.legend()
 plt.title("comparison of calculated I(E) and convoluted I(E) for gaussian S(E)")
