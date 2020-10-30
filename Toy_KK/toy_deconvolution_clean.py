@@ -17,7 +17,7 @@ def CFT(x, y):
     x_max = np.max(x)
     delta_x = (x_max-x_0)/N
     k = np.linspace(0, N-1, N)
-    cont_factor = np.exp(2j*np.pi*N_0*k/N)*delta_x #np.exp(-1j*(x_0)*k*delta_omg)*delta_x 
+    cont_factor = np.exp(2j*np.pi*N_0*k/N)*delta_x #np.exp(-1j*(x_0)*k*delta_omg)*delta_x
     F_k = cont_factor * np.fft.fft(y)
     return F_k
 
@@ -48,19 +48,19 @@ def convolute(xf, yf, xg, yg):
         print(deltaxf,  deltaxg)
         print("delta_x_f and delta_x_g not equal, unable to convolute")
         return x_n, h_n
-    
+
     x_n = np.linspace(xf0+xg0, xf1+xg1, Nh)
     yg_expanded = np.zeros(Ng + 2*(Nf-1))
     yg_expanded[Nf-1:Ng+Nf-1] = yg
-    
+
     for n in range(Nh):
         h_n[n] = np.sum(yf[::-1] * yg_expanded[n:Nf+n])*deltaxf
-    
+
     return x_n, h_n
 
 
 def gauss(DeltaE, sigma, A, shift = 0):
-    g_x = A / (2**0.5*math.pi**0.5*sigma_Z) *np.exp( -np.power((DeltaE-shift),2)/(2*np.power(sigma,2)) )
+    g_x = A / (2**0.5*math.pi**0.5*sigma) *np.exp( -np.power((DeltaE-shift),2)/(2*np.power(sigma,2)) )
     return g_x
 
 
@@ -93,6 +93,8 @@ i_nu += z_nu
 s_nu = CFT(x,S_E)
 scatterings = 6
 plt.figure()
+
+#Calculate I(E) numerically as a sum of convolutions with S(E)
 for i in range(1, scatterings):
     add = z_nu*np.power(s_nu, i)/(math.factorial(i)*N_ZLP**i)
     i_nu += add
@@ -103,7 +105,6 @@ i_nu[i_nu == 0] = 1E-14
 deconv = N_ZLP*np.log(i_nu/z_nu)
 S_Ec = iCFT(x,deconv)
 
-
 plt.plot(x,ZLP, label = "I_ZLP(E)")
 plt.plot(x,I_E, label = "I(E)")
 plt.plot(x,S_Ec, linewidth = 2.5,label = "calculated S(E)")
@@ -111,33 +112,34 @@ plt.plot(x,S_E, '--', linewidth = 1.5, label = "original S(E)")
 plt.xlim(0,10)
 plt.ylim(0,A_S*1.5)
 plt.legend()
-plt.title("decovolution of convoluted gaussian")
+plt.title("Deconvolution of convoluted Gaussian")
 
 
 plt.figure()
 I_E2 = np.copy(ZLP)
 scatterings = 5
-plt.figure()
+#plt.figure()
+
+#Calculate I(E) analytically
 for n in range(1,scatterings):
     A_n = A_S**n / (math.factorial(n)*A_Z**(n-1))
     sigma_n = (sigma_Z**2 + n*sigma_S**2)**0.5
     mu_n = n*mu_S
     I_E2 += gauss(x, sigma_n, A_n, mu_n)
-    plt.plot(x, gauss(x, sigma_n, A_n, mu_n), color = np.array([1,1,1])*n/scatterings, label = "J" + str(i) + "(E)")
+    #plt.plot(x, gauss(x, sigma_n, A_n, mu_n), color = np.array([1,1,1])*n/scatterings, label = "J" + str(i) + "(E)")
 
-plt.plot(x, I_E, label="I(E)")
-plt.plot(x,I_E, label = "convoluted I(E)")
-plt.plot(x,I_E2, label = "calculated I(E)")
+plt.plot(x, S_E,'--', label="S(E)")
+plt.plot(x, ZLP,'-', label="ZLP(E)")
+plt.plot(x,I_E,label = "Numerical I(E)")
+plt.plot(x,I_E2, '--', label = "Analytical I(E)")
+plt.xlabel('E')
 plt.ylim(0,A_S*1.5)
 plt.xlim(0,10)
 plt.legend()
-plt.title("comparison of calculated I(E) and convoluted I(E) for gaussian S(E)")
+plt.title("Numerical versus analytical I(E) for Gaussian S(E)")
 
 
-
-
-
-#%% DECONVOLUTION OF I_E IS GAUSSIAN
+#%% DECONVOLUTION WHEN I_E IS GAUSSIAN
 A_EEL = 0.8
 sigma_EEL = 0.5
 mu_EEL = 3
@@ -158,10 +160,10 @@ plt.figure()
 y6 = iCFT(x, Y6)
 S6_E = iCFT(x,deconv)
 plt.plot(x,y6, label = "J(E)")
-plt.plot(x,S6_E, label = "S(E)")
+
 plt.xlim(-3,30)
 plt.ylim(-A_EEL*0.8,A_EEL*2.5)
-plt.title("decovolution of  gaussian")
+plt.title("Deconvolution of Gaussian")
 scatterings = 5
 for i in range(2,scatterings):
     plt.plot(x, iCFT(x,np.power(deconv, i)/math.factorial(i)), color = np.array([1,1,1])*i/scatterings, label = "J" + str(i) + "(E)")
@@ -175,13 +177,10 @@ for n in range(1,10):
     A_n = (-1)**(n+1) * A_EEL**n/(n*A_ZLP**(n-1))
     mu_n = n*mu_EEL
     sigma_n = (n*(sigma_EEL**2 - sigma_ZLP**2))**0.5
-    
+
     S_Ec += gauss(x,sigma_n, A_n, mu_n)
 
-plt.plot(x,S_Ec, label = "analytical S(E)")
+plt.plot(x,S_Ec, label = "Analytical S(E)")
+plt.plot(x,S6_E, '--',label = "Numerical S(E)")
 plt.legend()
-    
-    
-    
-    
-
+plt.show()
