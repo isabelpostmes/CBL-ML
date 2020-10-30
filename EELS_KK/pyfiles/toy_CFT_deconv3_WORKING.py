@@ -147,7 +147,7 @@ def ft(x, samples):
     return np.fft.fftshift(np.fft.fft(samples)/Fs * np.exp(-2j*np.pi*f*t0))
 
 def gauss(DeltaE, sigma, A, shift = 0):
-    g_x = A*np.exp( -np.power((DeltaE-shift),2)/(2*np.power(sigma,2)) )
+    g_x = A / (2**0.5*math.pi**0.5*sigma_Z) *np.exp( -np.power((DeltaE-shift),2)/(2*np.power(sigma,2)) )
     return g_x
 
 #try multiples:
@@ -374,30 +374,39 @@ plt.legend()
 #DECONVOLUTION:
 N_0 = np.argmin(np.absolute(x))
 ZLP = (1+1j) * np.zeros(len(x))
-ZLP[N_0] = 1E3
+ZLP[N_0] = 2E4
+ZLP = gauss(x,0.3,4E3)
 z4_nu = CFT(x,ZLP)
 N_ZLP = np.sum(ZLP)*dx
 plt.figure()
-A = 2
-y3 = gauss(x, 0.5, A, 1)
+A = 500
+y3 = gauss(x, 0.5, A, 2)
 y4 = y3
 Y4 = (1+1j)*np.zeros(len(y3))
 Y4 += z4_nu
 Y3 = CFT(x,y3)
-scatterings = 8
+scatterings = 6
 for i in range(1, scatterings):
-    Y4 += z4_nu*np.power(Y3, i)/math.factorial(i)
-    plt.plot(x, iCFT(x,np.power(Y3, i)/math.factorial(i)), color = np.array([1,1,1])*i/scatterings, label = "J" + str(i) + "(E)")
-y4 = iCFT(x, Y4)
-#z4_nu = np.power(Y3, 0)
-deconv = np.log(Y4/z4_nu)
-plt.plot(x,y4, label = "J(E)")
+    add = z4_nu*np.power(Y3, i)/(math.factorial(i)*N_ZLP**i)
+    Y4 += add
+    plt.plot(x, iCFT(x,add), color = np.array([0.8,0.8,1])*(1.0-i/scatterings), label = "J" + str(i) + "(E)")
+y4 = np.real(iCFT(x, Y4))
+#y4 = I_E
+#Y4 = CFT(x,y4)
+#z4_nu = z_nu
+z4_nu[z4_nu == 0] = 1E-14
+Y4[Y4 == 0] = 1E-14
+deconv = N_ZLP*np.log(Y4/z4_nu)
+S_E = iCFT(x,deconv)
+plt.plot(x,ZLP, label = "I_ZLP(E)")
+plt.plot(x,y4, label = "I(E)")
 #plt.plot(x,y3)
-plt.plot(x,iCFT(x,deconv), label = "S(E)")
+plt.plot(x,S_E, linewidth = 2.5,label = "calculated S(E)")
+plt.plot(x,y3, '--', linewidth = 1.5, label = "original S(E)")
 #xc,yc = convolute(x,y3,x,y3)
 #plt.plot(xc,yc)
 plt.xlim(0,10)
-plt.ylim(0,A*1.1)
+plt.ylim(0,A*1.2)
 plt.legend()
 plt.title("decovolution of convoluted gaussian")
 
@@ -406,27 +415,31 @@ plt.title("decovolution of convoluted gaussian")
 N_0 = np.argmin(np.absolute(x))
 ZLP = (1+1j) * np.zeros(len(x))
 ZLP[N_0] = 1E3
+ZLP = gauss(x,0.3,4E3)
+
 z4_nu = CFT(x,ZLP)
 N_ZLP = np.sum(ZLP)*dx
 plt.figure()
-scale = 0.8
-A = 1
-y3 = gauss(x, 0.5, A, 1)
+scale = 1
+A = 0.01
+y3 = gauss(x, 0.8, A, 3)
 x32, y32 = convolute(x,ZLP,x,y3)
 y32 = y32[N_0:N_0+N]
-y4 = y32*scale +ZLP
+y7 = y32*scale +ZLP
 scatterings = 10
 for i in range(2, scatterings):
     x32, y32 = convolute(x, y3, x, y32)
     y32 = y32[N_0:N_0+N]
-    y4 += y32*scale/math.factorial(i)
+    y7 += y32*scale/math.factorial(i)
     plt.plot(x, y32*scale/math.factorial(i), color = np.array([1,1,1])*i/scatterings, label = "J" + str(i) + "(E)")
-Y4 = CFT(x,y4*scale)
+Y4 = CFT(x,y7*scale)
+z4_nu[z4_nu == 0] = 1E-14
+Y4[Y4 == 0] = 1E-14
 
 #y4 = iCFT(x, Y4)
 #z4_nu = np.power(Y3, 0)
 deconv = np.log(Y4/z4_nu)*N_ZLP
-plt.plot(x,y4, label = "J(E)")
+plt.plot(x,y7, label = "J(E)")
 #plt.plot(x,y3)
 plt.plot(x,iCFT(x,deconv), label = "S(E)")
 #xc,yc = convolute(x,y3,x,y3)
@@ -435,6 +448,62 @@ plt.xlim(0,10)
 plt.ylim(0,A*1.1*N_ZLP)
 plt.legend()
 plt.title("decovolution of convoluted gaussian")
+
+
+#%% deconvolution of the analytical signal
+sigma_S = 0.5
+A_S = 500
+mu_S = 2
+
+sigma_Z = 0.3
+A_Z = 4E3
+
+
+ZLP = (1 + 0j) * gauss(x,sigma_Z, A_Z)
+S_E = (1 + 0j) * gauss(x,sigma_S, A_S, mu_S)
+
+
+N_ZLP = np.sum(ZLP)*dx
+
+I_E = np.copy(ZLP)
+scatterings = 5
+plt.figure()
+for n in range(1,scatterings):
+    A_n = A_S**n / (math.factorial(n)*A_Z**(n-1))
+    sigma_n = (sigma_Z**2 + n*sigma_S**2)**0.5
+    mu_n = n*mu_S
+    I_E += gauss(x, sigma_n, A_n, mu_n)
+    plt.plot(x, gauss(x, sigma_n, A_n, mu_n), color = np.array([1,1,1])*n/scatterings, label = "J" + str(i) + "(E)")
+
+z_nu = CFT(x,ZLP)
+i_nu = CFT(x, I_E)
+deconv = np.log(i_nu/z_nu)*N_ZLP
+S_Ec = iCFT(x, deconv)
+
+plt.plot(x, I_E, label="I(E)")
+plt.plot(x,S_E, label = "original S(E)")
+plt.plot(x,S_Ec, label = "calculated S(E)")
+plt.ylim(0,A_S*1.2)
+plt.xlim(0,10)
+plt.legend()
+
+
+z_nu[z_nu == 0] = 1E-14
+I_E[I_E == 0] = 1E-14
+deconv = N_ZLP*np.log(I_E/z_nu)
+S_E = iCFT(x,deconv)
+plt.plot(x,ZLP, label = "I_ZLP(E)")
+plt.plot(x,y4, label = "I(E)")
+#plt.plot(x,y3)
+plt.plot(x,S_E, linewidth = 2.5,label = "calculated S(E)")
+plt.plot(x,y3, '--', linewidth = 1.5, label = "original S(E)")
+#xc,yc = convolute(x,y3,x,y3)
+#plt.plot(xc,yc)
+plt.xlim(0,10)
+plt.ylim(0,A*1.2)
+plt.legend()
+plt.title("decovolution of convoluted gaussian")
+    
 
 #%% DECONVOLUTION OF GAUSS
 A = 0.8
