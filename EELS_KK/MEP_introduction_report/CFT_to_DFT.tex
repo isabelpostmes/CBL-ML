@@ -219,25 +219,25 @@ Looking at the above equation, one almost recognizes a multiplication of two app
 \subsubsection{Convolution of two gaussians}
 Defining:
 
-\begin{equation}
-f(x)=A_{f} \exp{\left[-\frac{\left(x-\mu_{f}\right)^{2}}{2 \sigma_{f}^{2}}\right]},
+\begin{equation}\label{eq_def_gauss}
+f(x)=\frac{A_{f}}{\sqrt{2\pi}\sigma_f} \exp{\left[-\frac{\left(x-\mu_{f}\right)^{2}}{2 \sigma_{f}^{2}}\right]},
 \end{equation}
 
 we can find the Fourier transform of $f(x)$ as:
 
 \begin{equation}\label{eq_FT_gauss}
-	\mathcal{F}\{f(x)\} \equiv F(\nu) = A_f \sqrt{\pi}\sigma_f \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{f}^{2} \nu^{2}\right]},
+	\mathcal{F}\{f(x)\} \equiv F(\nu) = A_f \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{f}^{2} \nu^{2}\right]},
 \end{equation}
 
 which is in itself a gaussian again. We can do the same for a function $g(x)$:
 
 \begin{equation}
-g(x)=A_{g} \exp{\left[-\frac{\left(x-\mu_{g}\right)^{2}}{2 \sigma_{g}^{2}}\right]},
+g(x)=\frac{A_{g}}{\sqrt{2\pi}\sigma_g} \exp{\left[-\frac{\left(x-\mu_{g}\right)^{2}}{2 \sigma_{g}^{2}}\right]},
 \end{equation}
 
 giving:
 \begin{equation}
-	\mathcal{F}\{g(x)\} \equiv G(\nu) = A_g \sqrt{\pi}\sigma_g \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{g}^{2} \nu^{2}\right]}.
+	\mathcal{F}\{g(x)\} \equiv G(\nu) = A_g \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{g}^{2} \nu^{2}\right]}.
 \end{equation}
 
 
@@ -246,7 +246,7 @@ Then the Fourier transform of $f(x)$ and $g(x)$ is given by:
 \begin{aligned}
 \mathcal{F}\{f(x)^*g(x)\} &= F(\nu)G(\nu), \\
  %&= A_f A_g \pi \sigma_f \sigma_g \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{f}^{2} \nu^{2}\right]} \exp{\left[-2 \pi i \nu \mu_{g}\right]} \exp{\left[-2 \pi^{2} \sigma_{g}^{2} \nu^{2}\right]},\\
- &=A_f A_g \pi \sigma_f \sigma_g \exp{\left[-2 \pi i \nu\left(\mu_{f}+\mu_{g}\right)\right]} \exp{\left[-2 \pi^{2}\left(\sigma_{f}^{2}+\sigma_{g}^{2}\right) \nu^{2}\right]}.
+ &=A_f A_g \exp{\left[-2 \pi i \nu\left(\mu_{f}+\mu_{g}\right)\right]} \exp{\left[-2 \pi^{2}\left(\sigma_{f}^{2}+\sigma_{g}^{2}\right) \nu^{2}\right]}.
 \end{aligned}
 \end{equation}
 
@@ -255,14 +255,14 @@ In the equation above, a gaussian can be recognised. This means you can write it
 which you can write as:
 
 \begin{equation}
-F(\nu)G(\nu) = A_C \exp{[-(x-\mu_C)^2/(2\sigma_C^2)]},
+F(\nu)G(\nu) = \frac{A_C}{\sqrt{2\pi}\sigma_C} \exp{\left[\frac{-(x-\mu_C)^2}{2\sigma_C^2}\right]},
 \end{equation}
 
 with:
 
 \begin{equation}
 \begin{aligned}
-A_C &= A_f A_g \pi \sigma_f \sigma_g \exp{\left[-2 \pi i \nu\left(\mu_{f}+\mu_{g}\right)\right]} ,\\
+A_C &= A_f A_g \sqrt{2\pi}\sigma_C \exp{\left[-2 \pi i \nu\left(\mu_{f}+\mu_{g}\right)\right]} ,\\
 \mu_C &= 0,\\
 \sigma_C &= \frac{1}{2\pi(\sigma_f^2+\sigma_g^2)^{1/2}}.
 \end{aligned}
@@ -276,7 +276,7 @@ The inverse of this Fourier transform now gives the convolution of the two signa
 \begin{equation}
 \begin{aligned}
 f(x)^* g(x) &=  \mathcal{F}^{-1}\{F(\nu)G(\nu)\} \\
-&= \frac{\sqrt{2 \pi} A_f A_g \exp{\left[-(x-\mu_f-\mu_g)^{2} /\left(2\left(\sigma_f^{2}+\sigma_g^{2}\right)\right)\right]}}{\left(\frac{1}{\sigma_f^{2}}+\frac{1}{\sigma_g^{2}}\right)^{1/2}},
+&= \frac{A_f A_g}{\sqrt{2\pi\left(\sigma_f^{2}+\sigma_g^{2}\right)}} \exp{\left[-\frac{(x-\mu_f-\mu_g)^{2} }{2\left(\sigma_f^{2}+\sigma_g^{2}\right)}\right]},
 \end{aligned}
 \end{equation}
 
@@ -285,8 +285,8 @@ which you can write as:
 
 \begin{equation}\label{eq_gauss_conv}
 \begin{aligned}
-f(x)^* g(x) &= A_c \exp{[-(x-\mu_c)^2/(2\sigma_c^2)]},\\
-A_c &= \frac{\sqrt{2 \pi} A_f A_g}{\left(\frac{1}{\sigma_f^{2}}+\frac{1}{\sigma_g^{2}}\right)^{1/2}},\\
+f(x)^* g(x) &= \frac{A_c}{\sqrt{2\pi}\sigma_c} \exp{\left[-\frac{(x-\mu_c)^2}{2\sigma_c^2}\right]},\\
+A_c &= A_f A_g,\\
 \mu_c &= \mu_f + \mu_g,\\
 \sigma_c &= (\sigma_f^2 + \sigma_g^2)^{1/2}.
 \end{aligned}

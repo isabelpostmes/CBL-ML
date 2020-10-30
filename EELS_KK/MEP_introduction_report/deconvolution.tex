@@ -47,8 +47,8 @@ It can be easily seen, that as a double-scattering event, is a series of two sin
 For higher order scattering spectra, this generalises to \textcolor{red}{HOW TO WRITE DOWN A SUCCESSION OF CONVOLUTIONS?}:
 
 
-\begin{equation}
-    I_{n}(E)=R(E)^{*} S(E)\big[^{*} S(E)\big]^{n-1} /\left(n ! N_{ZLP}^{n-1}\right).
+\begin{equation} \label{eq_def_I_n}
+    I_{n}(E)=R(E)\big[^{*} S(E)\big]^{n} /\left(n ! N_{ZLP}^{n-1}\right).
 \end{equation}
 
 The complete recorded spectrum, neglecting any surface plasmons, is than given by (analogous to eq. \eqref{eq_I}):
@@ -57,7 +57,7 @@ The complete recorded spectrum, neglecting any surface plasmons, is than given b
         I(E) &=I_{ZLP}(E)+I^{1}(E)+I^{2}(E)+I^{3}(E)+\cdots \\
         &=I_{ZLP}(E)^{*}\left[\delta(E)+S(E) / N_{ZLP}+S(E)^{*} S(E) /\left(2 ! N_{ZLP}^{2}\right)\right.\\
         &\left.+S(E)^{*} S(E)^{*} S(E) /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right]\\
-        &= I_{ZLP}(E)^{*}\left[\delta(E)+ \sum_{n=1}^\infty R(E)^{*} S(E)\big[^{*} S(E)\big]^{n-1} /\left(n ! N_{ZLP}^{n-1}\right) \right].
+        &= I_{ZLP}(E)^{*}\left[\delta(E)+ \sum_{n=1}^\infty \delta(E)\big[^{*} S(E)\big]^{n} /\left(n ! N_{ZLP}^{n}\right) \right].
         \end{aligned}
 \end{equation}
 
@@ -110,7 +110,7 @@ To be able to analyse a deconvolution program, it is usefull to create some toym
 One of the interesting approximations of a spectrum to review as toy model, is a spectrum in which the zero loss peak is a gaussian such that:
 
 \begin{equation}\label{eq_ZLP_gauss}
-I_{ZLP}(E) = A_{ZLP} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]},
+I_{ZLP}(E) = N_{ZLP} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]},
 \end{equation}
 
 and the single scattering distribution is a gaussian, given by:
@@ -120,24 +120,51 @@ S(E) = A_{S} \exp{[-(x-\mu_{S})/(2\sigma_{S}^2)]}.
 \end{equation}
 
 
-By combining eq. \eqref{eq_I}, and \eqref{eq_gauss_conv}, you obtain for complete recorded spectrum $I(E)$:
+By combining eq. \eqref{eq_I}, \eqref{eq_gauss_conv}, and eq. \eqref{eq_def_I_n} you obtain for complete recorded spectrum $I(E)$:
 
 \begin{equation}\label{eq_I_gauss_conv}
 \begin{aligned}
-I(E) &= \sum_{n=0}^{\infty}  A_{n} \exp{[-(x-\mu_{n})/(2\sigma_{n}^2)]},\\
-A_{n} &= 
-\begin{cases}
-\begin{aligned}
-A_{ZLP}, &n=0, \\ 
-A_{ZLP} \frac{\left(\sqrt{2 \pi} A_S\right)^n}{\left(\frac{1}{\sigma_{ZLP}^{2}}+\sum_{i=0}^n \frac{1}{\sigma_g^{2}}\right)^{1/2}}, &n>0, \\
-\end{aligned}
-\end{cases}\\
-\mu_{ZLP} &= \mu_{ZLP} + \sum_{i=0}^n \mu_S,\\
-\sigma_{ZLP} &= (\sigma_{ZLP}^2 + \sum_{i=0}^n \sigma_S^2)^{1/2}.
+I(E) &= \sum_{n=0}^{\infty}  \frac{A_{n}}{\sqrt{2\pi}\sigma_n} \exp{\left[-\frac{(x-\mu_{n})^2}{2\sigma_{n}^2}\right]},\\
+A_{n} &= \frac{1}{n! N_{ZLP}^n}N_{ZLP} A_S^n, \\
+&= \frac{A_S^n}{n!N_{ZLP}^{n-1}}, \\
+\mu_{n} &= \mu_{ZLP} + n \mu_S,\\
+\sigma_{n} &= (\sigma_{ZLP}^2 + n \sigma_S^2)^{1/2}.
 \end{aligned}
 \end{equation}
 
-This means that for an $I_{ZLP}$ constructed as the equation above, with our program, we hope to retrieve $S(E)$ as given by \eqref{eq_S_gauss_conv}.
+
+
+
+%\begin{equation}\label{eq_I_gauss_conv}
+%\begin{aligned}
+%I(E) &= \sum_{n=0}^{\infty}  A_{n} \exp{[-(x-\mu_{n})/(2\sigma_{n}^2)]},\\
+%A_{n} &= 
+%\begin{cases}
+%\begin{aligned}
+%N_{ZLP}, &n=0, \\ 
+%\frac{N_{ZLP}}{n! N_{ZLP}^n} \frac{\left(\sqrt{2 \pi} A_S\right)^n}{\left(\frac{1}{\sigma_{ZLP}^{2}}+\frac{n}{\sigma_S^{2}}\right)^{1/2}}, &n>0, \\
+%\end{aligned}
+%\end{cases}\\
+%\mu_{n} &= \mu_{ZLP} + n \mu_S,\\
+%\sigma_{n} &= (\sigma_{ZLP}^2 + n \sigma_S^2)^{1/2}.
+%\end{aligned}
+%\end{equation}
+
+This means that for an $I(E)$ constructed as the equation above, with our program, we hope to retrieve $S(E)$ as given by \eqref{eq_S_gauss_conv}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -147,24 +174,24 @@ Starting the other way around, with again an $I_{ZLP}(E)$ as given as eq. \eqref
 \begin{equation}
 \begin{aligned}
 I(E) &= I_{ZLP}(E) + I_{EEL}(E),\\
-&= A_{ZLP} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]} +A_{EEL} \exp{[-(x-\mu_{EEL})^2/(2\sigma_{EEL}^2)]}.
+&= \frac{N_{ZLP}}{\sqrt{2\pi}\sigma_{ZLP}} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]} +\frac{A_{EEL}}{\sqrt{2\pi}\sigma_{EEL}} \exp{[-(x-\mu_{EEL})^2/(2\sigma_{EEL}^2)]}.
 \end{aligned}
 \end{equation}
 
 Following eq. \eqref{eq_S_E}, we need the Fourier transforms of both the $I_{ZLP}(E)$, and $I(E)$, for which we can use eq. \eqref{eq_FT_gauss}:
 
 \begin{equation}\label{eq_i_nu_gauss}
-    \mathcal{F}\{I_{ZLP}(E)\} \equiv z(\nu) = A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]},
+    \mathcal{F}\{I_{ZLP}(E)\} \equiv z(\nu) = N_{ZLP}\exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]},
 \end{equation}
 
 \begin{equation}\label{eq_i_EEL_gauss}
-    \mathcal{F}\{I_{EEL}\} \equiv i_{EEL}(\nu) = A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]},
+    \mathcal{F}\{I_{EEL}\} \equiv i_{EEL}(\nu) = A_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]},
 \end{equation}
 
 \begin{equation}
 \begin{aligned}
 \mathcal{F}\{I(E)\} \equiv i(\nu) &= z(\nu) + i_{EEL}(\nu) \\
-&= A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]} + \\
+&= N_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]} + \\
 & \quad \quad A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]}.
 \end{aligned}
 \end{equation}
@@ -184,20 +211,36 @@ Since both $i_{EEL}(\nu)$ and $z(\nu)$ are gaussians with mean $\mu = 0$, the de
 
 \begin{equation}
 \begin{aligned}
-i_{EEL}/z_{\nu} &= \frac{A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]}}{A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]}} ,\\
-&= \frac{A_{EEL} \sigma_{EEL} \exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]}}{A_{ZLP} \sigma_{ZLP}} \exp{\left[-2 \pi^{2} (\sigma_{EEL}^{2} - \sigma_{ZLP}^{2}) \nu^{2}\right]},
+i_{EEL}/z_{\nu} &= \frac{A_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]}}{N_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]}} ,\\
+&= \frac{A_{EEL}}{N_{ZLP}} \exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]} \exp{\left[-2 \pi^{2} (\sigma_{EEL}^{2} - \sigma_{ZLP}^{2}) \nu^{2}\right]},
 \end{aligned}
 \end{equation}
 
-which can be written as:
+which can be written as, analogous to eq. \eqref{eq_FT_gauss}:
 
-\begin{equation}\label{eq_gauss_conv}
+
+
+\begin{equation}\label{eq_gauss_conv2}
 \begin{aligned}
-i_{EEL}(\nu)/z(\nu) &= A_d \exp{[-x^2/(2\sigma_d^2)]},\\
-A_d &= \frac{A_{EEL} \sigma_{EEL} \exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]}}{A_{ZLP} \sigma_{ZLP}},\\
-\sigma_d &= \frac{1}{2\pi(\sigma_{EEL}^2 - \sigma_{ZLP}^2)^{1/2}}.
+i_{EEL}(\nu)/z(\nu) &= A_d \exp{[-2\pi i \nu \mu_d]} \exp{\left[ -2\pi^2 \sigma_f^2 \nu^2 \right]},\\
+A_d &= \frac{A_{EEL}}{N_{ZLP}},\\
+\mu_d &= \mu_{EEL} - \mu_{ZLP},\\
+%&=\frac{A_{EEL} }{N_{ZLP}\sqrt{2\pi(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}}\exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]},\\
+\sigma_d &= \sqrt{\sigma_{EEL}^2 - \sigma_{ZLP}^2}.
 \end{aligned}
 \end{equation}
+
+%\begin{equation}\label{eq_gauss_conv2}
+%\begin{aligned}
+%i_{EEL}(\nu)/z(\nu) &= A_d \exp{\left[\frac{-x^2}{(2\sigma_d^2)}\right]},\\
+%A_d &= \frac{A_{EEL}}{N_{ZLP}}\exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]},\\
+%%&=\frac{A_{EEL} }{N_{ZLP}\sqrt{2\pi(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}}\exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]},\\
+%\sigma_d &= \frac{1}{2\pi(\sigma_{EEL}^2 - \sigma_{ZLP}^2)^{1/2}}.
+%\end{aligned}
+%\end{equation}
+
+
+
 
 
 Now realising that $z(\nu)$ is always exponentially bigger than $i_{EEL}(\nu)$, we can use a Taylor expansion to approximate $Log(z+1)$ (with Log(z) the primitive value of the complex logaritm):
@@ -211,29 +254,67 @@ With the equations above, we can rewrite eq. \eqref{eq_S_gauss}:
 
 \begin{equation}\label{eq_S_gauss_verder}
 \begin{aligned}
-S(E) &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[1+ i_{EEL}/z_{\nu}\right]\right\},\\
-&= \mathcal{F}^{-1}\left\{     \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} \left(A_d \exp{[-x^2/(2\sigma_d^2)]}\right)^n  \right\},\\
-&= \mathcal{F}^{-1}\left\{ A_d \exp{[-x^2/(2\sigma_d^2)]} \right\} - \mathcal{F}^{-1}\left\{ \frac{ \left(A_d^2 \exp{[-2x^2/(2\sigma_d^2)]}\right)}{2} \right\} \\
-& \quad \quad \quad \quad+ \mathcal{F}^{-1}\left\{ \frac{ \left(A_d^3 \exp{[-3x^2/(2\sigma_d^2)]}\right)}{3} \right\} +... ,\\
-&= \mathcal{F}^{-1}\left\{ F_1(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_2(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_3(\nu) \right\} + ...
+S(E) &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[1+ \frac{i_{EEL}}{z(\nu)}\right]\right\},\\
+&= \mathcal{F}^{-1}\left\{ N_{ZLP} \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} \left(A_d \exp{[-2\pi i \nu \mu_d]} \exp{\left[ -2\pi^2 \sigma_f^2 \nu^2 \right]}\right)^n  \right\},\\
+&= \mathcal{F}^{-1}\left\{ N_{ZLP} \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} A_d^n \exp{[-2\pi i \nu n \mu_d]} \exp{\left[ -2\pi^2 n \sigma_f^2 \nu^2 \right]}^n  \right\},\\
+&= \mathcal{F}^{-1}\left\{ F_1(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_2(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_3(\nu) \right\} + ... , \\
+&= \sum_1^{\infty} \mathcal{F}^{-1}\left\{ F_n(\nu) \right\} ,
 \end{aligned}
 \end{equation}
 
+
+
+%\begin{equation}\label{eq_S_gauss_verder}
+%\begin{aligned}
+%S(E) &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[1+ \frac{i_{EEL}}{z(\nu)}\right]\right\},\\
+%&= \mathcal{F}^{-1}\left\{ N_{ZLP} \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} \left(A_d \exp{\left[\frac{-x^2}{2\sigma_d^2}\right]}\right)^n  \right\},\\
+%&= \mathcal{F}^{-1}\left\{ N_{ZLP}A_d \exp{\left[\frac{-x^2}{2\sigma_d^2}\right]} \right\} - \mathcal{F}^{-1}\left\{N_{ZLP}  A_d^2  \exp{\left[\frac{-2x^2}{2\sigma_d^2}\%right]} \right\} \\
+%& \quad \quad \quad \quad+ \mathcal{F}^{-1}\left\{N_{ZLP} A_d^3 \exp{\left[\frac{-3x^2}{2\sigma_d^2}\right]} \right\} +... ,\\
+%&= \mathcal{F}^{-1}\left\{ F_1(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_2(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_3(\nu) \right\} + ... , \\
+%&= \sum_1^{\infty} \mathcal{F}^{-1}\left\{ F_n(\nu) \right\} ,
+%\end{aligned}
+%\end{equation}
+
+Where $F_n(\nu)$ can be written as, analogous to eq. \eqref{eq_FT_gauss}:
+
+\begin{equation}
+    \begin{aligned}
+F_n (\nu)&= A_{n}\exp{[-2\pi i \nu \mu_n]} \exp{[-2\pi^2 i \nu^2 \sigma_{n}^2]},\\
+A_{n} &= \frac{(-1)^{n+1}}{n} N_{ZLP}A_d^n,\\
+&= (-1)^{n+1} \frac{A_{EEL}^n}{n N_{ZLP}^{n-1}}, \\
+\mu_n &= n\mu_d,\\
+&= n(\mu_{EEL} - \mu_{ZLP}), \\
+\sigma_{n} &= \sqrt{n}\sigma_d, \\
+&= \sqrt{n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}.
+    \end{aligned}
+\end{equation}
+
+
+%\begin{equation}
+%    \begin{aligned}
+%F_n (\nu)&= A_{F_n}\exp{[-2\pi i \nu \mu_n]} \exp{[-2\pi^2 i \nu^2 \sigma_{F_n}^2]},\\
+%A_{F_n} &= (-1)^n N_{ZLP}A_d^n,\\
+%&= N_{ZLP} \frac{A_{EEL}^n}{N_{ZLP}^n}\exp{\left[-2 \pi i \nu n(\mu_{EEL} - \mu_{ZLP})\right]}, \\
+%\sigma_{F_n} &= \frac{\sigma_d}{\sqrt{n}}, \\
+%&= \frac{1}{2\pi\sqrt{n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}}.
+%    \end{aligned}
+%\end{equation}
+
+Using this, and the inverse relation between eq. \eqref{eq_def_gauss} and eq. \eqref{eq_FT_gauss}, one can find the inverses of the Gaussians that build $S(E)$:
 
 All these inverse Fourier transform of gaussians return gaussians on their part, resulting in a single scattering distribution which is a summation of gaussians, with alterating posive and negative amplitude. These gaussians are given by:
 
 \begin{equation}
-\begin{aligned}
-\mathcal{F}^{-1}\left\{ F_n(\nu) \right\} &= A_n \exp{[-(x-\mu_n)^2/(2\sigma_n^2)]}, \\
-A_n &= \left( \frac{ A_{EEL} \sigma_{EEL} }{\sqrt{\pi}A_{ZLP} \sigma_{ZLP} (\sigma_{EEL} - \sigma{ZLP})^{1/2} }\right)^n, \\
-\sigma_n &= \frac{1}{n\sqrt{\pi}(\sigma_{EEL} - \sigma{ZLP})^{1/2}},\\
-\mu_n &= n(\mu_{EEL}-\mu{ZLP}).
-\end{aligned}
+\mathcal{F}^{-1}\left\{ F_n(\nu) \right\} = \frac{A_n}{\sqrt{2\pi}\sigma_n} \exp{\left[-\frac{(x-\mu_n)^2}{2\sigma_n^2}\right]}.
 \end{equation}
 
 
+Combining all the above, we find single scattering distribution given by:
 
 
+\begin{equation}
+S(E) = \sum_{n=1}^\infty \frac{(-1)^n A_{EEL}^n}{n N_{ZLP}^{n-1}\sqrt{2\pi n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}} \exp{\left[-\frac{(x-n(\mu_{EEL} - \mu_{ZLP}))^2}{2n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}\right]}
+\end{equation}
 
 
 
