@@ -1,0 +1,18 @@
+\subsection{TEM} % (fold)
+\label{ssub:tem}
+The transmission electron microscope (TEM) projects a beam of electron trough an sample, to record the transmitte electrons on the opposite side of the sample to form an image. Due to the fact that the de Broglie wavelenghts of electrons (~$10^{-2}$) are factors smaller than the wavelength of photons ($~10^2$), mugh higher resolutions can be obtained than with light microscopy. \cite{reimer_1989} The resolution of a TEM is mostly determined by the focussing power of the electron beam. For TEMs with monochromator, such as the TEM available at the Conesa Boj Laberatorium, resolutions of 0.1nm can be obtained, small enough to image single atoms. \cite{egerton_article}
+
+
+% subsubsection tem (end)
+
+
+\subsubsection{EELS of the TEM}
+The electron energy loss spectrum (EELS) documents the loss in kinetic energy of electrons in their path through a specimen. Due to the quantification of energylevels at elementary level, this energy loss manifests in peaks in the spectrum. The broadness of the observed peaks mainly comes from the inherent imperfect electron source, which transmits electrons in a certain energy distribution focussed around the target energy. The analysis of these peaks gives inside in what energy levels are present in the sample, and with that gives inside in the composition and structure of the specimen. \cite{egerton_article}
+
+
+
+
+\subsubsection{Low loss spectrum}
+Much of the interesting information in the EELS is nested in the low loss part ($<$50eV) of the spectrum. Here, ones finds info on bandgaps, plasmons and exitons among others \cite{egerton_book}. A significant problem in this part of the spectrum, is that the influence of the zero loss peak (ZLP) is non-negliglable. Older tactices to avoid this problem, are centered around fitting the ZLP in each individual spectrum, and subseqently substracting it. The most prominent problem with this approach is that there is no indication of the error in the estimation of the ZLP. Therefore, it can not be said with how significant the found peaks near the tail of the ZLP are. In her master thesis, Laurien Roest develloped a method in which the ZLP is approximated by a neural network, which inherently results in a ZLP with error marges. 
+
+Since the ZLP is an indication of the distribution of the energies of the electrons produced by the electron source \cite{egerton_article}, the errors around the ZLP trackle trhough in all the rest of the spectrum. Therefore, in my project I will use the program develloped by Laurien to estimate the ZLP, and use this in the detection and quantification of the peaks in the spectrum and the other variables to be extracted from the spectrum.

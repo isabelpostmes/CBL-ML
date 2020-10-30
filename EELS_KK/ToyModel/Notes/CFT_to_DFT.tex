@@ -1,0 +1,309 @@
+\subsection{Approximating continious Fourier transform with dicrete Fourier transform}
+Lets start with a small refresher on Fourier transforms, and evaluate how to approximate the continious Fourier transform with the discrete Fourier transform.
+
+\subsubsection{Original definitions}
+The continous Fourier transfrom (CFT) of function $f(x)$ is defined as:
+
+\begin{equation}\label{eq_def_CFT}
+\mathcal{F}\left\{f(x)\right\} = F(\nu) = \int^{\infty}_{-\infty} \operatorname{e}^{-i2\pi\nu x} f(x) dx.
+\end{equation}
+
+
+The inverse of the CFT is given by:
+
+\begin{equation}\label{eq_def_iCFT}
+\mathcal{F}^{-1}\left\{F(\nu)\right\} = f(x) = \int^{\infty}_{-\infty} \operatorname{e}^{i2\pi\nu x} F(\nu) d\nu.
+\end{equation}
+
+The discrete Fourtier transform (DFT) of discrete function $f[n]$ defined on $n \in \{0, ..., N-1\}$ is given by:
+
+\begin{equation}\label{eq_def_DFT}
+\operatorname{DFT}\left\{f[n]\right\} = F[k] = \sum^{N-1}_{n=0} \operatorname{e}^{-i2\pi kn} f[n], \forall k \in \{0, ..., N-1\}.
+\end{equation}
+
+
+The inverse of the CFT is given by:
+
+\begin{equation}\label{eq_def_iDFT}
+\operatorname{DFT}^{-1}\left\{F[k]\right\} = f[n] = \sum^{N-1}_{k=0} \operatorname{e}^{i2\pi kn} F[k], \forall n \in \{0, ..., N-1\}.
+\end{equation}
+
+\subsubsection{Discrete approximation CFT}
+
+
+If one approximates function $f(x)$ by $f[x_0 + n\Delta x], \forall n \in \{0,...,N-1\}$, and $\nu$ by $k\Delta \nu, \forall k \in \{0, ..., N-1\}$, where:
+
+\begin{equation}
+\Delta x \Delta \nu = \frac{1}{N},
+\end{equation}
+
+
+starting from eq. \eqref{eq_def_CFT}, one can obtain:
+\begin{equation}\label{eq_approx_CFT}
+\begin{aligned}
+	F(\nu) \approx F[k\Delta \nu] &= \sum_{n=0}^{N-1} \Delta x f[x_0 +n\Delta x] \operatorname{exp} \left[-i2\pi k \Delta \nu (x_0 +n \Delta x)\right],\\
+	&= \Delta x \operatorname{exp}\left[-i 2\pi k \Delta \nu x_0\right] \sum_{n=0}^{N-1} \operatorname{exp}\left[-i2\pi nk/N\right] f[x_0 +n\Delta x], \\
+	&= \Delta x \operatorname{exp}\left[-i 2\pi k \Delta \nu x_0\right] \operatorname{DFT}\left\{f[n]\right\}.
+\end{aligned}
+\end{equation}
+
+Similary, we can reobtain the original function $f(x) \approx f[n\Delta x + x_0]$ from the approximation of $F(\nu) \approx F[k\Delta \nu]$, using eq. \eqref{eq_def_iCFT}:
+
+\begin{equation}
+	\begin{aligned}
+	f(x) \approx f[n\Delta x+ x_0] &= \sum_{k=0}^{N-1} \Delta \nu F[k\Delta \nu] \operatorname{exp}\left[i2\pi k\Delta \nu (n\Delta x + x_0)\right]\\
+	&= \Delta\nu \sum_{k=0}^{N-1}F[k\Delta\nu]\operatorname{exp}\left[i2\pi k\Delta \nu x_0\right]\operatorname{exp}\left[i2\pi kn/N\right].
+	\end{aligned}
+\end{equation}
+
+Defining:
+\begin{equation}
+G[k\Delta\nu]  = \operatorname{exp}\left[i2\pi k \Delta\nu x_0\right] F[k\Delta\nu],
+\end{equation}
+
+we find:
+
+\begin{equation}
+	\begin{aligned}
+	f(x) \approx f[n\Delta x+ x_0] &=  \Delta\nu \sum_{k=0}^{N-1}G[k\Delta\nu]\operatorname{exp}\left[i2\pi kn/N\right]\\
+	&= \Delta\nu \operatorname{DFT}^{-1}\left\{G[k\Delta\nu]\right\}
+	\end{aligned}
+\end{equation}
+
+
+
+\subsubsection{Convolutions}
+\paragraph{Definition of concolution}
+
+The concolution of two functions $f(x)$ and $g(x)$ is defined as te integral:
+
+\begin{equation}\label{eq_conv_inf}
+h(x) = \int_{-\infty}^\infty f(\bar{x})g(x-\bar{x}) d\bar{x}.
+\end{equation}
+
+Assuming $f(x)$ and $g(x)$ have a limited domain, $h(n)$ will also have a limited domain, given by:
+
+\begin{equation}
+	\begin{aligned}
+		f(x) &= \begin{cases}
+			\begin{aligned}
+				f(x), \quad &x_{0,f} \leq x \leq x_{1,f}\\
+				0, \quad &x < x_{0,f} \vee x>x_{1,f}
+			\end{aligned}
+		\end{cases},\\
+		g(x) &= \begin{cases}
+			\begin{aligned}
+				g(x), \quad &x_{0,g} \leq x \leq x_{1,g}\\
+				0, \quad &x < x_{0,g} \vee x>x_{1,g}
+			\end{aligned}
+		\end{cases},\\
+		h(x) &= \begin{cases}
+			\begin{aligned}
+				h(x), \quad &x_{0,f} + x_{0,g} \leq x \leq x_{1,f} + x_{1,g}\\
+				0, \quad &x < x_{0,f} +x_{0,f} \vee x>x_{1,f} + x_{1,g}
+			\end{aligned}.
+		\end{cases}
+	\end{aligned}
+\end{equation}
+
+This simplifies eq. \eqref{eq_conv_inf} to:
+
+\begin{equation}
+h(x) = \int_{x_{0,f}}^{x_{1,f}} f(\bar{x})g(x-\bar{x}) d\bar{x}.
+\end{equation}
+
+
+
+
+
+
+
+Futhermore, the Fourier transform of the convolution has the beautiful property that, for the limited domain functions, but this can be extended into infinity:
+
+\begin{equation}\label{eq_conv_CFT}
+	\begin{aligned}
+		H(\nu) &= \int_{x_{0,1} + x_{0,g}}^{x_{1,f} + x_{1,g}} h(x) \operatorname{exp}\left[-i2\pi\right]dx,\\
+		&= \int_{x_{0,1} + x_{0,g}}^{x_{1,f} + x_{1,g}} \int_{x_{0,1}}^{x_{1,f}} f(\bar{x})g(x-\bar{x}) d\bar{x} \operatorname{exp}\left[-i2\pi\nu x\right]dx,\\
+		&= \int_{x_{0,1}}^{x_{1,f}} \int_{{x_{0,1} + x_{0,g}}}^{x_{1,f} + x_{1,g}} g(x-\bar{x}) \operatorname{exp}\left[-i2\pi\nu x\right] dx \quad f(\bar{x}) d\bar{x} .
+	\end{aligned}
+\end{equation}
+
+Defining $\hat{x} = x-\bar{x}$, evaluation the limits on the integrals and realising $d\hat(x) = dx$, you obtain:
+
+\begin{equation}
+	\begin{aligned}
+		H(\nu) &=\int_{x_{0,f}}^{x_{1,f}} \int_{x_{0,g}}^{x_{1,g}} g(\hat{x}) \operatorname{exp}\left[-i2\pi\nu(\hat{x} + \bar{x})\right] d\hat{x} \quad f(\bar{x}) d\bar{x}, \\
+		&=  \int_{x_{0,g}}^{x_{1,g}} g(\hat{x}) \operatorname{exp}\left[-i2\pi\nu\hat{x}\right]  d\hat{x} \int_{x_{0,f}}^{x_{1,f}} f(\bar{x}) \operatorname{exp}\left[-i2\pi\nu\bar{x}\right] d\bar{x}, \\
+		&= F(\nu) G(\nu).
+	\end{aligned}
+\end{equation}
+
+
+
+
+\paragraph{Discretisation of the convolution and its CFT}
+Again, we can approximate $f(x), g(x)$ and $h(n)$ by:
+
+\begin{equation}
+\begin{aligned}
+	f(x) \approx f[n_f(\Delta x)_f + x_{0,f}], &\forall n_f \in \{0,N_f-1\}, (\Delta x)_f = (x_{1,f}-x_{0,f})/N_f,\\
+	g(x) \approx g[n_g(\Delta x)_g + x_{0,g}], &\forall n_g \in \{0,N_g-1\}, (\Delta x)_g = (x_{1,g}-x_{0,g})/N_g.
+\end{aligned}
+\end{equation}
+
+If we ensure that $(\Delta x)_f = (\Delta x)_g \equiv \Delta x$, we can approximate $h(n)$:
+
+\begin{equation}
+	h(x) \approx h[n_h\Delta x + x_{0,f} + x_{0,g}], \forall n_h \in \{0,N_f+N_g-1\},
+\end{equation}
+
+where
+
+\begin{equation}
+	h[n_h\Delta x + x_{0,f} + x_{0,g}] = \sum_{k=0}^{N_f-1}f[k\Delta x + x_{0,f}]g[n\Delta x + x_{0,g} - k\Delta x ]\Delta x.
+\end{equation}
+
+
+To discretisize the continious fourier transfrom, we once again need to define $\Delta\nu$, but mind the difference for $\Delta\nu$ for the discretisations of $f(x)$ or $g(x)$ and $h(x)$:
+
+\begin{equation}\label{ex_def_deltanu}
+\begin{aligned}
+(\Delta\nu)_f &= \frac{1}{N_f\Delta x} \\
+(\Delta\nu)_g &= \frac{1}{N_g\Delta x} \\
+(\Delta\nu)_h &= \frac{1}{(N_f+N_g)\Delta x} \\
+&= \left((\Delta\nu)_f^{-1} + (\Delta\nu)_g^{-1}\right)^{-1}
+\end{aligned}
+\end{equation}
+
+
+Now the discrete approximation of the CFT of the convolution (given by eq. \eqref{eq_conv_CFT}) is given by:
+
+
+\begin{equation}
+\begin{aligned}
+&H(\nu) \approx H[k(\Delta\nu)_h] = \sum_{n=0}^{N_f+N_g-1} h[n\Delta x + x_{0,f} + x_{0,g}]\operatorname{exp}\left[-i2\pi k(\Delta\nu)_h (n\Delta x + x_{0,f} + x_{0,g} \right] \Delta x, \\
+&= \sum_{n=0}^{N_f+N_g-1} \sum_{l=0}^{N_f-1}f[l\Delta x + x_{0,f}]g[(n-l)\Delta x + x_{0,g}] \operatorname{exp}\left[-i2\pi k(\Delta\nu)_h (n\Delta x + x_{0,f} + x_{0,g}) \right] (\Delta x)^2.
+\end{aligned}
+\end{equation}
+
+
+Defining $m=n-l$, and swapping summation order, you obtain:
+
+\begin{equation}
+\begin{aligned}
+H[k(\Delta\nu)_h] = (\Delta x)^2&\operatorname{exp}[-2\pi i k(\Delta\nu)_h x_{0,f}] \sum_{l=0}^{N_f-1} f[l(\Delta\nu)_h + x_{0,f}] \\
+& \operatorname{exp}[-2\pi i k(\Delta\nu)_h x_{0,g}]  \sum_{m=-l}^{N_f+N_g-l-1}g[m\Delta x + x_{0,g}] \operatorname{exp}[-2\pi i k(\Delta\nu)_h (m+l) \Delta x],
+\end{aligned}
+\end{equation}
+
+
+reevaluating the boundries on the second summation, inputing eq. \eqref{ex_def_deltanu} and shuffling above result leads to:
+\begin{equation}\label{eq_CFT_approx_conv}
+\begin{aligned}
+H[k(\Delta\nu)_h] = \operatorname{exp}&[-2\pi i k(\Delta\nu)_h x_{0,f}] \sum_{l=0}^{N_f-1} f[l(\Delta\nu)_h + x_{0,f}]\operatorname{exp}[-2\pi i k l/(N_f+N_g)] \\
+& \operatorname{exp}[-2\pi i k(\Delta\nu)_h x_{0,g}]  \sum_{m=0}^{N_g-1}g[m\Delta x + x_{0,g}] \operatorname{exp}[-2\pi i kh m/(N_f+N_g)].
+\end{aligned}
+\end{equation}
+
+Looking at the above equation, one almost recognizes a multiplication of two approximate CFT's (see eq. \eqref{eq_approx_CFT}). However, there is a significant difference, which means it is not a simple multiplication of the two CFT's: where in the CFT of the singular function, you see that $\Delta\nu = 1/N_f$ or $\Delta\nu = 1/N_g$ resectivily, whereas in eq. \eqref{eq_CFT_approx_conv}, $\Delta\nu = 1/(N_f + N_g)$, as given by eq. \eqref{ex_def_deltanu}. Nor is it a simple factor with which the CFT's could be multiplied: the factor is present in the exponential within the summations. Each single exponential term in the summations need to raised to the power $(N_f+Ng)/N_f$ and $(N_f+Ng)/N_g$ respectivily.% \textcolor{red}{THIS IS THE PROBLEM.}
+
+
+%\paragraph{Possible solution}
+%So what if we add zeros at the beginning/end of both $f[n\Delta x + x_{0,f}]$ and $g[n\Delta x +x_{0,g}$, whilst adjusting $x_{0,f}$ and $x_{0,g}$ accordingly. Since the final convolution has the domain of $[x_{0,f}+x_{0,g},x_{1,f}+x_{1,g}]$, instincivly it'd make sense to adjust 
+
+
+
+
+%Mathematically, I feel like there are a couple of choices one could make regarding the extentions that should not matter in the results
+
+\subsubsection{Convolution of two gaussians}
+Defining:
+
+\begin{equation}
+f(x)=A_{f} \exp{\left[-\frac{\left(x-\mu_{f}\right)^{2}}{2 \sigma_{f}^{2}}\right]},
+\end{equation}
+
+we can find the Fourier transform of $f(x)$ as:
+
+\begin{equation}\label{eq_FT_gauss}
+	\mathcal{F}\{f(x)\} \equiv F(\nu) = A_f \sqrt{\pi}\sigma_f \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{f}^{2} \nu^{2}\right]},
+\end{equation}
+
+which is in itself a gaussian again. We can do the same for a function $g(x)$:
+
+\begin{equation}
+g(x)=A_{g} \exp{\left[-\frac{\left(x-\mu_{g}\right)^{2}}{2 \sigma_{g}^{2}}\right]},
+\end{equation}
+
+giving:
+\begin{equation}
+	\mathcal{F}\{g(x)\} \equiv G(\nu) = A_g \sqrt{\pi}\sigma_g \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{g}^{2} \nu^{2}\right]}.
+\end{equation}
+
+
+Then the Fourier transform of $f(x)$ and $g(x)$ is given by:
+\begin{equation}
+\begin{aligned}
+\mathcal{F}\{f(x)^*g(x)\} &= F(\nu)G(\nu), \\
+ %&= A_f A_g \pi \sigma_f \sigma_g \exp{\left[-2 \pi i \nu \mu_{f}\right]} \exp{\left[-2 \pi^{2} \sigma_{f}^{2} \nu^{2}\right]} \exp{\left[-2 \pi i \nu \mu_{g}\right]} \exp{\left[-2 \pi^{2} \sigma_{g}^{2} \nu^{2}\right]},\\
+ &=A_f A_g \pi \sigma_f \sigma_g \exp{\left[-2 \pi i \nu\left(\mu_{f}+\mu_{g}\right)\right]} \exp{\left[-2 \pi^{2}\left(\sigma_{f}^{2}+\sigma_{g}^{2}\right) \nu^{2}\right]}.
+\end{aligned}
+\end{equation}
+
+In the equation above, a gaussian can be recognised. This means you can write it as:
+
+which you can write as:
+
+\begin{equation}
+F(\nu)G(\nu) = A_C \exp{[-(x-\mu_C)^2/(2\sigma_C^2)]},
+\end{equation}
+
+with:
+
+\begin{equation}
+\begin{aligned}
+A_C &= A_f A_g \pi \sigma_f \sigma_g \exp{\left[-2 \pi i \nu\left(\mu_{f}+\mu_{g}\right)\right]} ,\\
+\mu_C &= 0,\\
+\sigma_C &= \frac{1}{2\pi(\sigma_f^2+\sigma_g^2)^{1/2}}.
+\end{aligned}
+\end{equation}
+
+
+
+
+The inverse of this Fourier transform now gives the convolution of the two signals, which you can see is again a gaussian.
+
+\begin{equation}
+\begin{aligned}
+f(x)^* g(x) &=  \mathcal{F}^{-1}\{F(\nu)G(\nu)\} \\
+&= \frac{\sqrt{2 \pi} A_f A_g \exp{\left[-(x-\mu_f-\mu_g)^{2} /\left(2\left(\sigma_f^{2}+\sigma_g^{2}\right)\right)\right]}}{\left(\frac{1}{\sigma_f^{2}}+\frac{1}{\sigma_g^{2}}\right)^{1/2}},
+\end{aligned}
+\end{equation}
+
+
+which you can write as:
+
+\begin{equation}\label{eq_gauss_conv}
+\begin{aligned}
+f(x)^* g(x) &= A_c \exp{[-(x-\mu_c)^2/(2\sigma_c^2)]},\\
+A_c &= \frac{\sqrt{2 \pi} A_f A_g}{\left(\frac{1}{\sigma_f^{2}}+\frac{1}{\sigma_g^{2}}\right)^{1/2}},\\
+\mu_c &= \mu_f + \mu_g,\\
+\sigma_c &= (\sigma_f^2 + \sigma_g^2)^{1/2}.
+\end{aligned}
+\end{equation}
+
+\subsubsection{Other calculations on CFTs}
+For the deconvolution of the spectra, we will need the devision and logaritmic values of two CFT's. 
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,313 @@
+\newpage
+\subsection{Obtaining the single scattering distribution}
+
+\subsubsection{Build-up of measured spectrum}
+When electrons go through the sample, the intensity of electrons that has no inelastic scattering is given by the zero-loss peak: $I_{ZLP}(E)$. The intensity of the electrons that do scatter, $I_{EEL}(E)$, is than dividable in the single scatter intensity, $I_1(E)$, the double scatter intensity, $I_2(E)$, the triple scatter intensity, $I_3(E)$, etc:
+
+\begin{equation}\label{eq_I}
+    I(E) = I_{ZLP}(E) + I_{EEL}(E) = I_{ZLP}(E) + \sum_{n=0}^\infty I_n(E).
+\end{equation}
+
+
+MAYBE DISREGARD?
+The integrated intensity of each n-scattering spectrum $N_n$ \textcolor{red}{is this a logical choice of letter?} depends on the total integrated intensity $N$, assuming independed scattering events, through the bionomal distribution:
+
+\begin{equation}\label{eq_N_n}
+    N_n =  \frac{N}{n!} \left(\frac{t}{\lambda}\right)^n \exp{[-t/\lambda]} .
+\end{equation}
+
+Here $t$ is the thickness of the sample, and $\lambda$ is the mean free path of electrons in the sample. 
+END DISREGARD
+
+Since we know the zero-loss-peak due to Lau \cite{lau}, the response function of the instrument, $R(E)$, is easily deducted by:
+
+\begin{equation}
+    R(E) = I_{ZLP}(E)/N_{ZLP},
+\end{equation}
+
+where $N_{ZLP}$ is the integrated intensity of $I_{ZLP}(E)$. 
+
+
+Now we will show how the total recorded spectrum is build up from single-scattering distribution $S(E)$, and the above defined response function $R(E)$. 
+
+
+The spectrum recorded due to the single scattering events, $J^1(E)$, is these two distributions convoluted:
+
+\begin{equation} \label{eq_I_1}
+    I_{1}(E)=R(E)^{*} S(E) \equiv \int_{-\infty}^{\infty} R\left(E-E^{\prime}\right) S\left(E^{\prime}\right) d E^{\prime}.
+\end{equation}
+
+
+It can be easily seen, that as a double-scattering event, is a series of two single-scattering event, the double-scattering intensity is given by the self convolution of the single-scattering intensity, normalised to match eq. \eqref{eq_N_n}, and once again convoluted with the response function:
+
+\begin{equation}
+    I_{2}(E)=R(E)^{*} S(E)^{*} S(E) /\left(2 ! N_{ZLP}\right).
+\end{equation}
+
+For higher order scattering spectra, this generalises to \textcolor{red}{HOW TO WRITE DOWN A SUCCESSION OF CONVOLUTIONS?}:
+
+
+\begin{equation}
+    I_{n}(E)=R(E)^{*} S(E)\big[^{*} S(E)\big]^{n-1} /\left(n ! N_{ZLP}^{n-1}\right).
+\end{equation}
+
+The complete recorded spectrum, neglecting any surface plasmons, is than given by (analogous to eq. \eqref{eq_I}):
+\begin{equation} \label{eq_I_E}
+    \begin{aligned}
+        I(E) &=I_{ZLP}(E)+I^{1}(E)+I^{2}(E)+I^{3}(E)+\cdots \\
+        &=I_{ZLP}(E)^{*}\left[\delta(E)+S(E) / N_{ZLP}+S(E)^{*} S(E) /\left(2 ! N_{ZLP}^{2}\right)\right.\\
+        &\left.+S(E)^{*} S(E)^{*} S(E) /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right]\\
+        &= I_{ZLP}(E)^{*}\left[\delta(E)+ \sum_{n=1}^\infty R(E)^{*} S(E)\big[^{*} S(E)\big]^{n-1} /\left(n ! N_{ZLP}^{n-1}\right) \right].
+        \end{aligned}
+\end{equation}
+
+Since a convolution in energy domain translates to a multiplication in the frequency domain, it makes sense to take the Fourier transform (FT) of the above equation. Eq. \eqref{eq_I_E} than becomes, using the taylor expansion of the exponential function:
+
+\begin{equation}\label{eq_i_nu_exp}
+    \begin{aligned}
+i(\nu) &=z(\nu)\left\{1+s(\nu) / N_{ZLP}+[s(\nu)]^{2} /\left(2 ! N_{ZLP}^{2}\right)+[s(\nu)]^{3} /\left(3 ! N_{ZLP}^{3}\right)+\cdots\right\} \\
+&=z(\nu)\sum_{n=0}^\infty\frac{s(\nu)^n}{n! N_{ZLP}^n}\\
+&=z(\nu) \exp \left[s(\nu) / N_{ZLP}\right],
+\end{aligned}
+\end{equation}
+
+where $i(\nu)$ is the FT of the intensity spectrum, $z(\nu)$ is the FT of the zero-loss peak, and $s(\nu)$ is the FT of the single-scattering distribution.
+
+
+The single scattering distribution can than be retrieved by rewriting eq. \eqref{eq_i_nu_exp}, and taking the inverse Fourier transform:
+
+\begin{equation}
+    s(\nu) = N_{ZLP} \operatorname{ln}\left(\frac{i(\nu)}{z(\nu)}\right),
+\end{equation}
+
+\begin{equation}\label{eq_S_E}
+    \begin{aligned}
+    S(E) &= \mathcal{F}^{-1}\left\{s(\nu)\right\} \\
+    &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{i(\nu)}{z(\nu)}\right]\right\} \\
+    &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{ln}\left[\frac{\mathcal{F}\left\{I(E)\right\}}{\mathcal{F}\left\{I_{ZLP}(E)\right\}}\right]\right\}
+    \end{aligned}.
+\end{equation}
+
+
+However, eq. \eqref{eq_S_E} only works for an ``ideal" spectrum. Any noise on the spectrum will blow up, as noise normally preveals itself at higher frequencies, and $i(\nu)$ tends towards zero for high frequencies. Therefor, it is advised to calculate not $S(E)$, but $I_1(E)$, by convoluting once more with $I_{ZLP}(E)$, see eq. \eqref{eq_I_1}. \cite{egerton_book}
+
+
+
+
+\paragraph{Discussion points} What is the most official way to calculate the errors in R(E), from the errors in the ZLP? Just calculate for each ZLP and take the std of those, or can you use the error of the ZLP to calculate it at once? Because it comes back in the $N_{ZLP}$ as well.
+
+There are in NaN values in the $s(\nu)$ calculation in the python file, how best to handle those, just set them to 0?
+
+Looking at the $S(E)$ vs $I_{ZLP}$ etc plot, there are some things that don't make sense
+
+
+
+\subsubsection{Analytical analysis of possible recorded spectra}
+To be able to analyse a deconvolution program, it is usefull to create some toymodels which represent different possible $I(E)$, of which we know what the expected outcome is, so we can validate the program written.
+
+
+\paragraph{Single scattering distribution as Gaussian}
+One of the interesting approximations of a spectrum to review as toy model, is a spectrum in which the zero loss peak is a gaussian such that:
+
+\begin{equation}\label{eq_ZLP_gauss}
+I_{ZLP}(E) = A_{ZLP} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]},
+\end{equation}
+
+and the single scattering distribution is a gaussian, given by:
+
+\begin{equation}\label{eq_S_gauss_conv}
+S(E) = A_{S} \exp{[-(x-\mu_{S})/(2\sigma_{S}^2)]}.
+\end{equation}
+
+
+By combining eq. \eqref{eq_I}, and \eqref{eq_gauss_conv}, you obtain for complete recorded spectrum $I(E)$:
+
+\begin{equation}\label{eq_I_gauss_conv}
+\begin{aligned}
+I(E) &= \sum_{n=0}^{\infty}  A_{n} \exp{[-(x-\mu_{n})/(2\sigma_{n}^2)]},\\
+A_{n} &= 
+\begin{cases}
+\begin{aligned}
+A_{ZLP}, &n=0, \\ 
+A_{ZLP} \frac{\left(\sqrt{2 \pi} A_S\right)^n}{\left(\frac{1}{\sigma_{ZLP}^{2}}+\sum_{i=0}^n \frac{1}{\sigma_g^{2}}\right)^{1/2}}, &n>0, \\
+\end{aligned}
+\end{cases}\\
+\mu_{ZLP} &= \mu_{ZLP} + \sum_{i=0}^n \mu_S,\\
+\sigma_{ZLP} &= (\sigma_{ZLP}^2 + \sum_{i=0}^n \sigma_S^2)^{1/2}.
+\end{aligned}
+\end{equation}
+
+This means that for an $I_{ZLP}$ constructed as the equation above, with our program, we hope to retrieve $S(E)$ as given by \eqref{eq_S_gauss_conv}.
+
+
+
+\paragraph{Recorded inelastic scattering spectrum as Gaussian}
+Starting the other way around, with again an $I_{ZLP}(E)$ as given as eq. \eqref{eq_ZLP_gauss}, but now $I_{EEL}(E)$ is also given itself a gaussian, instead of a summation over convolutions of gaussians. Now, we need to follow the route given in the section above to obtain the single scattering distribution $S(E)$:
+
+\begin{equation}
+\begin{aligned}
+I(E) &= I_{ZLP}(E) + I_{EEL}(E),\\
+&= A_{ZLP} \exp{[-(x-\mu_{ZLP})/(2\sigma_{ZLP}^2)]} +A_{EEL} \exp{[-(x-\mu_{EEL})^2/(2\sigma_{EEL}^2)]}.
+\end{aligned}
+\end{equation}
+
+Following eq. \eqref{eq_S_E}, we need the Fourier transforms of both the $I_{ZLP}(E)$, and $I(E)$, for which we can use eq. \eqref{eq_FT_gauss}:
+
+\begin{equation}\label{eq_i_nu_gauss}
+    \mathcal{F}\{I_{ZLP}(E)\} \equiv z(\nu) = A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]},
+\end{equation}
+
+\begin{equation}\label{eq_i_EEL_gauss}
+    \mathcal{F}\{I_{EEL}\} \equiv i_{EEL}(\nu) = A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]},
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\mathcal{F}\{I(E)\} \equiv i(\nu) &= z(\nu) + i_{EEL}(\nu) \\
+&= A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]} + \\
+& \quad \quad A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]}.
+\end{aligned}
+\end{equation}
+
+
+
+Now eq. \eqref{eq_S_E} becomes:
+
+\begin{equation}\label{eq_S_gauss}
+\begin{aligned}
+S(E) &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[\frac{i(\nu)}{z(\nu)}\right]\right\} \\
+&= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[1+ i_{EEL}/z_{\nu}\right]\right\}.
+\end{aligned}
+\end{equation}
+
+Since both $i_{EEL}(\nu)$ and $z(\nu)$ are gaussians with mean $\mu = 0$, the devision of the two is also an gaussian given by:
+
+\begin{equation}
+\begin{aligned}
+i_{EEL}/z_{\nu} &= \frac{A_{EEL} \sqrt{\pi}\sigma_{EEL} \exp{\left[-2 \pi i \nu \mu_{EEL}\right]} \exp{\left[-2 \pi^{2} \sigma_{EEL}^{2} \nu^{2}\right]}}{A_{ZLP} \sqrt{\pi}\sigma_{ZLP} \exp{\left[-2 \pi i \nu \mu_{ZLP}\right]} \exp{\left[-2 \pi^{2} \sigma_{ZLP}^{2} \nu^{2}\right]}} ,\\
+&= \frac{A_{EEL} \sigma_{EEL} \exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]}}{A_{ZLP} \sigma_{ZLP}} \exp{\left[-2 \pi^{2} (\sigma_{EEL}^{2} - \sigma_{ZLP}^{2}) \nu^{2}\right]},
+\end{aligned}
+\end{equation}
+
+which can be written as:
+
+\begin{equation}\label{eq_gauss_conv}
+\begin{aligned}
+i_{EEL}(\nu)/z(\nu) &= A_d \exp{[-x^2/(2\sigma_d^2)]},\\
+A_d &= \frac{A_{EEL} \sigma_{EEL} \exp{\left[-2 \pi i \nu (\mu_{EEL} - \mu_{ZLP})\right]}}{A_{ZLP} \sigma_{ZLP}},\\
+\sigma_d &= \frac{1}{2\pi(\sigma_{EEL}^2 - \sigma_{ZLP}^2)^{1/2}}.
+\end{aligned}
+\end{equation}
+
+
+Now realising that $z(\nu)$ is always exponentially bigger than $i_{EEL}(\nu)$, we can use a Taylor expansion to approximate $Log(z+1)$ (with Log(z) the primitive value of the complex logaritm):
+
+\begin{equation}
+Log(z+1) = \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} z^n.
+\end{equation}
+
+
+With the equations above, we can rewrite eq. \eqref{eq_S_gauss}:
+
+\begin{equation}\label{eq_S_gauss_verder}
+\begin{aligned}
+S(E) &= \mathcal{F}^{-1}\left\{N_{ZLP}\operatorname{log}\left[1+ i_{EEL}/z_{\nu}\right]\right\},\\
+&= \mathcal{F}^{-1}\left\{     \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} \left(A_d \exp{[-x^2/(2\sigma_d^2)]}\right)^n  \right\},\\
+&= \mathcal{F}^{-1}\left\{ A_d \exp{[-x^2/(2\sigma_d^2)]} \right\} - \mathcal{F}^{-1}\left\{ \frac{ \left(A_d^2 \exp{[-2x^2/(2\sigma_d^2)]}\right)}{2} \right\} \\
+& \quad \quad \quad \quad+ \mathcal{F}^{-1}\left\{ \frac{ \left(A_d^3 \exp{[-3x^2/(2\sigma_d^2)]}\right)}{3} \right\} +... ,\\
+&= \mathcal{F}^{-1}\left\{ F_1(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_2(\nu) \right\} + \mathcal{F}^{-1}\left\{ F_3(\nu) \right\} + ...
+\end{aligned}
+\end{equation}
+
+
+All these inverse Fourier transform of gaussians return gaussians on their part, resulting in a single scattering distribution which is a summation of gaussians, with alterating posive and negative amplitude. These gaussians are given by:
+
+\begin{equation}
+\begin{aligned}
+\mathcal{F}^{-1}\left\{ F_n(\nu) \right\} &= A_n \exp{[-(x-\mu_n)^2/(2\sigma_n^2)]}, \\
+A_n &= \left( \frac{ A_{EEL} \sigma_{EEL} }{\sqrt{\pi}A_{ZLP} \sigma_{ZLP} (\sigma_{EEL} - \sigma{ZLP})^{1/2} }\right)^n, \\
+\sigma_n &= \frac{1}{n\sqrt{\pi}(\sigma_{EEL} - \sigma{ZLP})^{1/2}},\\
+\mu_n &= n(\mu_{EEL}-\mu{ZLP}).
+\end{aligned}
+\end{equation}
+
+\subsection{Analytical Calculation}
+Let us first remind ourselves of the task at hand. Given a total recorded signal $J(E)$ with a known zero-loss peak $Z(E)$, we want to recover the single scattering distribution $S(E)$ via deconvolution. Note that these are related by
+\begin{align}
+\nonumber J(E) &= Z(E) + J^1(E) + J^2(E) + J^3(E) + \dots\\
+\nonumber&= Z(E) + \frac{Z(E)}{I_0}*S(E) + \frac{Z(E)}{2!I_0^2}*S(E)*S(E) + \dots\\
+&\equiv Z(E) + J_{\mathrm{in}}(E),
+\label{eq:recordedSpec}
+\end{align}
+where we have defined $J_{\mathrm{in}}(E)$ to absorb all the inelastic scattering contributions. Upon transforming eq. ($\ref{eq:recordedSpec}$) to Fourier space, the convolutions become products and we obtain
+\begin{align}
+\nonumber j(\nu) &= z(\nu) + \frac{z(\nu)s(\nu)}{I_0} + \frac{z(\nu)s(\nu)^2}{2!I_0^2}+\dots\\
+\nonumber&= z(\nu)\left[1+\frac{s(\nu)}{I_0}+\frac{1}{2!}\left(\frac{s(\nu)}{I_0}\right)^2+\dots\right]\\
+&=z(\nu)\exp\left[\frac{s(\nu)}{I_0}\right]
+\label{eq:recordedSpecFourier}
+\end{align}
+From the definition of $J_{\mathrm{in}}(E)$ in eq. ($\ref{eq:recordedSpec}$) we also have
+\begin{equation}
+j(\nu) = z(\nu) + j_{\mathrm{in}}(\nu).
+\label{eq:recordedSpecFourierDef}
+\end{equation}
+Combining eq. ($\ref{eq:recordedSpecFourier}$) and ($\ref{eq:recordedSpecFourierDef}$) therefore gives
+\begin{equation}
+j_{\mathrm{in}}(\nu) + z(\nu) = z(\nu)\exp\left[\frac{s(\nu)}{I_0}\right] \implies s(\nu) = I_0\log\left[1+ \frac{j_{\mathrm{in}}(\nu)}{z(\nu)}\right].
+\label{eq:snu}
+\end{equation}
+In our toy model we take Gaussians for both $J(E)$ and $Z(E)$, that is
+\begin{align}
+\label{eq:Jin}
+J_{\mathrm{in}}(E) &= \frac{I_s}{\sqrt{2\pi\sigma_s^2}}\exp\left[-\frac{(E-E_s)^2}{2\sigma_s^2}\right]\\
+Z(E) &= \frac{I_0}{\sqrt{2\pi\sigma_B^2}}\exp\left[-\frac{E^2}{2\sigma_B^2}\right].
+\label{eq:ZLP}
+\end{align}
+Here, the zero-loss peak $Z(E)$ and the inelastic scattering distribution $J_{\mathrm{in}}$ are centered about zero and $E_s$ respectively. In addition, we have $\sigma_B \ll \sigma_s$, meaning that the background has a much tighter peak than the signal by various orders of magnitude. 
+
+In the following we will need the Fourier transform of eq. ($\ref{eq:Jin}$) and ($\ref{eq:ZLP}$). They are
+\begin{align}
+\label{eq:jinnu}
+j_{\mathrm{in}}(\nu) &= I_s\exp[2\pi i \nu E_s]\exp[-2\pi^2\sigma_s^2\nu^2]\\
+z(\nu)&=I_0\exp[-2\pi^2\sigma_B^2\nu^2].
+\label{eq:znu}
+\end{align}
+The idea is now to find $S(E)$ by expanding eq. ($\ref{eq:snu}$) and taking the inverse Fourier transform of each term in the expansion. Let us first show how to expand eq. ($\ref{eq:snu}$). After defining $g(\nu)\equiv j_{\mathrm{in}}(\nu)/z(\nu)$, we get
+\begin{equation}
+s(\nu) = I_0\left(g(\nu)-\frac{g(\nu)^2}{2!}+\frac{g(\nu)^3}{3!}-\dots\right).
+\label{eq:snuExp}
+\end{equation}
+Note that each term in this expansion corresponds to a Gaussian, with subsequent terms getting an increasingly smaller spread. To be specific, from eq. ($\ref{eq:jinnu}$) and ($\ref{eq:znu}$) we find
+\begin{align}
+\nonumber g(\nu ) &= \frac{I_s}{I_0}\exp[-2\pi^2(\sigma_s^2-\sigma_B^2)\nu^2 + 2\pi i \nu E_s]\\
+&= \frac{I_s}{I_0}\exp\left[-\frac{E_s^2}{2(\sigma_s^2-\sigma_B^2)}\right]\exp\left[-2\pi^2(\sigma_s^2-\sigma_B^2)\left(\nu - \frac{iE_s}{2\pi(\sigma_s^2-\sigma_B^2)}\right)^2\right],
+\end{align}
+where we have completed the square on the last line. If we furthermore define $\sigma_g^2 \equiv \sigma_s^2-\sigma_B^2$, the $k^{\mathrm{th}}$ order contribution to $s(\nu)$ from eq. ($\ref{eq:snuExp}$) can be written as
+\begin{equation}
+g^k(\nu) = \left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[-2k\pi^2\sigma_g^2\left(\nu - \frac{iE_s}{2\pi\sigma_g^2}\right)^2\right].
+\end{equation}
+Next, we take the inverse Fourier transform of $g^k(\nu)$ and shift $\nu \rightarrow \nu + iE_s/2\pi\sigma_g^2$:
+\begin{align}
+\nonumber G_{k}(E) &= \left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\mathcal{F}^{-1}\left\{\exp\left[-2k\pi^2\sigma_g^2\left(\nu - \frac{iE_s}{2\pi\sigma_g^2}\right)^2\right]\right\}\\
+\nonumber&= \left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[\frac{E_sE}{\sigma_g^2}\right]\mathcal{F}^{-1}\left\{\exp[-2k\pi^2\sigma_g^2\nu^2]\right\}\\
+&=\left(\frac{I_s}{I_0}\right)^k\exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[\frac{E_sE}{\sigma_g^2}\right]\frac{1}{\sqrt{2k\pi\sigma_g^2}}\exp\left[-\frac{E^2}{2k\sigma_g^2}\right].
+\label{eq:GkE}
+\end{align}
+As can be seen from ($\ref{eq:GkE}$) we get another Gaussian for $G_k(E)$. This can be made explicit by completing the square:
+\begin{align}
+\nonumber G_k(E) &= \frac{1}{\sqrt{2k \pi \sigma_g^2}}\left(\frac{I_s}{I_0}\right)^k \exp\left[-\frac{kE_s^2}{2\sigma_g^2}\right]\exp\left[-\frac{(E-kE_s)^2}{2k\sigma_g^2}\right]\exp\left[\frac{kE_s^2}{2\sigma_g^2}\right]\\
+&=\frac{1}{\sqrt{2k \pi \sigma_g^2}}\left(\frac{I_s}{I_0}\right)^k \exp\left[-\frac{(E-kE_s)^2}{2k\sigma_g^2}\right].
+\end{align}
+Hence, the single scattering distribution $S(E)$ becomes
+\begin{align}
+\nonumber S(E) &= I_0\left(G_1(E)-\frac{G_2(E)}{2!}+\frac{G_3(E)}{3!}-\dots\right)\\
+&= \frac{I_s}{\sqrt{2\pi(\sigma_s^2-\sigma_B^2)}}\exp\left[-\frac{(E-E_s)^2}{2(\sigma_s^2-\sigma_B^2)}\right]-\frac{I_s^2/I_0}{2\sqrt{4\pi(\sigma_s^2-\sigma_B^2)}}\exp\left[-\frac{(E-2E_s)^2}{4(\sigma_s^2-\sigma_B^2)}\right]+\dots
+\end{align}
+As a sanity check, we notice that $S(E)\rightarrow J_{\mathrm{in}}(E)$ if $I_0\gg I_s$ and $\sigma_s \gg \sigma_B$. 
+
+
+
+
+
+
+

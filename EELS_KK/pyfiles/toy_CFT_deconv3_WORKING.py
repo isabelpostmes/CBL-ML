@@ -67,7 +67,7 @@ def CFT(x, y):
     x_max = np.max(x)
     delta_x = (x_max-x_0)/N
     k = np.linspace(0, N-1, N)
-    cont_factor = np.exp(2j*np.pi*N_0*k/N)*delta_x #np.exp(-1j*(x_0)*k*delta_omg)*delta_x 
+    cont_factor = np.exp(2j*np.pi*N_0*k/N)*delta_x #np.exp(-1j*(x_0)*k*delta_omg)*delta_x
     F_k = cont_factor * np.fft.fft(y)
     return F_k
 
@@ -83,7 +83,7 @@ def iCFT(x, Y_k):
     return f_n
 
 
-"""   
+"""
     x_max = np.max(x)
     N = len(x)
     delta_x = (x_max-x_0)/N
@@ -96,8 +96,8 @@ def iCFT(x, Y_k):
     delta_omg = 2*np.pi/(N*delta_x)
     f_n = (1 + 1j) * np.zeros(N)
     #n = np.linspace(0, N-1, N)
-    
-    G_k = np.exp(1j*k*delta_omg)*x_0*Y_k 
+
+    G_k = np.exp(1j*k*delta_omg)*x_0*Y_k
     f_n = delta_omg/(2*np.pi) * np.fft.ifft(G_k)
 """
 
@@ -119,20 +119,20 @@ def convolute(xf, yf, xg, yg):
         print(deltaxf,  deltaxg)
         print("delta_x_f and delta_x_g not equal, unable to convolute")
         return x_n, h_n
-    
+
     x_n = np.linspace(xf0+xg0, xf1+xg1, Nh)
     yg_expanded = np.zeros(Ng + 2*(Nf-1))
     yg_expanded[Nf-1:Ng+Nf-1] = yg
-    
+
     for n in range(Nh):
         h_n[n] = np.sum(yf[::-1] * yg_expanded[n:Nf+n])*deltaxf
-    
+
     return x_n, h_n
 
 def ft(x, samples):
-    """Approximate the Fourier Transform of a time-limited 
+    """Approximate the Fourier Transform of a time-limited
     signal by means of the discrete Fourier Transform.
-    
+
     samples: signal values sampled at the positions t0 + n/Fs
     Fs: Sampling frequency of the signal
     t0: starting time of the sampling of the signal
@@ -190,13 +190,13 @@ Y1eT = np.power(Y1e, 2)#(6.2830)**0.5*
 #Y1eT = Y1e*np.conj(Y1e)
 y1et = iCFT(xe, Y1eT)
 
-y1DFTc = np.fft.ifft(np.power(np.fft.fft(y1),2))*dx  
+y1DFTc = np.fft.ifft(np.power(np.fft.fft(y1),2))*dx
 
 #np.exp(-2j*np.pi*N_0/N)*
 #y1DFTcs = np.concatenate((y1DFTc[N_0:], y1DFTc[:N_0]))
 
 
-#add zeros at begin and end to match 
+#add zeros at begin and end to match
 xem = np.linspace(x_0-x_1,x_1-x_0,2*N-1)
 y1em = np.zeros(2*N-1)
 arg_0 = np.argmin(np.absolute(xem))
@@ -313,7 +313,7 @@ y2DFTcs = np.fft.ifft(np.power(np.fft.fft(y2),2))*dx
 #y2DFTcs = np.concatenate((y2DFTc[N_0:], y2DFTc[:N_0]))*dx
 
 
-#add zeros at begin and end to match 
+#add zeros at begin and end to match
 xem = np.linspace(x_0-x_1,x_1-x_0,2*N-1)
 y2em = np.zeros(2*N-1)
 arg_0 = np.argmin(np.absolute(xem))
@@ -524,4 +524,4 @@ scatterings = 8
 for i in range(2,scatterings):
     plt.plot(x, iCFT(x,np.power(deconv, i)/math.factorial(i)), color = np.array([1,1,1])*i/scatterings, label = "J" + str(i) + "(E)")
 plt.legend()
-
+plt.show()

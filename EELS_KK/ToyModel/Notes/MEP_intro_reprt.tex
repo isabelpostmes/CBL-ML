@@ -1,0 +1,236 @@
+\documentclass[12pt,a4paper]{article}
+%\documentclass[11pt]{iopart}
+
+\usepackage[colorlinks=true, linkcolor=black!50!blue, urlcolor=blue, citecolor=blue, anchorcolor=blue]{hyperref}
+\usepackage[font=small,labelfont=bf,margin=0mm,labelsep=period,tableposition=top]{caption}
+\usepackage[a4paper,top=3cm,bottom=2.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{epsfig}%,cite}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+%\usepackage{dsfont}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{ulem}
+
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage{multirow,booktabs,multirow}
+
+%\bibliographystyle{iopart-num}
+%\usepackage{natbib}
+%\bibliographystyle{JHEP}
+%\bibliographystyle{ieee}
+
+
+\usepackage[ backend=bibtex, style=ieee, natbib=true]{biblatex}
+%\usepackage[backend=bibtex,style=ieee-alphabetic,natbib=true]{biblatex}
+\addbibresource{bib}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\smallfrac#1#2{\hbox{$\frac{#1}{#2}$}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\ben}{\begin{enumerate}}
+\newcommand{\een}{\end{enumerate}}
+\newcommand{\la}{\left\langle}
+\newcommand{\ra}{\right\rangle}
+\newcommand{\lc}{\left[}
+  \newcommand{\tr}{\toprule}
+  \newcommand{\mr}{\midrule}
+  \newcommand{\br}{\bottomrule}
+\newcommand{\rc}{\right]}
+\newcommand{\lp}{\left(}
+\newcommand{\rp}{\right)}
+\newcommand{\as}{\alpha_s}
+\newcommand{\aq}{\alpha_s\left( Q^2 \right)}
+\newcommand{\amz}{\alpha_s\left( M_Z^2 \right)}
+\newcommand{\aqq}{\alpha_s \left( Q^2_0 \right)}
+\newcommand{\aqz}{\alpha_s \left( Q^2_0 \right)}
+\def\toinf#1{\mathrel{\mathop{\sim}\limits_{\scriptscriptstyle
+{#1\rightarrow\infty }}}}
+\def\tozero#1{\mathrel{\mathop{\sim}\limits_{\scriptscriptstyle
+{#1\rightarrow0 }}}}
+\def\toone#1{\mathrel{\mathop{\sim}\limits_{\scriptscriptstyle
+{#1\rightarrow1 }}}}
+\def\frac#1#2{{{#1}\over {#2}}}
+\def\gsim{\mathrel{\rlap{\lower4pt\hbox{\hskip1pt$\sim$}}
+    \raise1pt\hbox{$>$}}}       
+\def\lsim{\mathrel{\rlap{\lower4pt\hbox{\hskip1pt$\sim$}}
+    \raise1pt\hbox{$<$}}}       
+\newcommand{\mrexp}{\mathrm{exp}}
+\newcommand{\dat}{\mathrm{dat}}
+\newcommand{\one}{\mathrm{(1)}}
+\newcommand{\two}{\mathrm{(2)}}
+\newcommand{\art}{\mathrm{art}}
+\newcommand{\rep}{\mathrm{rep}}
+\newcommand{\net}{\mathrm{net}}
+\newcommand{\stopp}{\mathrm{stop}}
+\newcommand{\sys}{\mathrm{sys}}
+\newcommand{\stat}{\mathrm{stat}}
+\newcommand{\diag}{\mathrm{diag}}
+\newcommand{\pdf}{\mathrm{pdf}}
+\newcommand{\tot}{\mathrm{tot}}
+\newcommand{\minn}{\mathrm{min}}
+\newcommand{\mut}{\mathrm{mut}}
+\newcommand{\partt}{\mathrm{part}}
+\newcommand{\dof}{\mathrm{dof}}
+\newcommand{\NS}{\mathrm{NS}}
+\newcommand{\cov}{\mathrm{cov}}
+\newcommand{\gen}{\mathrm{gen}}
+\newcommand{\cut}{\mathrm{cut}}
+\newcommand{\parr}{\mathrm{par}}
+\newcommand{\val}{\mathrm{val}}
+\newcommand{\reff}{\mathrm{ref}}
+\newcommand{\Mll}{M_{ll}}
+\newcommand{\extra}{\mathrm{extra}}
+\newcommand{\draft}[1]{}
+% Added by MU 
+\def \a{\alpha}
+\def \b{\beta}
+\def \g{\gamma}
+\def \z{\zeta}
+\def \t{{\bf T}} % vector of theoretical predictions
+\def \c{{\bf c}} % vector of coefficients of theoretical predictions
+\def \y{{\bf y}} % vector of experimental data
+\def \s{{\bf \sigma}} % experimental covariance matrix
+% Added by JR
+\def\lapprox{\lower .7ex\hbox{$\;\stackrel{\textstyle <}{\sim}\;$}}
+\def\gapprox{\lower .7ex\hbox{$\;\stackrel{\textstyle >}{\sim}\;$}}
+\def\half{\smallfrac{1}{2}}
+\def\GeV{{\rm GeV}}
+\def\TeV{{\rm TeV}}
+\def\ap{{a'}}
+\def\vp{{v'}}
+\def\e{\epsilon}
+\def\d{{\rm d}}
+\def\calN{{\cal N}}
+\def\shat{\hat{s}}
+\def\barq{\bar{q}}
+\def\qq{q \bar q}
+\def\uu{u \bar u}
+\def\dd{d \bar d}
+\def\pp{p \bar p}
+\def\xa{x_{1}}
+\def\xb{x_{2}}
+\def\xaa{x_{1}^{0}}
+\def\xbb{x_{2}^{0}}
+\def\smx{\stackrel{x\to 0}{\longrightarrow}}
+\def\Li{{\rm Li}}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+\newcommand{\tmtextit}[1]{{\itshape{#1}}}
+\newcommand{\tmtextrm}[1]{{\rmfamily{#1}}}
+\newcommand{\tmtexttt}[1]{{\ttfamily{#1}}}
+\usepackage{tabularx}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\begin{document}
+\newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
+
+
+
+
+\begin{center}
+  {\Large \bf MEP Introduction Report}
+\vspace{1.4cm}
+
+Isabel Postmes
+
+\vspace{1.0cm}
+ 
+{\it \small
+
+$^{1}$Kavli Institute of Nanoscience, Delft University of Technology, 2628CJ Delft, The
+  Netherlands\\[0.1cm]
+
+}
+
+\vspace{1.0cm}
+
+{\bf \large Abstract}
+
+\end{center}
+
+MEP Introduction Report on the master thesis project of Isabel Postmes, supervised by Sonia Conesa Boj.
+My Master thesis will revolve around the automization of the electron energy loss spectrum (EELS) analysis, documented by the transmission electron microscope (TEM). The focus will be on the low-loss spectrum, where the influence of the zero loss peak (ZLP) is not negligible, and will include an error estimation, which makes it unique. The first step in this was done by Laurien Roest: the detection of the ZLP. I will focuss in my months in generilizing the program Laurien wrote, and I will expand it by including the Kramer-Kronig analysis and peak detection. The final goal is to be able to input an image of spectra, and have an automatic output of what pixels statisfy certain criteria. 
+
+
+
+\clearpage
+\tableofcontents
+
+\section{Planning}
+The first couple of weeks will be dedicated to getting acquainted with the subjects at hand, and Lauriens program. Then I will build the program step-by-step: starting by implementing the Fourier Deconvolution, continuing to subtracting the dielectric function with the Kramer-Kronig analysis and than working on the peak detection. For each step I will start by working out a toy model, which is a simplified idealized spectrum. The expected results of such a spectrum can be worked out analytically, which creates the opportunity to validate the functions. Eventually I will implement all this into a program which takes a image of spectra, and gives a visual output and list of pixels depending on what characteristics are selected. 
+
+To test the final program, we will measure layered materials.
+
+\newpage
+\subsection{Milestones}
+Even though I find it hard to predict the exact time I will be needing for each step, since with programming problems some expected hurdles can be overcome with relative ease, whereas other smaller tasks can prove an extensive challenge. However, as for now, I would be happy if my time line would be anywhere near:
+\begin{itemize}
+\item End of November: worked out deconvolution part of the program. Have the results in report.
+\item Christmas holiday: cleaned up/generalized and completely understand Lauriens program. This will form the basis of the second part of my program.
+\item End of February: have first results
+\item March/April: difficult for me to oversee, probably working out extra functionals and extending program. Also writing report.
+\item Beginning of May: finalizing results and program, completing report.
+\item Half May: first draft report
+\item End of May: final report and defence.
+\end{itemize}
+
+\section{Introduction}
+The supervisor on my project is Prof. Sonia Conesa Boj. Furthermore, I will be supervised in an unofficial capacity by dr. Juan Rojo of the Nikhef Institute in Amsterdam. The project is a continuation of the thesis project of Laurien Roest, whose paper can be found at .......
+
+
+
+One of the features of the TEM is to obtain electron energy loss spectra of the reviewed sample. This spectrum documents the loss in kinetic energy of electrons travelling through a sample. \cite{egerton_article}. Interpretation of these spectra can help in determining the composition and structure of the evaluated sample. 
+
+
+
+
+
+
+\section{Background info}
+In the sections below, you will find a first overview of some of the critical background information.
+
+\input{TEM_EELS}
+
+
+\input{dielectric_function}
+
+\section{Calculations on the spectrum} % (fold)
+\label{sec:calculations_on_the_spectrum}
+
+\input{CFT_to_DFT}
+
+
+% section calculations_on_the_spectrum (end)
+\input{deconvolution}
+
+
+
+\input{Kramer_Kronig}
+\vspace{2cm}
+%\bibliographystyle{ieee}
+%\bibliography{bib}
+\printbibliography
+%\bibliography{bib}
+%\bibliographystyle{ieeetr}
+%\bibliographystyle{iopart-num}
+
+\end{document}
