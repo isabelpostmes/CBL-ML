@@ -125,9 +125,18 @@ for n in range(1,scatterings):
     I_E2 += gauss(x, sigma_n, A_n, mu_n)
     plt.plot(x, gauss(x, sigma_n, A_n, mu_n), color = np.array([1,1,1])*n/scatterings, label = "J" + str(i) + "(E)")
 
+i2_nu = CFT(x,I_E2)
+i2_nu[i2_nu == 0] = 1E-14
+deconv2 = N_ZLP*np.log(i2_nu/z_nu)
+deconv2[250:-250] = 0 #SUPPRESS NOISE
+S_Ec2 = iCFT(x,deconv)
+
+
 plt.plot(x, I_E, label="I(E)")
 plt.plot(x,I_E, label = "convoluted I(E)")
 plt.plot(x,I_E2, label = "calculated I(E)")
+plt.plot(x,S_E, linewidth = 1.5, label = "original S(E)")
+plt.plot(x,S_Ec2, '--', linewidth = 2.5,label = "calculated S(E)")
 plt.ylim(0,A_S*1.5)
 plt.xlim(0,10)
 plt.legend()
