@@ -1,0 +1,67 @@
+This is BibTeX, Version 0.99d (TeX Live 2020)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: report.aux
+The style file: biblatex.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: report-blx.bib
+Database file #2: bib.bib
+Warning--I didn't find a database entry for "iets"
+Biblatex version: 3.15
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 8 entries,
+            6393 wiz_defined-function locations,
+            1250 strings with 10270 characters,
+and the built_in function-call counts, 28882 in all, are:
+= -- 1722
+> -- 735
+< -- 197
++ -- 631
+- -- 295
+* -- 1584
+:= -- 2632
+add.period$ -- 0
+call.type$ -- 8
+change.case$ -- 129
+chr.to.int$ -- 47
+cite$ -- 14
+duplicate$ -- 3038
+empty$ -- 2881
+format.name$ -- 293
+if$ -- 6218
+int.to.chr$ -- 0
+int.to.str$ -- 20
+missing$ -- 0
+newline$ -- 177
+num.names$ -- 329
+pop$ -- 2337
+preamble$ -- 1
+purify$ -- 150
+quote$ -- 0
+skip$ -- 1290
+stack$ -- 0
+substring$ -- 2407
+swap$ -- 820
+text.length$ -- 144
+text.prefix$ -- 2
+top$ -- 1
+type$ -- 260
+warning$ -- 0
+while$ -- 350
+width$ -- 0
+write$ -- 170
+(There was 1 warning)

@@ -35,7 +35,7 @@ print('done')
 
 print('Importing datafiles...')
 from Load_data import *
-from functions_revised import  *
+from Functions import  *
 print('done')
 
 
@@ -258,18 +258,6 @@ predict_x = np.linspace(pred_min,pred_max,N_pred).reshape(N_pred,1)
 print("Dataset is split into train subset (80%) and validation subset (20%)")
 
 
-#%%
-
-plt.figure(figsize=(10,5))
-plt.plot(train_x, train_y, '.', label='train')
-plt.plot(test_x, test_y, '.', label='test')
-plt.axvline(x=dE1, color='lightgray')
-plt.axvline(x=dE2, color='lightgray')
-plt.title('Visualization of training data', fontsize=15)
-plt.ylabel('Log intensity', fontsize=14)
-plt.xlabel('Energy loss (eV)', fontsize=14)
-plt.legend(fontsize=14)
-plt.show()
 
 
 #%%
@@ -337,6 +325,7 @@ def function_train():
             sess.run(tf.global_variables_initializer())
             
             training_epochs  = 1000
+            display_step = 500
 
             for epoch in range(training_epochs):
 
@@ -413,15 +402,30 @@ def function_train():
         np.savetxt(path_to_data + 'Predictions_%(k)s.csv' % {"k": i}, list(zip(a,b,c)),  delimiter=',', fmt='%f')
         np.savetxt(path_to_data + 'Cost_%(k)s.csv' % {"k": i}, list(zip(d,e)),  delimiter=',',fmt='%f')
         np.savetxt(path_to_data + 'Extrapolation_%(k)s.csv' % {"k":i}, list(zip(k, l)),  delimiter=',', fmt='%f')
- 
+    
+    
+    plt.figure(figsize=(10,5))
+    plt.plot(train_x, train_y, '.', label='train')
+    plt.plot(test_x, test_y, '.', label='test')
+    plt.axvline(x=dE1, color='lightgray')
+    plt.axvline(x=dE2, color='lightgray')
+    plt.title('Visualization of training data', fontsize=15)
+    plt.ylabel('Log intensity', fontsize=14)
+    plt.xlabel('Energy loss (eV)', fontsize=14)
+    plt.legend(fontsize=14)
+    plt.show()
     
  #%%
  
 function_train()
  
+#%%
+
+
+
  #%%
  
-d_string = '07.09.2020'
+d_string = '09.11.2020'
 good_files = np.ones(100)
 prediction_file = pd.DataFrame()
 
@@ -430,7 +434,7 @@ predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     
-    for i in range(0,100):
+    for i in range(0,25):
         if good_files[i] == 1:
             best_model = 'Models/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
             #saver = tf.compat.v1.train.Saver(max_to_keep=1000)
@@ -447,7 +451,7 @@ with tf.Session() as sess:
 
 #%%
 
-for i in range(0,90):
+for i in range(0,25):
     plt.plot(predict_x, np.exp(prediction_file.iloc[:,i]))
     plt.xlim([1, 5])
     plt.ylim([0, 10000])
