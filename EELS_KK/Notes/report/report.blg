@@ -1,0 +1,75 @@
+This is BibTeX, Version 0.99d (TeX Live 2020)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: report.aux
+The style file: biblatex.bst
+White space in argument---line 63 of file report.aux
+ : \citation{denk
+ :                betere ref}
+I'm skipping whatever remains of this command
+White space in argument---line 66 of file report.aux
+ : \citation{check
+ :                 lau}
+I'm skipping whatever remains of this command
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: report-blx.bib
+Database file #2: bib.bib
+Warning--I didn't find a database entry for "iets"
+Biblatex version: 3.15
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 9 entries,
+            6393 wiz_defined-function locations,
+            1257 strings with 10458 characters,
+and the built_in function-call counts, 37537 in all, are:
+= -- 2385
+> -- 879
+< -- 225
++ -- 857
+- -- 363
+* -- 2303
+:= -- 3649
+add.period$ -- 0
+call.type$ -- 9
+change.case$ -- 136
+chr.to.int$ -- 47
+cite$ -- 16
+duplicate$ -- 3869
+empty$ -- 3637
+format.name$ -- 389
+if$ -- 7952
+int.to.chr$ -- 0
+int.to.str$ -- 22
+missing$ -- 0
+newline$ -- 219
+num.names$ -- 367
+pop$ -- 2709
+preamble$ -- 1
+purify$ -- 168
+quote$ -- 0
+skip$ -- 1475
+stack$ -- 0
+substring$ -- 3706
+swap$ -- 992
+text.length$ -- 176
+text.prefix$ -- 2
+top$ -- 1
+type$ -- 294
+warning$ -- 0
+while$ -- 478
+width$ -- 0
+write$ -- 211
+(There were 2 error messages)
