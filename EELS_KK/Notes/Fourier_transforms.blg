@@ -1,15 +1,7 @@
 This is BibTeX, Version 0.99d (TeX Live 2020)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
-The top-level auxiliary file: report.aux
+The top-level auxiliary file: Fourier_transforms.aux
 The style file: biblatex.bst
-White space in argument---line 63 of file report.aux
- : \citation{denk
- :                betere ref}
-I'm skipping whatever remains of this command
-White space in argument---line 66 of file report.aux
- : \citation{check
- :                 lau}
-I'm skipping whatever remains of this command
 Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
 Reallocated global_strs (elt_size=200001) to 20 items from 10.
 Reallocated glb_str_end (elt_size=4) to 20 items from 10.
@@ -25,51 +17,49 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-Database file #1: report-blx.bib
+Database file #1: Fourier_transforms-blx.bib
 Database file #2: bib.bib
-Warning--I didn't find a database entry for "iets"
 Biblatex version: 3.15
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 9 entries,
+You've used 1 entry,
             6393 wiz_defined-function locations,
-            1257 strings with 10458 characters,
-and the built_in function-call counts, 37537 in all, are:
-= -- 2385
-> -- 879
-< -- 225
-+ -- 857
-- -- 363
-* -- 2303
-:= -- 3649
+            1201 strings with 8988 characters,
+and the built_in function-call counts, 2002 in all, are:
+= -- 74
+> -- 182
+< -- 1
++ -- 161
+- -- 138
+* -- 33
+:= -- 484
 add.period$ -- 0
-call.type$ -- 9
-change.case$ -- 136
-chr.to.int$ -- 47
-cite$ -- 16
-duplicate$ -- 3869
-empty$ -- 3637
-format.name$ -- 389
-if$ -- 7952
+call.type$ -- 1
+change.case$ -- 0
+chr.to.int$ -- 46
+cite$ -- 0
+duplicate$ -- 11
+empty$ -- 105
+format.name$ -- 0
+if$ -- 330
 int.to.chr$ -- 0
-int.to.str$ -- 22
+int.to.str$ -- 0
 missing$ -- 0
-newline$ -- 219
-num.names$ -- 367
-pop$ -- 2709
+newline$ -- 20
+num.names$ -- 0
+pop$ -- 47
 preamble$ -- 1
-purify$ -- 168
+purify$ -- 0
 quote$ -- 0
-skip$ -- 1475
+skip$ -- 79
 stack$ -- 0
-substring$ -- 3706
-swap$ -- 992
-text.length$ -- 176
-text.prefix$ -- 2
+substring$ -- 159
+swap$ -- 1
+text.length$ -- 20
+text.prefix$ -- 0
 top$ -- 1
-type$ -- 294
+type$ -- 22
 warning$ -- 0
-while$ -- 478
+while$ -- 66
 width$ -- 0
-write$ -- 211
-(There were 2 error messages)
+write$ -- 20

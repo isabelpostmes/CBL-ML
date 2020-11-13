@@ -30,10 +30,10 @@
 %\bibliographystyle{JHEP}
 %\bibliographystyle{ieee}
 
-\usepackage{appendix}
+
 \usepackage[ backend=bibtex, style=ieee, natbib=true]{biblatex}
 %\usepackage[backend=bibtex,style=ieee-alphabetic,natbib=true]{biblatex}
-\addbibresource{bib.bib}
+\addbibresource{bib}
 
 
 
@@ -141,7 +141,7 @@
 \usepackage{tabularx}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \begin{document}
-\newgeometry{top=2cm,bottom=2.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
+\newgeometry{top=1.5cm,bottom=1.5cm,left=2.5cm,right=2.5cm,bindingoffset=0mm}
 
 
 
@@ -167,54 +167,22 @@ $^{1}$Kavli Institute of Nanoscience, Delft University of Technology, 2628CJ Del
 
 \end{center}
 
-MEP Introduction Report on the master thesis project of Isabel Postmes, supervised by Sonia Conesa Boj.
-My Master thesis will revolve around the automization of the electron energy loss spectrum (EELS) analysis, documented by the transmission electron microscope (TEM). The focus will be on the low-loss spectrum, where the influence of the zero loss peak (ZLP) is not negligible, and will include an error estimation, which makes it unique. The first step in this was done by Laurien Roest: the detection of the ZLP. I will focuss in my months in generilizing the program Laurien wrote, and I will expand it by including the Kramer-Kronig analysis and peak detection. The final goal is to be able to input an image of spectra, and have an automatic output of what pixels statisfy certain criteria. 
+A short revision on the continious Fourier transform, and the discrete approximation of it. 
 
 
 
 \clearpage
 \tableofcontents
 
-\newpage
-\section{Introduction}
-The supervisor on my project is Prof. Sonia Conesa Boj. Furthermore, I will be supervised in an unofficial capacity by dr. Juan Rojo of the Nikhef Institute in Amsterdam. The project is a continuation of the thesis project of Laurien Roest, whose paper can be found at .......
 
+\input{../MEP_introduction_report/CFT_to_DFT}
 
-
-One of the features of the TEM is to obtain electron energy loss spectra of the reviewed sample. This spectrum documents the loss in kinetic energy of electrons travelling through a sample. \cite{egerton_article}. Interpretation of these spectra can help in determining the composition and structure of the evaluated sample. 
-
-\newpage
-\section{Theory}
-In the sections below, you will find a first overview of some of the critical background information.
-
-\input{TEM_EELS}
-
-
-\input{dielectric_function}
-
-\newpage 
-\section{Calculations on the spectrum} % (fold)
-Please note that all the folowing calculations assume a continious spectrum. The biggest complication with moving to a recorded and therefor intrensicly discrete spectrum, manifested itself in the many Fourier transforms that are ahead. In Appendix \ref{sect_DFT}, one can find an elaborate account of the approximation of the continious Fourier transform by the discrete Fourier transform.
-\label{sec:calculations_on_the_spectrum}
-
-% section calculations_on_the_spectrum (end)
-\input{deconvolution}
-
-\input{Kramer_Kronig}
 \vspace{2cm}
 %\bibliographystyle{ieee}
 %\bibliography{bib}
-\newpage
 \printbibliography
 %\bibliography{bib}
 %\bibliographystyle{ieeetr}
 %\bibliographystyle{iopart-num}
-\newpage
-\appendix
-\appendixpage
-\addappheadtotoc
-\input{CFT_to_DFT}
-\input{later_ref}
-
 
 \end{document}

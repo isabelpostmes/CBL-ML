@@ -82,6 +82,49 @@
     \field{year}{2011}
   \endentry
 
+  \entry{potapov}{article}{}
+    \name{author}{4}{}{%
+      {{hash=PP}{%
+         family={Potapov},
+         familyi={P\bibinitperiod},
+         given={P.l.},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=EHJ}{%
+         family={Engelmann},
+         familyi={E\bibinitperiod},
+         given={H.-J.},
+         giveni={H\bibinithyphendelim J\bibinitperiod},
+      }}%
+      {{hash=ZE}{%
+         family={Zschech},
+         familyi={Z\bibinitperiod},
+         given={E.},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=SPM}{%
+         family={Stöger-Pollach},
+         familyi={S\bibinithyphendelim P\bibinitperiod},
+         given={M.},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{PPEHJZE+1}
+    \strng{fullhash}{PPEHJZESPM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \verb{doi}
+    \verb 10.1016/j.micron.2008.07.006
+    \endverb
+    \field{number}{2}
+    \field{pages}{262–268}
+    \field{title}{Measuring the dielectric constant of materials from valence
+  EELS}
+    \field{volume}{40}
+    \field{journaltitle}{Micron}
+    \field{year}{2009}
+  \endentry
+
   \entry{brockt_lakner_2000}{article}{}
     \name{author}{2}{}{%
       {{hash=BG}{%
