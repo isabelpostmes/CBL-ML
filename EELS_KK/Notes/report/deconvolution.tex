@@ -1,5 +1,8 @@
 %!TEX root = report.tex
 \subsection{Obtaining the single scattering distribution through deconvolution} \label{sect_deconv}
+The following method assumes the recorded spectrum to only contain bulk scattering, whilst in reality a multitude of other contributions to the spectrum, including surface scattering (which is neglectible for subnanometer probes\cite{brockt_lakner_2000}), relativistic losses, and excitations due to internal interfaces in the material \cite{potapov}.
+
+
 
 \subsubsection{Build-up of measured spectrum}
 When electrons go through the sample, the intensity of electrons that has no inelastic scattering is given by the zero-loss peak: $I_{ZLP}(E)$. The intensity of the electrons that do scatter, $I_{EEL}(E)$, is than dividable in the single scatter intensity, $I_1(E)$, the double scatter intensity, $I_2(E)$, the triple scatter intensity, $I_3(E)$, etc:
@@ -308,7 +311,7 @@ Combining all the above, we find single scattering distribution given by:
 
 
 \begin{equation}
-S(E) = \sum_{n=1}^\infty \frac{(-1)^{n+1} A_{EEL}^n}{n N_{ZLP}^{n-1}\sqrt{2\pi n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}} \exp{\left[-\frac{(x-n(\mu_{EEL} - \mu_{ZLP}))^2}{2n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}\right]}
+S(E) = \sum_{n=1}^\infty \frac{(-1)^{n+1} A_{EEL}^n}{n N_{ZLP}^{n-1}\sqrt{2\pi n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}} \exp{\left[-\frac{(x-n(\mu_{EEL} - \mu_{ZLP}))^2}{2n(\sigma_{EEL}^2 - \sigma_{ZLP}^2)}\right]}.
 \end{equation}
 
 

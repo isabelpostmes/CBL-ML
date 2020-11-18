@@ -1,0 +1,30 @@
+%!TEX root = report.tex
+\newpage
+\section{Kramer-Kronig relations} \label{sect_KK_rel}
+The Kramer-Kronig relations are two functions that relate the imaginary part of an complex function to the real part and vice versa. The relations hold as long as the complex function is analytic in the upper half-plane.
+The relations for function $\chi(\omega)=\chi_{1}(\omega)+i \chi_{2}(\omega)$, with $\omega$ a complex variable are given by \cite{wikipedia_2020}:
+
+\begin{equation}
+    \chi_{1}(\omega)=\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime}.
+\end{equation}
+
+Here $\mathcal{P}$ denotes the Cauchy principal value of the integral. For causal functions, due to (anti)symmetries arrising from its causality, these can be rewritten to \cite{wikipedia_2020}:
+
+\begin{equation}\label{eq_ch1_1}
+    \chi_{1}(\omega)=\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega^{\prime} \chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime},
+\end{equation}
+
+and:
+
+\begin{equation}
+    \chi_{2}(\omega)=-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega \chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime}.
+\end{equation}
+
+
+Since the single scattering spectrum of a medium can be related to the imaginary part of the complex permittivity, the Kramer-Kronig relations can be used to retrieve energy dependence of the real permittivity \cite{egerton_book}. 

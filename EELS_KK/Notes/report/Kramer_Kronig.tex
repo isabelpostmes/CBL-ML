@@ -1,39 +1,7 @@
 %!TEX root = report.tex
 \newpage
 
-\subsection{Kramer-Kronig relations} \label{sect_K_K}
-The Kramer-Kronig relations are two functions that relate the imaginary part of an complex function to the real part and vice versa. The relations hold as long as the complex function is analytic in the upper half-plane.
-The relations for function $\chi(\omega)=\chi_{1}(\omega)+i \chi_{2}(\omega)$, with $\omega$ a complex variable are given by \cite{wikipedia_2020}:
-
-\begin{equation}
-    \chi_{1}(\omega)=\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime},
-\end{equation}
-
-and:
-
-\begin{equation}
-    \chi_{2}(\omega)=-\frac{1}{\pi} \mathcal{P} \int_{-\infty}^{\infty} \frac{\chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime}-\omega} d \omega^{\prime}.
-\end{equation}
-
-Here $\mathcal{P}$ denotes the Cauchy principal value of the integral. For causal functions, due to (anti)symmetries arrising from its causality, these can be rewritten to \cite{wikipedia_2020}:
-
-\begin{equation}\label{eq_ch1_1}
-    \chi_{1}(\omega)=\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega^{\prime} \chi_{2}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime},
-\end{equation}
-
-and:
-
-\begin{equation}
-    \chi_{2}(\omega)=-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \frac{\omega \chi_{1}\left(\omega^{\prime}\right)}{\omega^{\prime 2}-\omega^{2}} d \omega^{\prime}.
-\end{equation}
-
-
-Since the single scattering spectrum of a medium can be related to the imaginary part of the complex permittivity, the Kramer-Kronig relations can be used to retrieve energy dependence of the real permittivity \cite{egerton_book}. 
-
-
-
-
-\subsubsection{Spectrum analysis}
+\subsection{Spectrum analysis}\label{sect_K_K}
 If one ignores the instrumental broadening, surface-mode scattering and the retardation effects, the single scattering spectrum is approached by the single scattering distribution, which in place can be obtained from the recorded energy loss spectrum by the Fourier log method. \cite{egerton_book}
 
 \begin{equation}\label{eq_S_E}
@@ -51,7 +19,7 @@ In this equation is $J^1(E)$ the single scattering distribution, $S(E)$ the sing
 \end{equation}
 
 
-Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\varepsilon(E)\right]$ from $\operatorname{Im}\left[-1/\varepsilon(E)\right]$, equation \eqref{eq_ch1_1} should be rewritten to \cite{Dapor2017}:
+Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\varepsilon(E)\right]$ from $\operatorname{Im}\left[-1/\varepsilon(E)\right]$, the Kramer-Kronig relations (see Appendix \ref{sect_KK_rel}, eq. \eqref{eq_ch1_1}) should be rewritten to \cite{Dapor2017}:
 
 \begin{equation}\label{eq_kkr_eps}
     \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]=1-\frac{2}{\pi} \mathcal{P} \int_{0}^{\infty} \operatorname{Im}\left[\frac{-1}{\varepsilon\left(E^{\prime}\right)}\right] \frac{E^{\prime} d E^{\prime}}{E^{\prime 2}-E^{2}}.
@@ -60,7 +28,7 @@ Furthermore, it should be noted that to retrieve $\operatorname{Re}\left[1/\vare
 
 
 
-\subsubsection{Step 1: rescaling intensity}
+\subsection{Step 1: rescaling intensity}
 The first step of the K-K analysis is now to rewrite Eq. \eqref{eq_S_E} to:
 
 \begin{equation}\label{eq_J_ac}
@@ -74,12 +42,12 @@ As $\theta_E$ scales linearly with $E$, see eq. \eqref{eq_th_E}, the intensity i
 \paragraph{Discussion points} I assume $\beta$ and $v$ are known, and that we do not take a distribution for $v$? 
 
 
-\subsubsection{Step 2: extrapolating}
+\subsection{Step 2: extrapolating}
 Since the upcoming integrals all extend to infinity, but the data acquisition is inherently up to a finite energy, the spectra need to be extrapolated. An often used form is $AE^{-r}$, where $r=3$ if you follow the Drude-model, or $r$ can be deducted from experimental data.
 
 
 
-\subsubsection{Step 3: normalisation and retrieving $\operatorname{Im}\left[\frac{1}{\varepsilon(E)}\right]$}
+\subsection{Step 3: normalisation and retrieving $\operatorname{Im}\left[\frac{1}{\varepsilon(E)}\right]$}
 
 Taking $E' = 0$ in \eqref{eq_kkr_eps}, one obtains:
 
@@ -103,7 +71,7 @@ in which $K$ is the proportionality constant, used to estimate the absolute thic
 This value of $K$, which is constant over $E$, can than in turn be used to retrieve the function of $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the observed single scattering energy distribution $J^1(E)$ with eq. \eqref{eq_J_ac}.
 
 
-\subsubsection{Step 4: retrieving $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ }
+\subsection{Step 4: retrieving $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ }
 Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from the steps above, one can now use eq. \eqref{eq_kkr_eps} to obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$, where one must pay attention to avoid including $E=E'$ in the discrete integral over the spectrum, as this is a singularity. To avoid this singularity in a discrete signal, a couple of approaches are possible:
 \begin{itemize}
     \item In the integral (for discrete signals: summation) in eq. \eqref{eq_kkr_eps}, simply exclude the $E = E'$ values.
@@ -127,7 +95,7 @@ Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from 
     \end{equation}
 \end{itemize}
 
-\subsubsection{Step 5: retrieving $\varepsilon$}
+\subsection{Step 5: retrieving $\varepsilon$}
 The dielectric function  can subsequently be obtained from:
 
 \begin{equation}

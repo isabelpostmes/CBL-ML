@@ -170,20 +170,6 @@
     \field{title}{amazing article}
   \endentry
 
-  \entry{wikipedia_2020}{online}{}
-    \list{publisher}{1}{%
-      {Wikimedia Foundation}%
-    }
-    \field{labeltitlesource}{title}
-    \field{title}{Kramers–Kronig relations}
-    \verb{url}
-    \verb https://en.wikipedia.org/wiki/Kramers–Kronig_relations
-    \endverb
-    \field{journaltitle}{Wikipedia}
-    \field{year}{2020}
-    \warn{\item Invalid format of field 'month'}
-  \endentry
-
   \entry{Dapor2017}{inbook}{}
     \name{author}{1}{}{%
       {{hash=DM}{%
@@ -221,6 +207,20 @@
       {Cham}%
     }
     \field{year}{2017}
+  \endentry
+
+  \entry{wikipedia_2020}{online}{}
+    \list{publisher}{1}{%
+      {Wikimedia Foundation}%
+    }
+    \field{labeltitlesource}{title}
+    \field{title}{Kramers–Kronig relations}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/Kramers–Kronig_relations
+    \endverb
+    \field{journaltitle}{Wikipedia}
+    \field{year}{2020}
+    \warn{\item Invalid format of field 'month'}
   \endentry
 \enddatalist
 \endinput
