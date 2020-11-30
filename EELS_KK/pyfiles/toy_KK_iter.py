@@ -14,7 +14,10 @@ import matplotlib.pyplot as plt
 import scipy
 import math
 #import start_cleaning_lau
-#from functions_revised import *
+import sys
+# insert at 1, 0 is the script path (or '' in REPL)
+#sys.path.insert(1, '/revise_Lau')
+from revise_Lau.functions_revised import *
 
 
 
@@ -103,19 +106,21 @@ def kramer_kronig(x, y, plot = False):
 
 def calculate_S_s(x, y, eps, K):
     #TODO: fix variables!!!!
-    t = 1E-6 
-    k_0 = 1E6
+    t = 1000#E-6 
     S_s = np.zeros(x.shape)
     
     beta = 30E-3
     m_0 = 1
     v = 0.5 #needs to be smaller than c
     c = 1 #natural units?
+    h_bar = 1
     deltaE = x
     deltaE[deltaE == 0] = 1e-14 #some very small number
 
     gamma = (1-v**2/c**2)**-0.5
     theta_E = deltaE/(gamma*m_0*v**2)
+
+    k_0 = gamma*m_0*v/h_bar #gamma*m0*v/h_bar
     
     term = 2*K/(math.pi*t*k_0) * (np.arctan(beta/theta_E)/theta_E - beta/(beta**2-theta_E**2))
     eps_term = np.imag(-4/(1+eps)) - np.imag(-1/eps)
@@ -135,6 +140,44 @@ xs = total_replicas['x14'].values
 Nx = np.sum(total_replicas['x14']==total_replicas['x14'][0])
 nx = int(len(total_replicas)/Nx)
 
+x_14 = df_sample.iloc[5].x_shifted
+ys_14 = smooth(df_sample.iloc[5].y, 50)
+
+ys_ZLPs = total_replicas.match14.values
+
+
+r = 3 #Drude model, can also use estimation from exp. data
+n_times_extra = 20
+l = len(x_14)
+sem_inf = l*(n_times_extra+1)
+ddeltaE = (x_14[-1]-x_14[0])/l
+
+
+A = ys_14[-1]
+ys_extrp = np.zeros(sem_inf)
+x_extrp = np.linspace(x_14[0], (sem_inf-1)*ddeltaE+x_14[0], sem_inf)
+
+ys_extrp[:l] = ys_14
+x_extrp[:l] = x_14
+ys_extrp[l:] = A*np.power(1+x_extrp[l:]-x_extrp[l],-r)
+x_14 = x_extrp
+ys_14 = ys_extrp
+ZLPs_14 = np.zeros((Nx, sem_inf))
+
+for i in range(Nx):
+    ys_ZLP = smooth(ys_ZLPs[i*nx:(i+1)*nx],50)
+    ys_ZLP_extrp = np.zeros(sem_inf)
+    ys_ZLP_extrp[:nx] = ys_ZLP
+    ys_ZLP_extrp[nx:] = ys_ZLP[-1]*np.power(1+x_extrp[nx:]-x_extrp[nx],-r)
+    ys_ZLP = ys_ZLP_extrp
+    ZLPs_14[i,:] = ys_ZLP
+
+
+EELsample = ys_14-np.average(ZLPs_14, axis = 0)
+
+
+
+"""
 x_14 = df_sample.iloc[5].x_shifted
 #y_14 = df_sample.iloc[5].y_smooth
 ys_14 = smooth(df_sample.iloc[5].y, 50)
@@ -162,23 +205,36 @@ x_extrp[:l] = x_14
 ys_extrp[l:] = A*np.power(1+x_extrp[l:]-x_extrp[l],-r)
 x_14 = x_extrp
 ys_14 = ys_extrp
-ZLP_14 = np.zeros((Nx, sem_inf))
+
+
+ZLPs_14 = np.zeros((Nx, sem_inf))
 
 for i in range(Nx):
-    y_ZLP = ys_ZLPs[i*nx:(i+1)*nx]
-    y_ZLP_extrp = np.zeros(sem_inf)
-    y_ZLP_extrp[:nx] = y_ZLP
-    y_ZLP_extrp[nx:] = y_ZLP[-1]*np.power(1+x_extrp[nx:]-x_extrp[nx],-r)
-    y_ZLP = y_ZLP_extrp
-    ZLP_14[i,:] = y_ZLP
+    ys_ZLP = smooth(ys_ZLPs[i*nx:(i+1)*nx],50)
+    ys_ZLP_extrp = np.zeros(sem_inf)
+    ys_ZLP_extrp[:nx] = ys_ZLP
+    ys_ZLP_extrp[nx:] = ys_ZLP[-1]*np.power(1+x_extrp[nx:]-x_extrp[nx],-r)
+    ys_ZLP = ys_ZLP_extrp
+    ZLPs_14[i,:] = ys_ZLP
+
+"""
 
 
-EELsample = ys_14-np.average(ZLP_14, axis = 0)
+
+
+
+
+
+
+
+
+
+
 
 #TODO define
 x = x_14
 y = ys_14
-I_tot = EELsample
+I_tot = EELsample * ddeltaE/np.sum(ys_14)
 dE = x
 
 
@@ -191,7 +247,7 @@ dE = x
 
 
 
-err_th = 1E7 * np.ones(l)
+err_th = 1E6 * np.ones(l)
 err = 1E8 * np.ones(l)
 I_new = I_tot
 eps_old, K = kramer_kronig(dE, I_new)
@@ -200,14 +256,14 @@ max_iter = 100
 plt.figure()
 plt.plot(dE[:l], eps_old[:l], label = i)
 while((err_th < err).any() and i<100):
-    eps_new, K = kramer_kronig(dE, I_new)
     S_s = calculate_S_s(dE, I_new, eps_old, K)
     Kroger = calculate_Kroger(dE, I_new, eps_old)
     I_new = I_new - S_s #TODO ?
     #I_new = Kroger #TODO ?
+    eps_new, K = kramer_kronig(dE, I_new)
     
     #TODO: make error relative to max value eps?
-    err = eps_old[:l] - eps_new[:l]
+    err = np.absolute(eps_old[:l] - eps_new[:l])
     eps_old = eps_new
     i += 1
     plt.plot(dE[:l], eps_old[:l], label = i)

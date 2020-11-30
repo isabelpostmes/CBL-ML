@@ -53,13 +53,13 @@ y_offset = y_exp[0]
 
 y_fit_exp, cov = scipy.optimize.curve_fit(exp_decay, x_exp, y_exp)
 
-
+"""
 plt.figure()
 plt.plot(x,y)
 plt.plot(x_exp, exp_decay(x_exp, y_fit_exp[0]))
 plt.xlim(0,5)
 plt.ylim(0,0.02)
-
+"""
 
 y_ZLP = np.concatenate((y[x<= x_lim], exp_decay(x[x>x_lim], y_fit_exp[0])))
 
@@ -90,14 +90,13 @@ y_ZLP = y_ZLP_extrp
 y_EEL = y - y_ZLP
 
 
-
+"""
 plt.figure()
 plt.plot(x,y)
 plt.plot(x, y_ZLP)
 plt.plot(x, y_EEL)
 plt.xlim(0,5)
 plt.ylim(0,0.02)
-
 
 plt.figure()
 #tot = 1200
@@ -106,6 +105,8 @@ plt.plot(x[:tot],y[:tot])
 plt.plot(x[:tot], y_EEL[:tot])
 #plt.xlim(-10,100) 
 plt.ylim(0,0.02)
+"""
+
 
 try_only_ZLP = False
 if try_only_ZLP:
@@ -124,10 +125,13 @@ j1_nu = z_nu*s_nu/N_ZLP
 #s_nu_2 = s_nu
 #s_nu_2[np.isnan(s_nu)] = 0#1E10 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
 
+"""
 plt.figure()
 plt.title("s_nu and j1_nu")
 plt.plot(s_nu)
 plt.plot(j1_nu)
+"""
+
 #s_nu[150:1850] = 0
 S_E = np.real(iCFT(x,s_nu))
 s_nu_nc = s_nu
@@ -135,7 +139,7 @@ s_nu_nc[500:-500] = 0
 S_E_nc = np.real(iCFT( x,s_nu_nc))
 J1_E = np.real(iCFT(x,j1_nu))
 
-
+"""
 plt.figure()
 plt.title("z_nu")
 plt.plot(z_nu)
@@ -149,6 +153,7 @@ plt.plot(i_nu/z_nu)
 plt.figure()
 plt.title("s_nu")
 plt.plot(s_nu)
+"""
 
 plt.figure()
 plt.title("zoomed spectrum and calculated values")
@@ -217,13 +222,13 @@ y_offset = y_exp[0]
 
 y_fit_exp, cov = scipy.optimize.curve_fit(exp_decay, x_exp, y_exp)
 
-
+"""
 plt.figure()
 plt.plot(x,y)
 plt.plot(x_exp, exp_decay(x_exp, y_fit_exp[0]))
 plt.xlim(0,5)
 plt.ylim(0,0.02)
-  
+"""
 
 y_ZLP = np.concatenate((y[x<= x_lim], exp_decay(x[x>x_lim], y_fit_exp[0])))
 
@@ -256,6 +261,7 @@ y_EEL = y - y_ZLP
 
 
 plt.figure()
+plt.title("tot, ZLP, EEL")
 plt.plot(x,y)
 plt.plot(x, y_ZLP)
 plt.plot(x, y_EEL)
@@ -612,10 +618,10 @@ if method == 1:
         select = (deltaE != deltaE_i)
         Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps[select]*deltaE[select]/(np.power(deltaE[select],2)-deltaE_i**2))
 elif method ==2:
-    deltaE_Re = np.zeros(sem_inf-1) 
+    deltaE_Re = np.zeros(sem_inf) 
     Re_eps = np.zeros(sem_inf-1) 
     for i in range(deltaE.size-1):
-        deltaE_i = (deltaE[i]+deltaE[i+1])/2
+        deltaE_i = deltaE[i]+ddeltaE/2
         deltaE_Re = deltaE_i
         Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps*deltaE/(np.power(deltaE,2)-deltaE_i**2))
 else: 
@@ -646,18 +652,33 @@ else: #method == 1 || method == 3:
     
 def  kramer_kronig(x, y, method = 3, plot = False):
     #TODO: change variables to correct values
-    beta = 30E-3
+    beta = 1#30E-3
     m_0 = 1
-    v = 0.5 #needs to be smaller than c
+    v = 0.99 #needs to be smaller than c
     c = 1 #natural units?
-    gamma = (1-v**2/c**2)**-0.5
+    E = 1 #electron energy
     
     deltaE = x
     deltaE[deltaE == 0] = 1e-14 #some very small number
+    gamma = (1-v**2/c**2)**-0.5
+    
+    non_nat = True
+    if non_nat:
+        eV = 1.60217662E-19
+        c = 3E8
+        beta = 30E-3
+        m_0 = 9.109E-31
+        m_0 = 0.511E6*eV
+        E = 200E3*eV
+        gamma = E/m_0
+        #v = (1-gamma**-2)**0.5 * c
+        v = (2*E/m_0)**0.5 *c
+        deltaE = x*eV
+    
+    ddeltaE = (np.max(deltaE)-np.min(deltaE))/len(deltaE)
     
     theta_E = deltaE/(gamma*m_0*v**2)
     log_term = np.log(1+(beta/theta_E)**2)
-    
     
     
     EELsample = y
@@ -665,7 +686,7 @@ def  kramer_kronig(x, y, method = 3, plot = False):
     
     #step 3: normalisation and retreiving Im[1/eps(E)]
     
-    Re_eps0 = 0 #value of Re[1/eps(0)]
+    Re_eps0 = 0.1#0 #value of Re[1/eps(0)]
     int_EELsample_over_deltaE = np.sum(EELsample_ac/deltaE)*ddeltaE
     K = 2*int_EELsample_over_deltaE/(math.pi*(1-Re_eps0))
     
@@ -695,12 +716,12 @@ def  kramer_kronig(x, y, method = 3, plot = False):
             select = (deltaE != deltaE_i)
             Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps[select]*deltaE[select]/(np.power(deltaE[select],2)-deltaE_i**2))
     elif method ==2:
-        deltaE_Re = np.zeros(sem_inf-1) 
-        Re_eps = np.zeros(sem_inf-1) 
-        for i in range(deltaE.size-1):
-            deltaE_i = (deltaE[i]+deltaE[i+1])/2
+        deltaE_Re = np.zeros(Im_eps.shape) 
+        Re_eps = np.zeros(Im_eps.shape) 
+        for i in range(deltaE.size):
+            deltaE_i = deltaE[i]+ddeltaE/2
             deltaE_Re = deltaE_i
-            Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps*deltaE/(np.power(deltaE,2)-deltaE_i**2))
+            Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps*deltaE/(np.power(deltaE,2)-deltaE_i**2))*ddeltaE
     else: 
         if method != 3:
             print("you have selected a wrong method, please select 1,2, or 3. FT method used.")
@@ -712,12 +733,12 @@ def  kramer_kronig(x, y, method = 3, plot = False):
         #TODO: evaluate possible influence discrete approximation sine and cosine transform 
         q_t = scipy.fft.idst(Im_eps)
         p_t = sgn*q_t
-        Re_eps =  scipy.fft.dct(p_t)
+        Re_eps =  scipy.fft.dct(p_t) +1
         
     if method ==2:
         #Re_eps and Im_eps shifted with respect to eachother: what makes sense?
-        eps1 = Re_eps / (Re_eps**2 + Im_eps[:-1]**2)
-        eps2 = Im_eps[:-1] / (Re_eps**2 + Im_eps[:-1]**2)
+        eps1 = Re_eps / (Re_eps**2 + Im_eps[:]**2)
+        eps2 = Im_eps / (Re_eps**2 + Im_eps[:]**2)
         eps = eps1 + 1j*eps2
     else: #method == 1 || method == 3:
         eps1 = Re_eps / (Re_eps**2 + Im_eps**2)
@@ -816,15 +837,13 @@ plt.ylabel(r"$\varepsilon$")
 plt.xlabel("$\Delta E$ [eV]")
 plt.fill_between(x_14[:l], (np.average(eps14r, axis =0) - np.std(eps14r, axis = 0))[:l], (np.average(eps14r, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'blue', alpha = 0.18)
 plt.fill_between(x_14[:l], (np.average(eps14i, axis =0) - np.std(eps14i, axis = 0))[:l], (np.average(eps14i, axis =0) + np.std(eps14i, axis = 0))[:l], color = 'orange', alpha = 0.3)
-plt.fill_between(x_14[:l],( np.average(eps14a, axis =0) - np.std(eps14a, axis = 0))[:l], (np.average(eps14a, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'green', alpha = 0.2)
+#plt.fill_between(x_14[:l],( np.average(eps14a, axis =0) - np.std(eps14a, axis = 0))[:l], (np.average(eps14a, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'green', alpha = 0.2)
 plt.plot(x_14[:l], np.average(eps14r, axis =0)[:l], label = r"$\varepsilon_1$")
 plt.plot(x_14[:l], np.average(eps14i, axis =0)[:l], label = r"$\varepsilon_2$")
-plt.plot(x_14[:l], np.average(eps14a, axis =0)[:l], label = r"$|\varepsilon|$")
+#plt.plot(x_14[:l], np.average(eps14a, axis =0)[:l], label = r"$|\varepsilon|$")
 plt.legend()
 
-eps14r = np.real(eps14)
-eps14i = np.imag(eps14)
-eps14a = np.absolute(eps14)
+
 plt.figure()
 plt.title("Dielectric function spectrum 14")
 plt.ylabel(r"$\varepsilon$")
@@ -840,7 +859,15 @@ plt.xlim(-4,5)
 plt.ylim(-0.6E7,0.6E7)
 
 
+plt.figure()
+plt.title("Dielectric function spectrum 14")
+plt.xlabel(r"$\varepsilon_1$")
+plt.ylabel(r"$\varepsilon_2$")
+plt.plot(np.average(eps14r, axis =0)[:l], np.average(eps14i, axis =0)[:l], label = r"$\varepsilon_2$")
+plt.legend()
+
 #%%
+"""
 plt.figure()
 plt.plot(deltaE[:2*l], eps1[:2*l], label = r"$\varepsilon_1$")
 plt.plot(deltaE[:2*l], eps2[:2*l], label = r"$\varepsilon_2$")
@@ -858,3 +885,75 @@ plt.title(r"dielectric function")
 plt.legend()
 plt.xlabel(r"$\Delta E$")
 plt.ylabel(r"$\varepsilon$")
+"""
+
+#%%
+
+MoS2_eloss = np.loadtxt('MoS2_data/MoS2_eloss.txt')
+MoS2_eps = np.loadtxt('MoS2_data/MoS2_eps.txt')
+
+
+r = 3 #Drude model, can also use estimation from exp. data
+n_times_extra = 20
+l = MoS2_eloss.shape[0]
+sem_inf = l*(n_times_extra+1)
+ddeltaE = (MoS2_eloss[:,0][-1]-MoS2_eloss[:,0][0])/l
+
+
+Ax = MoS2_eloss[:,1][-1]
+Az = MoS2_eloss[:,2][-1]
+eloss_x = np.zeros(sem_inf)
+eloss_z = np.zeros(sem_inf)
+x_extrp = np.linspace(MoS2_eloss[:,0][0], (sem_inf-1)*ddeltaE+MoS2_eloss[:,0][0], sem_inf)
+
+eloss_x[:l] = MoS2_eloss[:,1]
+eloss_x[l:] = Ax*np.power(1+x_extrp[l:]-x_extrp[l],-r)
+eloss_z[:l] = MoS2_eloss[:,2]
+eloss_z[l:] = Az*np.power(1+x_extrp[l:]-x_extrp[l],-r)
+deltaE = x_extrp
+
+
+
+eps_MoS2_x = kramer_kronig(deltaE, eloss_x, plot=True)#, method = 2)
+eps_MoS2_z = kramer_kronig(deltaE, eloss_z, plot=True)#, method = 2)
+
+plt.figure()
+plt.title("dieelctric function MoS2, x direction")
+plt.plot(deltaE, np.real(eps_MoS2_x), label = r'$\varepsilon_1$')
+plt.plot(deltaE, np.imag(eps_MoS2_x), label = r'$\varepsilon_2$')
+plt.legend()
+#%%
+plt.figure()
+plt.title("dieelctric function MoS2, z direction")
+plt.plot(deltaE, np.real(eps_MoS2_z), label = r'$\varepsilon_1$')
+plt.plot(deltaE, np.imag(eps_MoS2_z), label = r'$\varepsilon_2$')
+plt.legend()
+
+
+
+plt.figure()
+plt.title("dieelctric function MoS2, x direction")
+plt.plot(deltaE[:l], np.real(eps_MoS2_x)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[:l], np.imag(eps_MoS2_x)[:l], label = r'$\varepsilon_2$')
+plt.legend()
+
+
+plt.figure()
+plt.title("dieelctric function MoS2, z direction")
+plt.plot(deltaE[:l], np.real(eps_MoS2_z)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[:l], np.imag(eps_MoS2_z)[:l], label = r'$\varepsilon_2$')
+plt.legend()
+
+
+plt.figure()
+plt.title("dieelctric function MoS2, x direction, optocal values")
+plt.plot(MoS2_eps[:,0][:l], MoS2_eps[:,1][:l], label = r'$\varepsilon_1$')
+plt.plot(MoS2_eps[:,0][:l], MoS2_eps[:,2][:l], label = r'$\varepsilon_2$')
+plt.legend()
+
+
+plt.figure()
+plt.title("dieelctric function MoS2, z direction, optocal values")
+plt.plot(MoS2_eps[:,0][:l], MoS2_eps[:,3][:l], label = r'$\varepsilon_1$')
+plt.plot(MoS2_eps[:,0][:l], MoS2_eps[:,4][:l], label = r'$\varepsilon_2$')
+plt.legend()
