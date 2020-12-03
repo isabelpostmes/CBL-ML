@@ -1,0 +1,159 @@
+\documentclass[12pt]{article} 
+\usepackage{graphicx}
+
+\usepackage{graphicx,ragged2e}
+\usepackage{afterpage}
+\usepackage{epsfig,cite,ulem}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{dsfont}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{ulem}
+\usepackage{url}
+\usepackage{booktabs}
+
+\usepackage{color}
+\def\lsim{\mathrel{\rlap{\lower4pt\hbox{\hskip1pt$\sim$}}
+    \raise1pt\hbox{$<$}}}         %less than or approx. symbol
+\textwidth=18cm \textheight=23.5cm   
+\topmargin -1cm \oddsidemargin -0.3cm %\evensidemargin -0.8cm  
+\begin{document}
+
+We thank the referees for their careful reading of our manuscript and for
+their comments and suggestions, which we have addressed as described in the following.
+In order to indicate the updates from the original submission, we enclose, together with
+the revised version of the manuscript, also an annotated version of it, where
+additions to (deletions from) the original text are highlighted in red (blue).
+
+
+\paragraph{Reply to Referee 1 (R1).}
+
+{\it In this paper, the authors present a neural-network approach to treat low-loss EELS data. After describing the neural network, the method is applied to WS$_2$ specimens of different thickness. Band-gap values and evidence for exciton peaks is demonstrated. The paper is quite comprehensive and accordingly quite long. However, this is justified, as the details of the approach are quite important. The paper is very well written, though there are few typos. Its content is certainly of interest to the readers of UM and the provision of the Python script may be useful for quite some colleagues working on low-loss EELS, in particular as electron monochromators have become more and more powerful these days.  Therefore I recommend publishing the manuscript after minor corrections.}
+
+\begin{enumerate}
+
+\item {\it Page 2: "… to the determination of their bandgap and band structure". Band structure means location of energies versus momentum transfer, as it is, e.g., measured by ARPES or calculated by DFT methods. EELS is not really suitable for this. The bandgap value only gives one single point in the q-w-space.}
+
+  We agree with the referee on this point, and have removed the ``and band structure'' from the revised version
+  of the manuscript.
+  
+\item	{\it Page 2: "The energy resolution of EELS analysis is ultimately determined by the electron beam size of the system,…". Please explain why this is the case. What is the "electron beam size of a system"? Do you mean probe size on the specimen? I don't see how this would influence energy resolution.}
+
+  We thanks the referee for raising this point. We have added a clarification ({\bf Sonia?}).
+
+\item {\it Page 3: "In monochromated EELS, the properties of the ZLP depend on the electron energy dispersion,…". Here, and later on, the role of the detector is missing. For example, correlated noise (from incomplete gain normalization) can lead to small peaks in EEL spectra. How did the authors make sure that these effects could be neglected?}
+
+  This is certainly an important point, and we thank the referee for raising it.
+  %
+  As discussed in Sect.~3 of our manuscript, in order to generate the training dataset
+  for our machine learning model we combine a set of spectra taken under nominally the
+  same microscope operation conditions.
+  %
+  This combination is done assuming that the noise is uncorrelated (Sect 3.2) and thus
+  that each spectra fluctuates independently.
+  %
+  This said, we are aware that this approximation may or may not be appropriate,
+  and that correlated effects in the training dataset can be important.
+  %
+  This is not a problem conceptually, since the Monte Carlo method can be easily
+  be extended to correlated systematic errors (Eq. 3.6), though in practice the information
+  on correlated noise was not available and hence we are forced to treat the noise
+  as fully uncorrelated.
+  %
+  Actually, we have evidence of a small component of correlated error, Figure 4.2 shows
+  that the post-fit $\chi^2/n_{\rm dat}$ is a bit below unity which could be explained
+  by a slight overestimate of the experimental errors.
+
+  The strategy that should be adopted to identify sources of correlated noise in the training
+  dataset is to evaluate their covariance as a function of the energy loss $\Delta E$,
+  and then propagate this information on the correlated systematics to the MC generation
+  and to the $\chi^2$ definition.
+  %
+  This requires however a very large dataset (to reliable assess the correlation patterns)
+  which will only be available from the analysis of spectral images and that is left for
+  future work.
+
+  This said, we can estimate the correlation coefficient associated to the training
+  spectra by means of the samples used in the paper, for example those
+  listed in Table 4.1 and used to parametrise the vacuum ZLP. ({\bf Laurien}?)
+  
+  
+\item {\it	Page 4: "…, the scattered electron beam is focused by a magnetic prism…". The purpose of the prism is primarily to "disperse" the electron beam, rather than to "focus" it. }
+
+We agree with the referee and have updated the text accordingly in the revised version of the paper.
+
+\item {\it	Page 6: Please explain what NNPDF means.}
+
+  This is an acronym for the Neural Network Parton Distribution Functions collaboration, a group
+  of particle theorists that develop models of the internal structure of the proton by means
+  of machine learning techniques. We have added to the revised version of the manuscript
+  the definition of this acronym.
+  
+\item {\it	Page 7: I think that partons are fragments of hadrons (e.g. quarks). This would mean that partons are NOT fragmented into neutral and charged hadrons.}
+
+  The referee is correct that partons are sub-components of hadrons. However, in high-energy collisions
+  involving the strong interaction these partons will be produced from the scattering reaction,
+  for example $pp \to q\bar{q}$ where two protons collide and produce a pair of quark and antiquark.
+  %
+  However due to the confining nature of the strong interaction quarks cannot appear isolated
+  and on their way to the detector their turn into the hadrons we observe (such as protons and neutrons).
+  %
+  We denote the process whereby these partons produced from the hard scattering reaction turn
+  into color-neutral hadrons as {\it fragmentation}.
+  %
+  This is a non-perturbative process described by the so called parton fragmentation functions,
+  which is amenable to the same techniques as those used to model the quark and gluon (partonic)
+  substructure of protons and other hadrons.
+
+\item{  7.	Page 27: You ascribe the 1.5-eV peak and the faint 1.7-eV peak to excitons. On page 28 one could get the impression that also the 2-eV peak is from an exciton. Is there any evidence for this? }
+
+  Impossible without a first principle calculation? ({\bf Sonia/Luigi/Laurien}?)
+    
+    
+\end{enumerate}
+
+\paragraph{Reply to Referee 2 (R2).}
+
+{\it  The authors describe a new approach to tackling a challenging issue in low loss EELS, namely extraction of the ZLP and signal from low energy excitations such as bandgap onsets, excitons, vibrational losses etc.  They have deployed a ML approach that is described in detail in the manuscript.  They demonstrate the potential by applying the method to two examples.  My concerns relate to the robustness or reliability of the approach.  The authors have demonstrated that it works well for the two examples chosen but as they acknowledge in their discussion there remain many other areas to explore, in particular the influence of microscope alignment conditions as well as the challenges of extracting very low energy transitions associated with phonon losses. I would have like to read some more discussion on these topics.  The authors have made the software available.  While not really part of the review process, I did explore the software.  The authors have done a good
+    job in explaining the various functions of ML code but the information on how to actually use the program would benefit from some more detail.  Overall, I view this as a good contribution to the literature on the topic of low loss EELS analysis.}\\
+
+We thank referee 2 for the positive
+appreciation of our work and of the open-source {\tt Python} library released with
+it. As discussed in the introduction and in the summary of our manuscript, our work was meant to demonstrate the feasibility of applying ML techniques developed
+in the context of particle physics to data analysis in electron microscopy, and as a proof-of-concept
+it was applied to two representative specimens.
+%
+We agree with the referee that our method would benefit from a more systematic application
+and validation to other specimens and other operation conditions of the microscope, and actually
+we are already doing good progress on a follow-up study on the directions discussed in the
+outlook section of our manuscript.
+%
+So far, we do not have any evidence that the method proposed here is not applicable to the analysis
+of EEL spectra taken on other specimens and under different operation conditions.
+
+For instance, we are now extending {\tt EELSfitter} to the calculation of the local
+dielectric function with a faithful uncertainty estimate, and benchmarking our approach
+to that of other available tools.
+%
+Further, we are working towards interfacing {\tt EELSfitter}  to spectral images, where each
+point in the image is a different spectrum, and thus one can coherently analyse
+the informaiton contained on the whole specimen.
+%
+With the encouraging preliminary results that we have already achieved, we are confident
+that we will present soon this follow-up publication which demonstrates the robustness
+of our methodology by applying it to
+a wide set of material specimens and of operation conditions.\\
+
+{\bf Do we need EELSfitter results in other samples? Maybe yes for safety...}\\
+
+
+
+
+We hope that, having addressed all the points raised by the two referees, the revised
+version of our manuscript will be deemed suitable for publication in
+Ultramicroscopy.
+
+\end{document}
