@@ -1,0 +1,154 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary and outlook}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:summary}
+
+In this work we have presented a novel, model-independent strategy to parametrise and subtract
+the ubiquitous zero-loss peak that dominates  the low-loss region
+of EEL spectra.
+%
+Our strategy is based on machine learning techniques and provides a faithful estimate of the
+uncertainties associated to both the input data and the procedure itself,
+which can  then be propagated to physical predictions  without any  approximations.
+%
+We have demonstrated how, in the case of vacuum spectra, our approach
+is sufficiently flexible to accomodate several input variables corresponding
+to different operation conditions of the microscope.
+%
+Further, we are able  to reliably
+extrapolate our predictions, {\it e.g.} for the  expected FWHM of the ZLP,
+to other operation conditions.
+%
+When applied to spectra recorded on specimens, our approach
+makes possible to robustly disentangle the ZLP contribution from
+those arising from inelastic scatterings.
+%
+Thanks to this subtraction, one can fully exploit
+the valuable physical information contained in the ultra low-loss region of
+the spectra.
+
+Here we have applied this ZLP subtraction
+strategy to EEL spectra recorded in  WS$_2$ nanoflowers characterised by a
+2H/3R polytypic crystalline structure.
+%
+First of all, measurements taken in a relatively
+thick region of the specimen were used to determine
+the local value of the bandgap energy $E_{\rm BG}$
+and to assess whether this bandgap is direct or indirect.
+%
+A model fit to the onset of the inelastic intensity distribution obtains
+$E_{\rm BG} \simeq 1.6^{+0.3}_{-0.2}\,{\rm eV}$ and exhibits a marked preference for an indirect bandgap.
+%
+Our findings are consistent with previous studies, both of theoretical
+and of experimental nature, concerning the bandgap structure of bulk WS$_2$.
+
+Subsequently, we have applied our method to a  thinner region of the  WS$_2$ nanoflowers,
+specifically a region composed by overlapping petals with varying
+thicknesses that can be as small as a few monolayers.
+%
+We have demonstrated how for such specimens one can exploit the ZLP-subtracted results
+to characterise the local excitonic transitions that arise in the ultra-low-loss region.
+%
+By charting the exciton peaks of 2H/3R polytypic WS$_2$ there,
+we identify two strong peaks at $\Delta E\simeq 1.5$ and 2 eV
+(and a softer one at 1.7 eV) and show how
+these features are consistent when comparing
+spatially-separated locations in sample B.
+%
+Further, since our method provides an associated uncertainty estimate,
+one can robustly establish the
+statistical significance of each of these
+ultra-low-loss region features.
+
+The approach presented in this work could be extended
+in several directions.
+%
+First of all, it would be interesting to test its robustness when additional
+operation conditions of the microscope are included as input variables,
+and to verify to which extent the ZLP parametrisations obtained for an specific microscope
+can be generalised to an altogether different TEM.
+%
+Further, a non-trivial cross-check of our method would be provided by validating
+our predictions for other operation conditions of the microscope, such
+as the FWHM as a function of the beam energy $E_b$ of the exposure time
+$t_{\rm exp}$ reported in Fig.~\ref{fig:extrapolbeam},
+with actual measurements.
+
+Concerning the physical interpretation of the low-loss region of EEL
+spectra, our method could be applied to study the bandgap properties 
+for different types
+of nanostructures built upon TMD materials, such as MoS$_2$ nanowalls~\cite{nanowalls}
+and 
+vertically-oriented nano-sheets~\cite{D0NR00755B} or
+WS$_2$/MoS$_2$ arrays, heterostructures, and ternary alloys.
+%
+In addition to bandgap characterisation, this ZLP-subtraction
+strategy should allow the detailed study
+of other phenomena relevant for the interpretation of the low-loss
+region such as  plasmons, excitons, phonon interactions, and
+intra-band transitions.
+%
+One could also exploit the subtracted EEL spectra to further characterise
+local electronic properties by means of the
+ evaluation of the complex dielectric function and its associated
+uncertainties in terms of the Kramers-Kronig relations.
+%
+Finally, these phenomenological studies of local electronic properties should be compared
+with {\it ab initio} calculations based
+on the same underlying crystalline structure as the studied specimens.
+
+Another possible application of the strategy presented in this work would be the automation of
+the study of spectral TEM images,
+such as those displayed in the right panels of Fig.~\ref{fig:ws2positions},
+where each pixel contains an individual EEL spectrum.
+%
+Here machine learning methods would provide a  useful handle in order
+to identify relevant features of the spectra (peaks, edges, shoulders) with minimal
+human intervention (no need to process each spectrum individually) and then determine
+how these features vary as we move along different regions of the
+nanostructure.
+%
+Such an approach would combine two important families of machine learning algorithms,
+those used for regression, in order to quantify the properties of spectral
+features such as width and significance, and those for classification, to identify categories
+of distinct features across the spectral image.
+
+\subsection*{Acknowledgments}
+We are grateful to Emanuele R. Nocera and Jacob J. Ethier for
+assistance in installing {\tt EELSfitter} in the Nikhef computing cluster.
+%
+L.~R. is grateful to Cas, Agneet, and Aar, for support under all 
+(rainy) circumstances.
+
+
+\subsection*{Funding}
+
+S.~E.~v.~H. and S.~C.-B. acknowledge financial support
+from the ERC through the Starting Grant ``TESLA”'', grant agreement
+no. 805021.
+%
+L.~M. acknowledges support from the
+Netherlands Organizational for Scientific Research (NWO)
+through the Nanofront program.
+%
+The work of J.~R. has been partially supported by NWO.
+
+\subsection*{Declaration of competing interest}
+
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\subsection*{Methods}
+
+{\justify
+The EEL spectra used for the training of the vacuum ZLP model presented in Sect.~\ref{sec:results_vacuum} were collected in a ARM200F Mono-JEOL microscope equipped with a GIF continuum spectrometer and operated at 60 kV and 200 kV. For these measurements, a slit in the monochromator of 2.8 $\mu$m was used.
+%
+The TEM and EELS measurements acquired in Specimen A for the results presented in
+Sect.~\ref{sec:results_sample} were recorded in a JEOL 2100F microscope with a cold field-emission
+gun equipped with aberration corrector operated at 60 kV. A Gatan GIF Quantum was used for
+the EELS analyses. The convergence and collection semi-angles were 30.0 mrad and 66.7 mrad respectively.
+%
+The TEM and EELS measurements acquired for Specimen B in Sect.~\ref{sec:results_sample}
+were recorded using a JEM ARM200F monochromated microscope operated at 60 kV and equipped with
+a GIF quantum ERS. The convergence and collection semi-angles were 24.6 mrad and 58.4 mrad respectively
+in this case, and the aperture of the spectrometer was set to 5 mm.}
+

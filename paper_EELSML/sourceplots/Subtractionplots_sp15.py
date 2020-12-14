@@ -98,9 +98,6 @@ for i in range(1):
     axins.legend([(p1[0],p1b[0]),(p2[0],p2b[0])],['sp14 (subtr)','Model fit'],loc='upper left', fontsize=15)
     
 
-    
-    
-
 plt.tight_layout()
-plt.savefig('SubtractedEELS_plot_sp14.pdf')
-print("Saved fig = SubtractedEELS_plot_sp14.pdf")
+plt.savefig('SubtractedEELS_plot_SampleB_sp5.pdf')
+print("Saved fig = SubtractedEELS_plot_SampleB_sp5.pdf")
