@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 from scipy.fftpack import next_fast_len
-
+from revise_Lau.functions_revised import smooth
 
 _logger = logging.getLogger(__name__)
 
@@ -118,27 +118,29 @@ def  kramer_kronig_egt(x, y, N_ZLP = 1, iterations = 1, plot = False):
     plt.legend()
     
     return eps, t_nm
-""" HS def
-Srfelf = 4 * e2 / ((e1 + 1) ** 2 + e2 ** 2) - Im
-            #adep = (tgt / (eaxis + delta) *
-            #        np.arctan(beta * tgt / axis.axis) -
-            #        beta / 1000. /
-            #        (beta ** 2 + axis.axis ** 2. / tgt ** 2))
-            adep = (tgt / (eaxis + delta) *
-                    np.arctan(beta * tgt / eaxis) -
-                    beta / 1000. /
-                    (beta ** 2 + eaxis ** 2. / tgt ** 2))
-            Srfint = 2000 * K * adep * Srfelf / rk0 / te * ddeltaE #axis.scale
-"""
 
 
+def find_crossings(eps, deltaE, delta = 1):
+    if delta > 1:
+        #TODO: how to: average over values before and after, or before for before and after for after?
+        eps = eps
+    eps = np.real(eps)
+    cross = deltaE[1:][eps[:-1]<0 and eps[1:]>0]
+    return cross
+
+def calculate_n(eps):
+    eps1 = np.real(eps)
+    eps2 = np.imag(eps)
+    n = (eps1)
+
+#%%
 def kramers_kronig_hs(delatE, I_EELS,
                             zlp=None,
                             iterations=1,
                             n=None,
                             t=None,
                             delta=0.5,
-                            full_output=True):
+                            full_output=True, prints = np.array([]), correct_S_s = False):
     r"""Calculate the complex
     dielectric function from a single scattering distribution (SSD) using
     the Kramers-Kronig relations.
@@ -258,10 +260,12 @@ def kramers_kronig_hs(delatE, I_EELS,
     beta =30 #mrad
 
     #axis = s.axes_manager.signal_axes[0]
-    eaxis = deltaE #axis.axis.copy()
-    eaxis[eaxis==0] = 1E-14 #very small number, avoid singularities
-    y = I_EELS
+    eaxis = deltaE[deltaE>0] #axis.axis.copy()
+    #eaxis[eaxis==0] = 1E-14 #very small number, avoid singularities
+    S_E = I_EELS[deltaE>0]
+    y = I_EELS[deltaE>0]
     l = len(eaxis)
+    if (1 in prints) or (2 in prints) or (3 in prints): print("1,2,3,", eaxis.size)
     """
     if isinstance(zlp, hyperspy.signal.BaseSignal):
         if (zlp.axes_manager.navigation_dimension ==
@@ -316,7 +320,7 @@ def kramers_kronig_hs(delatE, I_EELS,
         # Norm(SSD) = Imag(-1/epsilon) (Energy Loss Funtion, ELF)
 
         # We start by the "angular corrections"
-        Im = y / (np.log(1 + (beta * tgt / eaxis) ** 2)) #/ ddeltaE#axis.scale
+        Im = y / (np.log(1 + (beta * tgt / eaxis) ** 2)) / ddeltaE#axis.scale
         if n is None and t is None:
             raise ValueError("The thickness and the refractive index are "
                              "not defined. Please provide one of them.")
@@ -327,7 +331,9 @@ def kramers_kronig_hs(delatE, I_EELS,
             # normalize using the refractive index.
             K = np.sum(Im/eaxis)*ddeltaE #(Im / eaxis).sum(axis=axis.index_in_array, keepdims=True) \
                 #* axis.scale
+            if 16 in prints: print("16, ", K)
             K = (K / (np.pi / 2) / (1 - 1. / n ** 2))
+            if 17 in prints: print("17, ", K)
             # K = (K / (np.pi / 2) / (1 - 1. / n ** 2)).reshape(
             #    np.insert(K.shape, axis.index_in_array, 1))
             # Calculate the thickness only if possible and required
@@ -353,18 +359,23 @@ def kramers_kronig_hs(delatE, I_EELS,
         # wrap-around problem.
         #esize = optimal_fft_size(2 * delteE.size)
         esize = next_fast_len(2*l) #2**math.floor(math.log2(l)+1)*4
+        if 4 in prints: print("4, ", esize)
         #q = -2 * np.fft.fft(Im, esize,
         #                    axis.index_in_array).imag / esize
         q = -2 * np.fft.fft(Im, esize).imag / esize
-        
+        if 5 in prints: print("5, ", q)
 
         #q[slicer] *= -1
         q[:l] *= -1
+        if 6 in prints: print("6, ", q)
+        if 7 in prints: print("7, ", q[1800:1840])
         q = np.fft.fft(q)#, axis=axis.index_in_array)
         # Final touch, we have Re(1/eps)
         #Re = q[slicer].real + 1
         Re = q[:l].real + 1
-
+        if 8 in prints: print("8, ", q)
+        if 9 in prints: print("9, ", q[1800:1840])
+        if 10 in prints: print("10, ", Re)
         # Egerton does this to correct the wrap-around problem, but in our
         # case this is not necessary because we compute the fft on an
         # extended and padded spectrum to avoid this problem.
@@ -381,7 +392,7 @@ def kramers_kronig_hs(delatE, I_EELS,
         e1 = Re / (Re ** 2 + Im ** 2)
         e2 = Im / (Re ** 2 + Im ** 2)
 
-        if iterations > 1 and zlp is not None:
+        if iterations > 0 and zlp is not None:
             # Surface losses correction:
             #  Calculates the surface ELF from a vaccumm border effect
             #  A simulated surface plasmon is subtracted from the ELF
@@ -395,7 +406,16 @@ def kramers_kronig_hs(delatE, I_EELS,
                     beta / 1000. /
                     (beta ** 2 + eaxis ** 2. / tgt ** 2))
             Srfint = 2000 * K * adep * Srfelf / rk0 / te * ddeltaE #axis.scale
-            y = I_EELS - Srfint
+            if 11 in prints: print("11, ", Srfelf)
+            if 12 in prints: print("12, ", adep)
+            if 13 in prints: print("13, ", Srfint)
+            if 14 in prints: print("14, ", Srfint[300:320])
+            if 15 in prints: print("15, ",K, rk0, te, ddeltaE)
+            if correct_S_s == True:
+                print("correcting S_s")
+                Srfint[Srfint<0] = 0
+                Srfint[Srfint>S_E] = S_E[Srfint>S_E]
+            y = S_E - Srfint
             _logger.debug('Iteration number: %d / %d', io + 1, iterations)
             if iterations == io + 1 and full_output is True:
                 #sp = sorig._deepcopy_with_new_data(Srfint)
@@ -433,7 +453,7 @@ def kramers_kronig_hs(delatE, I_EELS,
     else:
         return eps, output
 
-
+#%%
 def  kramer_kronig_compare(x, y, N_ZLP = 1, iterations = 1, plot = False):
     #TODO: change variables to correct values
     #N_ZLP = 1 #1 als prob
@@ -655,8 +675,13 @@ xs = total_replicas['x14'].values
 Nx = np.sum(total_replicas['x14']==total_replicas['x14'][0])
 nx = int(len(total_replicas)/Nx)
 
-x_14 = df_sample.iloc[5].x_shifted
-y_14 = df_sample.iloc[5].y
+specimen = 3
+if specimen == 3:
+    x_14 = df_sample.iloc[1].x_shifted
+    y_14 = df_sample.iloc[1].y
+else:
+    x_14 = df_sample.iloc[5].x_shifted
+    y_14 = df_sample.iloc[5].y
 
 y_ZLPs = total_replicas.match14.values
 
@@ -673,12 +698,35 @@ for i in range(Nx):
 deltaE = x_14
 ZLP = np.average(ZLP_14, axis = 0)
 EELsample = y_14-ZLP
+EELsample[EELsample<0] = 0
 
 ddeltaE = (np.max(deltaE)-np.min(deltaE))/l
 N_ZLP = np.sum(ZLP) * ddeltaE
 
 
+#%%
+specimen = 3
+if specimen == 3:
+    ZLPs = np.load("ZLPs_13_sp3.npy")
+    data_14 = np.load("sample_data_13_sp3.npy")
+else:
+    data_14 = np.load("sample_data_14.npy")
+    ZLPs = np.load("ZLPs_14.npy")
+    
+EELsample = data_14[:,1]
+deltaE = data_14[:,0]
+deltaE = np.linspace(min(deltaE),max(deltaE), len(deltaE))
+l =len(deltaE)
+ddeltaE = (np.max(deltaE)-np.min(deltaE))/(l-1)
+ZLP = np.average(ZLPs, axis=0)
+N_ZLP = np.sum(ZLP)#*ddeltaE
+
+smooth_it = False
+if smooth_it:
+    EELsample = smooth(EELsample, 50)
+
 #EGERTON
+"""
 iterations = 1
 eps_14, t_14 = kramer_kronig_egt(deltaE, EELsample, N_ZLP = N_ZLP, iterations= iterations, plot=True)#, method = 2)
 
@@ -701,60 +749,233 @@ plt.plot(deltaE, np.real(eps_14)[:l], label = r'$\varepsilon_1$')
 plt.plot(deltaE, np.imag(eps_14)[:l], label = r'$\varepsilon_2$')
 plt.legend()
 
-
+"""
 
 #HYPERSPY
 iterations = 1
 eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample, iterations= iterations, zlp = N_ZLP, n =3)#, method = 2)
 
 plt.figure()
-plt.title("dieelctric function spectrum 14, hyperspy, no iterations: " + str(iterations))
-plt.plot(deltaE, np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
-plt.plot(deltaE, np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
+plt.title("dieelctric function specimen " + str(specimen) + ", hyperspy, no iterations: " + str(iterations))
+plt.plot(deltaE[deltaE>0], np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[deltaE>0], np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
 plt.legend()
 print("found thickness: ", round(t_14_hs["thickness"],3), "nm, with ", iterations, " iterations")
 
 
 
 iterations = 4
-eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample, iterations= iterations, zlp = N_ZLP, n =3)#, method = 2)
+eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample, iterations= iterations, zlp = N_ZLP, n =3, correct_S_s = True)#, prints=range(11, 18))#, method = 2)
 
 plt.figure()
-plt.title("dieelctric function spectrum 14, hyperspy, no iterations: " + str(iterations))
-plt.plot(deltaE, np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
-plt.plot(deltaE, np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
+plt.title("dieelctric function specimen " + str(specimen) + ", hyperspy, no iterations: " + str(iterations))
+plt.plot(deltaE[deltaE>0], np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[deltaE>0], np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
 plt.legend()
 print("found thickness: ", round(t_14_hs["thickness"],3), "nm, with ", iterations, " iterations")
 
 plt.figure()
-plt.plot(deltaE, EELsample, label = "$I_{EELS}$")
-plt.plot(deltaE, t_14_hs["S_s"], label = "$S_s$, estimation")
-plt.title("Inelastic and surface scattering of spectrum 14")
+plt.plot(deltaE[deltaE>0], EELsample[deltaE>0], label = "$I_{EELS}$")
+plt.plot(deltaE[deltaE>0], t_14_hs["S_s"], label = "$S_s$, estimation")
+plt.plot(deltaE[deltaE>0], EELsample[deltaE>0]-t_14_hs["S_s"], label = "$S_b$, estimation")
+plt.title("Inelastic and surface scattering of spectrum 14, with " + str(iterations)+ " iterations")
 plt.legend()
 
 
 #%%
-"""
-#COMPARISON
-iterations = 1
-eps_14, t_14 = kramer_kronig_compare(deltaE, EELsample, N_ZLP = N_ZLP, iterations= iterations, plot=True)#, method = 2)
+plt.figure()
+for iterations in {1,2}:
+    eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample, iterations= iterations, zlp = N_ZLP, n =3)#, method = 2)
+    plt.plot(deltaE[deltaE>0], t_14_hs["S_s"], label = "$S_s$, " + str(iterations) +" iterations")
+plt.plot(deltaE[deltaE>0], EELsample[deltaE>0], label = "$I_{EELS}$", color = 'grey')
+plt.title("surface plasmons for different iterations, specimen " + str(specimen))
+plt.legend()
+plt.xlabel("$\Delta E$ [keV]")
+plt.ylabel("intensity")
 
-print("found thickness: ", round(t_14,3), "nm, with ", iterations, " iterations")
+#%% CALCULATE ERRORS DUE TO ZLP UNCERTAINTY
+specimen = 4
+if specimen == 3:
+    ZLPs = np.load("ZLPs_13_sp3.npy")
+    data_14 = np.load("sample_data_13_sp3.npy")
+else:
+    data_14 = np.load("sample_data_14.npy")
+    ZLPs = np.load("ZLPs_14.npy")
+
+EELsample = data_14[:,1]
+ZLP_avg = np.average(ZLPs, axis=0)
+EELS = EELsample + ZLP_avg
+
+smooth_it = False
+if smooth_it:
+    EELS = smooth(EELS, 50)
+    
+
+
+
+deltaE = data_14[:,0]
+deltaE = np.linspace(min(deltaE),max(deltaE), len(deltaE))
+deltaE_eps = deltaE[deltaE>0]
+l =len(deltaE)
+l_eps = len(deltaE_eps)
+ddeltaE = (np.max(deltaE)-np.min(deltaE))/(l-1)
+n_ZLP = ZLPs.shape[0]
+
+iterations = 1
+
+
+ts = np.zeros(n_ZLP)
+epss = (1+1j)*np.zeros((n_ZLP, len(deltaE_eps)))
+S_ss = np.zeros((n_ZLP, len(deltaE_eps)))
+
+for i in range(n_ZLP):
+    ZLP = ZLPs[i,:]
+    if smooth_it:
+        ZLP = smooth(ZLP, 50)
+        ZLPs[i,:] = ZLP
+    EELsample = EELS - ZLP
+    N_ZLP = np.sum(ZLP)#*ddeltaE
+    epss[i,:], t_14_hs = kramers_kronig_hs(deltaE, EELsample, iterations= iterations, zlp = N_ZLP, n =3)#, method = 2)
+    ts[i] = t_14_hs["thickness"]
+    S_ss[i,:] = t_14_hs["S_s"]
+
+print("Specimen ", specimen, ": average thickness: ", round(np.average(ts), 3), "nm, with std: ", round(np.std(ts), 3), "nm.")
+plt.figure()
+plt.fill_between(deltaE_eps,np.average(np.real(epss),axis= 0)- np.std(np.real(epss),axis= 0),np.average(np.real(epss),axis= 0) +np.std(np.real(epss),axis= 0), color = [150/255, 150/255, 255/255])
+plt.plot(deltaE_eps,np.average(np.real(epss), axis = 0), label = r'$\varepsilon_1$')
+plt.fill_between(deltaE_eps,np.average(np.imag(epss),axis= 0)- np.std(np.imag(epss),axis= 0), np.average(np.imag(epss),axis= 0) +np.std(np.imag(epss),axis= 0), color = [255/255, 220/255, 166/255], hatch='+')
+#plt.xlim(1,7)
+plt.plot(deltaE_eps,np.average(np.imag(epss),axis= 0),lw = 0.8, label = r'$\varepsilon_2$')
+plt.title("error in dieelctric function specimen " + str(specimen) + ", hyperspy, no iterations: " + str(iterations))
+plt.legend()
+plt.xlabel("$\Delta E$ [keV]")
+plt.ylabel("dielectric function")
+#plt.ylim(-15,15)
+
+y_max = max(np.max(np.average(np.real(epss),axis= 0)), np.max(np.average(np.imag(epss),axis= 0)))
+y_min = min(np.min(np.average(np.real(epss),axis= 0)), np.min(np.average(np.imag(epss),axis= 0)))
 
 plt.figure()
-plt.title("dieelctric function spectrum 14, egerton, no iterations: " + str(iterations))
-plt.plot(deltaE, np.real(eps_14)[:l], label = r'$\varepsilon_1$')
-plt.plot(deltaE, np.imag(eps_14)[:l], label = r'$\varepsilon_2$')
+plt.fill_between(deltaE_eps,np.average(np.real(epss),axis= 0)- np.std(np.real(epss),axis= 0),np.average(np.real(epss),axis= 0) +np.std(np.real(epss),axis= 0), color = [150/255, 150/255, 255/255])
+plt.plot(deltaE_eps,np.average(np.real(epss), axis = 0), label = r'$\varepsilon_1$')
+plt.fill_between(deltaE_eps,np.average(np.imag(epss),axis= 0)- np.std(np.imag(epss),axis= 0), np.average(np.imag(epss),axis= 0) +np.std(np.imag(epss),axis= 0), color = [255/255, 220/255, 166/255], hatch='+')
+#plt.xlim(1,7)
+plt.plot(deltaE_eps,np.average(np.imag(epss),axis= 0),lw = 0.8, label = r"$\varepsilon_2(E)$")
+plt.title("error in dieelctric function specimen " + str(specimen) + ", hyperspy, no iterations: " + str(iterations))
 plt.legend()
+plt.plot(deltaE_eps[[0,1]],[0,0], color = 'r')
+plt.ylim(1.5*y_min, 1.5*y_max)
+plt.xlabel("$\Delta E$ [keV]")
+plt.ylabel("dielectric function")
+
+
+plt.figure()
+plt.fill_between(deltaE,EELS-np.average(ZLPs,axis= 0)- np.std(ZLPs,axis= 0),EELS- np.average(ZLPs,axis= 0) +np.std(ZLPs,axis= 0), color = [150/255, 150/255, 255/255])
+plt.plot(deltaE,EELS-np.average(ZLPs, axis = 0), label = "$J_{EEL}(E)$")
+#plt.fill_between(deltaE,np.average(J1_14,axis= 0)- np.std(J1_14,axis= 0), np.average(J1_14,axis= 0) +np.std(J1_14,axis= 0), color = [255/255, 220/255, 166/255], hatch='+')
+#plt.xlim(1,7)
+#plt.plot(x_14,np.average(J1_14,axis= 0),lw = 0.8, label = "avg. $J_1(E)$")
+plt.title("Scattering and single scattering spectrum 14")
+plt.legend()
+plt.xlabel("$\Delta E$ [keV]")
+plt.ylabel("intensity")
+#%% ADD ZEROS TO TAIL
+
+specimen = 3
+if specimen == 3:
+    ZLPs = np.load("ZLPs_13_sp3.npy")
+    data_14 = np.load("sample_data_13_sp3.npy")
+else:
+    data_14 = np.load("sample_data_14.npy")
+    ZLPs = np.load("ZLPs_14.npy")
+
+deltaE = data_14[:,0]
+EELsample = data_14[:,1]
+
+
+smooth_it = True
+if smooth_it:
+    EELsample = smooth(EELsample, 50)
+
+
+l =len(deltaE)   
+semi_inf = 5*l
+
+#deltaE = np.linspace(min(deltaE),max(deltaE), len(deltaE))
+ddeltaE = (np.max(deltaE)-np.min(deltaE))/(l-1)
+deltaE = np.linspace(np.min(deltaE), min(deltaE) + (semi_inf-1)*ddeltaE, semi_inf)
+
+EELsample_zeros = np.zeros(semi_inf)
+EELsample_zeros[:l] = EELsample
+EELsample_dm = np.copy(EELsample_zeros)
+A = EELsample_zeros[l-1]
+EELsample_dm[l:] = A*np.power((deltaE[l:]-deltaE[l-1])/ddeltaE, -3) #drude model
+
+ZLP = np.zeros(semi_inf)
+ZLP[:l] = np.average(ZLPs, axis=0)
+N_ZLP = np.sum(ZLP)#*ddeltaE
+
+
+
+#HYPERSPY
+iterations = 1
+eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample_zeros, iterations= iterations, zlp = N_ZLP, n =3)#, method = 2)
+
+plt.figure()
+plt.title("dieelctric function specimen " + str(specimen) + ", padded with zeros, hyperspy, no iterations: " + str(iterations))
+plt.plot(deltaE[deltaE>0][:l], np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[deltaE>0][:l], np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
+plt.legend()
+print("found thickness: ", round(t_14_hs["thickness"],3), "nm, with ", iterations, " iterations")
+
+
 
 iterations = 2
-eps_14, t_14 = kramer_kronig_compare(deltaE, EELsample, N_ZLP = N_ZLP, iterations= iterations, plot=True)#, method = 2)
-
-print("found thickness: ", round(t_14,3), "nm, with ", iterations, " iterations")
+eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample_zeros, iterations= iterations, zlp = N_ZLP, n =3, correct_S_s = True)#, prints=range(11, 18))#, method = 2)
 
 plt.figure()
-plt.title("dieelctric function spectrum 14, egerton, no iterations: " + str(iterations))
-plt.plot(deltaE, np.real(eps_14)[:l], label = r'$\varepsilon_1$')
-plt.plot(deltaE, np.imag(eps_14)[:l], label = r'$\varepsilon_2$')
+plt.title("dieelctric function specimen " + str(specimen) + ", padded with zeros, hyperspy, no iterations: " + str(iterations))
+plt.plot(deltaE[deltaE>0][:l], np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[deltaE>0][:l], np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
 plt.legend()
-"""
+print("found thickness: ", round(t_14_hs["thickness"],3), "nm, with ", iterations, " iterations")
+
+plt.figure()
+plt.plot(deltaE[deltaE>0], EELsample_zeros[deltaE>0], label = "$I_{EELS}$")
+plt.plot(deltaE[deltaE>0], t_14_hs["S_s"], label = "$S_s$, estimation")
+plt.plot(deltaE[deltaE>0], EELsample_zeros[deltaE>0]-t_14_hs["S_s"], label = "$S_b$, estimation")
+plt.title("Inelastic and surface scattering of specimen " + str(specimen) + ", padded with zeros, no. of iterations: " + str(iterations))
+plt.legend()
+plt.xlim(0,10)
+
+
+#HYPERSPY
+iterations = 1
+eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample_dm, iterations= iterations, zlp = N_ZLP, n =3)#, method = 2)
+
+plt.figure()
+plt.title("dieelctric function specimen " + str(specimen) + ", padded with Drude, hyperspy, no iterations: " + str(iterations))
+plt.plot(deltaE[deltaE>0][:l], np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[deltaE>0][:l], np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
+plt.legend()
+print("found thickness: ", round(t_14_hs["thickness"],3), "nm, with ", iterations, " iterations")
+
+
+
+iterations = 10
+eps_14_hs, t_14_hs = kramers_kronig_hs(deltaE, EELsample_dm, iterations= iterations, zlp = N_ZLP, n =3, correct_S_s = True)#, prints=range(11, 18))#, method = 2)
+
+plt.figure()
+plt.title("dieelctric function specimen " + str(specimen) + ", padded with Drude, hyperspy, no iterations: " + str(iterations))
+plt.plot(deltaE[deltaE>0][:l], np.real(eps_14_hs)[:l], label = r'$\varepsilon_1$')
+plt.plot(deltaE[deltaE>0][:l], np.imag(eps_14_hs)[:l], label = r'$\varepsilon_2$')
+plt.legend()
+print("found thickness: ", round(t_14_hs["thickness"],3), "nm, with ", iterations, " iterations")
+
+plt.figure()
+plt.plot(deltaE[deltaE>0], EELsample_dm[deltaE>0], label = "$I_{EELS}$")
+plt.plot(deltaE[deltaE>0], t_14_hs["S_s"], label = "$S_s$, estimation")
+plt.plot(deltaE[deltaE>0], EELsample_dm[deltaE>0]-t_14_hs["S_s"], label = "$S_b$, estimation")
+plt.title("Inelastic and surface scattering of specimen " + str(specimen) + ", padded with Drude, no. of iterations: " + str(iterations))
+plt.xlim(0,10)
+plt.legend()

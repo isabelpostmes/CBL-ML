@@ -36,9 +36,13 @@ from scipy.optimize import curve_fit
 
 print('done')
 
+specimen = 3
 
 from Functions import *
-from Load_data import *
+if specimen == 3:
+    from load_data_sp3 import *
+else:
+    from Load_data import *
 
 tf.reset_default_graph()
 cols=['y14', 'x14', 'y15', 'x15', 'y16', 'x16', 'y17', 'x17', 'y19', 'x19', 'y20', 'x20', 'y21', 'x21', 'y22', 'x22', 'y23', 'x23']
@@ -52,15 +56,20 @@ print(ZLP_data)
 ## Window the data file to the desired energy range
 E_min = -.3
 #CHANGE
-E_min= -4
-E_max = 20
+if specimen ==3:
+    E_min = -0.93
+    E_max = 9.07
+else:
+    E_min= -4   
+    E_max = 20
 original = ZLP_data[(ZLP_data['x14'] >= E_min) & (ZLP_data['x14'] <= E_max)]
 
-
-
-d_string = '07.09.2020'
-
-path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
+if specimen == 3:
+    d_string = '06.12.2020'
+    path_to_data = 'Data_oud/Results/sp3/%(date)s/'% {"date": d_string} 
+else:
+    d_string = '07.09.2020'
+    path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
 
 path_predict = r'Predictions_*.csv'
 path_cost = r'Cost_*.csv' 
@@ -130,7 +139,6 @@ x = tf.placeholder("float", [None, 1], name="x")
 predictions = make_model(x, 1)
 
 
-d_string = '07.09.2020'
 prediction_file = pd.DataFrame()
 
 predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
@@ -142,8 +150,10 @@ with tf.Session() as sess:
     
     for i in range(0,len(good_files)):
         if good_files[i] == 1:
-            
-            best_model = 'Models_oud/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+            if specimen ==3:
+                best_model = 'Models_oud/Best_models/sp3/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+            else:
+                best_model = 'Models_oud/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
             saver = tf.train.Saver(max_to_keep=1000)
             saver.restore(sess, best_model)
 

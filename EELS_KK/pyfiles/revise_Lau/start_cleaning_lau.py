@@ -32,12 +32,21 @@ from functions_revised import *
 
 warnings.filterwarnings('ignore')
 
+specimen = 3
 #VARIABLES ESSENTIAL TO CHANGE FOR EACH DATASET
-path_vacuum = "data_new/vacuum"
-path_sample = "data_new/sample"
+if specimen ==3:
+    path_vacuum = "data_new/Specimen_3/vacuum"
+    path_sample = "data_new/Specimen_3/sample"
+    
+    Eloss_min = -0.93 # eV
+    Eloss_max = +9.07# eV
 
-Eloss_min = -4.054 # eV
-Eloss_max = +45.471 # eV
+else:
+    path_vacuum = "data_new/vacuum"
+    path_sample = "data_new/sample"
+    
+    Eloss_min = -4.054 # eV
+    Eloss_max = +45.471 # eV
 
 #TODO: WHERE TO DEFINE THESE VALUES, they seem less important than the rest
 wl1 = 50
