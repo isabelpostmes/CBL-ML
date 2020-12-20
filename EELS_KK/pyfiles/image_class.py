@@ -168,7 +168,7 @@ class Spectral_image():
         predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
         predict_x = self.deltaE.reshape(self.l,1)
         
-        ZLPs_gen = np.zeros((count, len_data))
+        self.ZLPs_gen = np.zeros((count, len_data))
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             
@@ -183,8 +183,7 @@ class Spectral_image():
                                             x: predict_x
                                             })
                     prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
-                    ZLPs_gen[i, :] = np.exp(extrapolation)#.reshape(len_data,)
-        return ZLPs_gen
+                    self.ZLPs_gen[i, :] = np.exp(extrapolation)#.reshape(len_data,)
         
         
         """
