@@ -36,7 +36,7 @@ from scipy.optimize import curve_fit
 
 print('done')
 
-specimen = 3
+specimen = 4
 
 from Functions import *
 if specimen == 3:
@@ -213,7 +213,7 @@ extrapolation = extrapolation[(extrapolation['x'] >= E_min) & (extrapolation['x'
 
 
 
-
+"""
 lo = []
 
 for k in range(count): 
@@ -256,7 +256,7 @@ for i in ([14, 15, 16, 19, 20, 21]):
 
 #total_replicas.to_csv('Data/Results/Replica_files/final_%(s)s' % {"s": dE1})
 
-
+"""
 
 
 

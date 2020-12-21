@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
+import math
 #import start_cleaning_lau
 from functions_revised import *
 
@@ -467,13 +468,13 @@ nx = int(len(total_replicas)/Nx)
 
 x_14 = df_sample.iloc[5].x_shifted
 #y_14 = df_sample.iloc[5].y_smooth
-y_14 = smooth(df_sample.iloc[5].y, 50)
+ys_14 = smooth(df_sample.iloc[5].y, 50)
 
 #nx_2 = len(x_14)
 
 #x_14 = xs[:nx]
 #y_14 = total_replicas['data y14'].values[:nx]
-y_ZLPs = total_replicas.match14.values
+ys_ZLPs = total_replicas.match14.values
 
 
 r = 3 #Drude model, can also use estimation from exp. data
@@ -483,34 +484,34 @@ sem_inf = l*(n_times_extra+1)
 ddeltaE = (x_14[-1]-x_14[0])/l
 
 
-A = y_14[-1]
-y_extrp = np.zeros(sem_inf)
+A = ys_14[-1]
+ys_extrp = np.zeros(sem_inf)
 x_extrp = np.linspace(x_14[0], (sem_inf-1)*ddeltaE+x_14[0], sem_inf)
 
-y_extrp[:l] = y_14
+ys_extrp[:l] = ys_14
 x_extrp[:l] = x_14
-y_extrp[l:] = A*np.power(1+x_extrp[l:]-x_extrp[l],-r)
+ys_extrp[l:] = A*np.power(1+x_extrp[l:]-x_extrp[l],-r)
 x_14 = x_extrp
-y_14 = y_extrp
+ys_14 = ys_extrp
 
-i_nu = CFT(x_14,y_14)
+i_nu = CFT(x_14,ys_14)
 
 S_14 = np.zeros((Nx, sem_inf))
 S_nc_14 = np.zeros((Nx, sem_inf))
 J1_14 = np.zeros((Nx, sem_inf))
-ZLP_14 = np.zeros((Nx, sem_inf))
+ZLPs_14 = np.zeros((Nx, sem_inf))
 
 for i in range(Nx):
-    y_ZLP = smooth(y_ZLPs[i*nx:(i+1)*nx],50)
-    y_ZLP_extrp = np.zeros(sem_inf)
-    y_ZLP_extrp[:nx] = y_ZLP
-    y_ZLP_extrp[nx:] = y_ZLP[-1]*np.power(1+x_extrp[nx:]-x_extrp[nx],-r)
-    y_ZLP = y_ZLP_extrp
-    ZLP_14[i,:] = y_ZLP
+    ys_ZLP = smooth(ys_ZLPs[i*nx:(i+1)*nx],50)
+    ys_ZLP_extrp = np.zeros(sem_inf)
+    ys_ZLP_extrp[:nx] = ys_ZLP
+    ys_ZLP_extrp[nx:] = ys_ZLP[-1]*np.power(1+x_extrp[nx:]-x_extrp[nx],-r)
+    ys_ZLP = ys_ZLP_extrp
+    ZLPs_14[i,:] = ys_ZLP
     
-    N_ZLP = 1#np.sum(y_ZLP)*ddeltaE
+    N_ZLP = 1#np.sum(ys_ZLP)*ddeltaE
     
-    z_nu = CFT(x_14,y_ZLP)
+    z_nu = CFT(x_14,ys_ZLP)
     s_nu = N_ZLP*np.log(i_nu/z_nu)
     j1_nu = z_nu*s_nu/N_ZLP
     
@@ -526,25 +527,334 @@ for i in range(Nx):
 
 #%%
 plt.figure()
-plt.plot(y_14-y_ZLP, label = "$J_{EEL}(E)$")
+plt.plot(ys_14-ys_ZLP, label = "$J_{EEL}(E)$")
 plt.plot(J1_14[0,:], label = "$J_1(E)$")
 plt.title("Smotthed scattering and single scattering spectrum 14")
 plt.legend()
 
 plt.figure()
-plt.fill_between(x_14,y_14-np.average(ZLP_14,axis= 0)- np.std(ZLP_14,axis= 0),y_14- np.average(ZLP_14,axis= 0) +np.std(ZLP_14,axis= 0), color = [150/255, 150/255, 255/255])
-plt.plot(x_14,y_14-np.average(ZLP_14, axis = 0), label = "$J_{EEL}(E)$")
-plt.fill_between(x_14,np.average(J1_14,axis= 0)- np.std(J1_14,axis= 0), np.average(J1_14,axis= 0) +np.std(J1_14,axis= 0), color = [255/255, 220/255, 166/255])
+plt.fill_between(x_14,ys_14-np.average(ZLP_14,axis= 0)- np.std(ZLP_14,axis= 0),ys_14- np.average(ZLP_14,axis= 0) +np.std(ZLP_14,axis= 0), color = [150/255, 150/255, 255/255], alpha = 0.3)
+plt.fill_between(x_14,np.average(J1_14,axis= 0)- np.std(J1_14,axis= 0), np.average(J1_14,axis= 0) +np.std(J1_14,axis= 0), color = [255/255, 220/255, 166/255], alpha = 0.3)
+plt.plot(x_14,ys_14-np.average(ZLP_14, axis = 0), label = "$J_{EEL}(E)$", alpha = 1)
+plt.plot(x_14,np.average(J1_14,axis= 0),lw = 0.9, label = "avg. $J_1(E)$")
 plt.xlim(0,60)
-plt.plot(x_14,np.average(J1_14,axis= 0),lw = 0.8, label = "avg. $J_1(E)$")
 plt.title("Smoothed scattering and single scattering spectrum 14")
 plt.legend()
 
 plt.figure()
-plt.fill_between(x_14,y_14-np.average(ZLP_14,axis= 0)- np.std(ZLP_14,axis= 0),y_14- np.average(ZLP_14,axis= 0) +np.std(ZLP_14,axis= 0), color = [150/255, 150/255, 255/255])
-plt.plot(x_14,y_14-np.average(ZLP_14, axis = 0), label = "$J_{EEL}(E)$")
-plt.fill_between(x_14,np.average(J1_14,axis= 0)- np.std(J1_14,axis= 0), np.average(J1_14,axis= 0) +np.std(J1_14,axis= 0), color = [255/255, 220/255, 166/255])
+plt.fill_between(x_14,ys_14-np.average(ZLP_14,axis= 0)- np.std(ZLP_14,axis= 0),ys_14- np.average(ZLP_14,axis= 0) +np.std(ZLP_14,axis= 0), color = [150/255, 150/255, 255/255], alpha = 0.3)
+plt.fill_between(x_14,np.average(J1_14,axis= 0)- np.std(J1_14,axis= 0), np.average(J1_14,axis= 0) +np.std(J1_14,axis= 0), color = [255/255, 220/255, 166/255], alpha = 0.3)
+plt.plot(x_14,ys_14-np.average(ZLP_14, axis = 0), label = "$J_{EEL}(E)$", color = 'blue')
+plt.plot(x_14,np.average(J1_14,axis= 0), label = "avg. $J_1(E)$", color = 'orange')
 plt.xlim(1,7)
-plt.plot(x_14,np.average(J1_14,axis= 0),lw = 0.8, label = "avg. $J_1(E)$")
 plt.title("Smoothed scattering and single scattering spectrum 14")
 plt.legend()
+
+
+
+#%% KRAMER-KRONIG ANALYSIS
+
+
+#step 1: modulate intensity
+
+#TODO: change variables to correct values
+beta = 30E-3
+m_0 = 1
+v = 0.5 #needs to be smaller than c
+c = 1 #natural units?
+gamma = (1-v**2/c**2)**-0.5
+
+deltaE = x_14
+deltaE[deltaE == 0] = 1e-14 #some very small number
+
+theta_E = deltaE/(gamma*m_0*v**2)
+log_term = np.log(1+(beta/theta_E)**2)
+
+
+
+EELsample = y_14-np.average(ZLP_14, axis = 0)
+EELsample_ac = EELsample/log_term
+
+#step 3: normalisation and retreiving Im[1/eps(E)]
+
+Re_eps0 = 0 #value of Re[1/eps(0)]
+int_EELsample_over_deltaE = np.sum(EELsample/deltaE)*ddeltaE
+K = 2*int_EELsample_over_deltaE/(math.pi*(1-Re_eps0))
+
+
+Im_eps = EELsample/K #Im[-1/eps(E)]
+
+plt.figure()
+plt.plot(np.real(Im_eps[:100]), label = "real")
+plt.plot(np.imag(Im_eps[:100]), label = "imag")
+plt.legend()
+plt.title("real and imag part Im_eps")
+
+#step 4: retreiving Re[1/eps(E)]
+
+method = 3  #1: integration at datapoints, except deltaE = deltaE'
+            #2: integration between datapoints deltaE_i = (deltaE_i + deltaE_i+1)/2
+            #3: FT
+
+deltaE_Re = deltaE
+Re_eps = np.zeros(sem_inf) 
+
+
+
+
+#%%
+#integrate around each energy (to avoid singularities)
+if method == 1:
+    deltaE_Re = deltaE
+    Re_eps = np.zeros(sem_inf) 
+    for i in range(deltaE.size):
+        deltaE_i = deltaE[i]
+        select = (deltaE != deltaE_i)
+        Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps[select]*deltaE[select]/(np.power(deltaE[select],2)-deltaE_i**2))
+elif method ==2:
+    deltaE_Re = np.zeros(sem_inf-1) 
+    Re_eps = np.zeros(sem_inf-1) 
+    for i in range(deltaE.size-1):
+        deltaE_i = (deltaE[i]+deltaE[i+1])/2
+        deltaE_Re = deltaE_i
+        Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps*deltaE/(np.power(deltaE,2)-deltaE_i**2))
+else: 
+    if method != 3:
+        print("you have selected a wrong method, please select 1,2, or 3. FT method used.")
+    sgn = np.ones(Im_eps.shape)
+    half = math.floor(Im_eps.size/2)
+    sgn[:half] *= -1
+
+    
+    
+    q_t = scipy.fft.idst(Im_eps)
+    p_t = sgn*q_t
+    Re_eps =  scipy.fft.dct(p_t)
+
+#step 6: retreiving ε
+if method ==2:
+    #Re_eps and Im_eps shifted with respect to eachother: what makes sense?
+    eps1 = Re_eps / (Re_eps**2 + Im_eps[:-1]**2)
+    eps2 = Im_eps[:-1] / (Re_eps**2 + Im_eps[:-1]**2)
+    eps = eps1 + 1j*eps2
+else: #method == 1 || method == 3:
+    eps1 = Re_eps / (Re_eps**2 + Im_eps**2)
+    eps2 = Im_eps / (Re_eps**2 + Im_eps**2)
+    eps = eps1 + 1j*eps2
+
+#%%
+    
+def  kramer_kronig(x, y, method = 3, plot = False):
+    #TODO: change variables to correct values
+    beta = 30E-3
+    m_0 = 1
+    v = 0.5 #needs to be smaller than c
+    c = 1 #natural units?
+    gamma = (1-v**2/c**2)**-0.5
+    
+    deltaE = x
+    deltaE[deltaE == 0] = 1e-14 #some very small number
+    
+    theta_E = deltaE/(gamma*m_0*v**2)
+    log_term = np.log(1+(beta/theta_E)**2)
+    
+    
+    
+    EELsample = y
+    EELsample_ac = EELsample/log_term
+    
+    #step 3: normalisation and retreiving Im[1/eps(E)]
+    
+    Re_eps0 = 0 #value of Re[1/eps(0)]
+    int_EELsample_over_deltaE = np.sum(EELsample_ac/deltaE)*ddeltaE
+    K = 2*int_EELsample_over_deltaE/(math.pi*(1-Re_eps0))
+    
+    
+    Im_eps = EELsample/K #Im[-1/eps(E)]
+    
+    if plot:
+        plt.figure()
+        plt.plot(np.real(Im_eps[:100]), label = "real")
+        plt.plot(np.imag(Im_eps[:100]), label = "imag")
+        plt.legend()
+        plt.title("real and imag part Im_eps")
+    
+    #step 4: retreiving Re[1/eps(E)]
+    
+   
+    
+    deltaE_Re = deltaE
+    Re_eps = np.zeros(sem_inf) 
+    
+    #integrate around each energy (to avoid singularities)
+    if method == 1:
+        deltaE_Re = deltaE
+        Re_eps = np.zeros(sem_inf) 
+        for i in range(deltaE.size):
+            deltaE_i = deltaE[i]
+            select = (deltaE != deltaE_i)
+            Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps[select]*deltaE[select]/(np.power(deltaE[select],2)-deltaE_i**2))
+    elif method ==2:
+        deltaE_Re = np.zeros(sem_inf-1) 
+        Re_eps = np.zeros(sem_inf-1) 
+        for i in range(deltaE.size-1):
+            deltaE_i = (deltaE[i]+deltaE[i+1])/2
+            deltaE_Re = deltaE_i
+            Re_eps[i] = 1 - 2/math.pi * np.sum(Im_eps*deltaE/(np.power(deltaE,2)-deltaE_i**2))
+    else: 
+        if method != 3:
+            print("you have selected a wrong method, please select 1,2, or 3. FT method used.")
+        sgn = np.ones(Im_eps.shape)
+        half = math.floor(Im_eps.size/2)
+        sgn[-half:] *= -1
+    
+        
+        #TODO: evaluate possible influence discrete approximation sine and cosine transform 
+        q_t = scipy.fft.idst(Im_eps)
+        p_t = sgn*q_t
+        Re_eps =  scipy.fft.dct(p_t)
+        
+    if method ==2:
+        #Re_eps and Im_eps shifted with respect to eachother: what makes sense?
+        eps1 = Re_eps / (Re_eps**2 + Im_eps[:-1]**2)
+        eps2 = Im_eps[:-1] / (Re_eps**2 + Im_eps[:-1]**2)
+        eps = eps1 + 1j*eps2
+    else: #method == 1 || method == 3:
+        eps1 = Re_eps / (Re_eps**2 + Im_eps**2)
+        eps2 = Im_eps / (Re_eps**2 + Im_eps**2)
+        eps = eps1 + 1j*eps2
+    
+    
+    if plot:
+        plt.figure()
+        plt.plot(deltaE[:2*l], eps1[:2*l], label = r"$\varepsilon_1$")
+        plt.plot(deltaE[:2*l], eps2[:2*l], label = r"$\varepsilon_2$")
+        plt.plot(deltaE[:2*l], np.absolute(eps[:2*l]), label = r"$|\varepsilon|$")
+        plt.title(r"dielectric function")
+        plt.legend()
+        plt.xlabel(r"$\Delta E$")
+        plt.ylabel(r"$\varepsilon$")
+        
+        plt.figure()
+        plt.plot(deltaE[:l], eps1[:l], label = r"$\varepsilon_1$")
+        plt.plot(deltaE[:l], eps2[:l], label = r"$\varepsilon_2$")
+        plt.plot(deltaE[:l], np.absolute(eps[:l]), label = r"$|\varepsilon|$")
+        plt.title(r"dielectric function")
+        plt.legend()
+        plt.xlabel(r"$\Delta E$")
+        plt.ylabel(r"$\varepsilon$")
+    
+    
+    return eps
+
+
+#%%
+method = 3  #1: integration at datapoints, except deltaE = deltaE'
+                #2: integration between datapoints deltaE_i = (deltaE_i + deltaE_i+1)/2
+                #3: FT
+
+deltaE = x_14
+EELsample = y_14-np.average(ZLP_14, axis = 0)
+
+eps14 = (1+1j) * np.zeros((Nx, sem_inf))
+for i in range(Nx):
+    EELsample = y_14-ZLP_14[i,:]
+    eps14[i,:] = kramer_kronig(deltaE, EELsample)
+
+
+#%%
+eps14r = np.real(eps14)
+eps14i = np.imag(eps14)
+eps14a = np.absolute(eps14)
+plt.figure()
+plt.title("Dielectric function spectrum 14")
+plt.ylabel(r"$\varepsilon$")
+plt.xlabel("$\Delta E$ [eV]")
+plt.fill_between(x_14[:l], (np.average(eps14r, axis =0) - np.std(eps14r, axis = 0))[:l], (np.average(eps14r, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'blue', alpha = 0.18)
+plt.fill_between(x_14[:l], (np.average(eps14i, axis =0) - np.std(eps14i, axis = 0))[:l], (np.average(eps14i, axis =0) + np.std(eps14i, axis = 0))[:l], color = 'orange', alpha = 0.3)
+plt.fill_between(x_14[:l],( np.average(eps14a, axis =0) - np.std(eps14a, axis = 0))[:l], (np.average(eps14a, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'green', alpha = 0.2)
+plt.plot(x_14[:l], np.average(eps14r, axis =0)[:l], label = r"$\varepsilon_1$")
+plt.plot(x_14[:l], np.average(eps14i, axis =0)[:l], label = r"$\varepsilon_2$")
+plt.plot(x_14[:l], np.average(eps14a, axis =0)[:l], label = r"$|\varepsilon|$")
+plt.legend()
+
+eps14r = np.real(eps14)
+eps14i = np.imag(eps14)
+eps14a = np.absolute(eps14)
+plt.figure()
+plt.title("Dielectric function spectrum 14")
+plt.ylabel(r"$\varepsilon$")
+plt.xlabel("$\Delta E$ [eV]")
+plt.fill_between(x_14[:l], (np.average(eps14r, axis =0) - np.std(eps14r, axis = 0))[:l], (np.average(eps14r, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'blue', alpha = 0.18)
+plt.fill_between(x_14[:l], (np.average(eps14i, axis =0) - np.std(eps14i, axis = 0))[:l], (np.average(eps14i, axis =0) + np.std(eps14i, axis = 0))[:l], color = 'orange', alpha = 0.3)
+plt.fill_between(x_14[:l],( np.average(eps14a, axis =0) - np.std(eps14a, axis = 0))[:l], (np.average(eps14a, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'green', alpha = 0.2)
+plt.plot(x_14[:l], np.average(eps14r, axis =0)[:l], label = r"$\varepsilon_1$")
+plt.plot(x_14[:l], np.average(eps14i, axis =0)[:l], label = r"$\varepsilon_2$")
+plt.plot(x_14[:l], np.average(eps14a, axis =0)[:l], label = r"$|\varepsilon|$")
+plt.legend()
+plt.xlim(-4,5)
+plt.ylim(-0.6E7,0.6E7)
+
+
+#%%
+deltaE = x_14
+EELsample = ys_14-np.average(ZLPs_14, axis = 0)
+
+eps14 = (1+1j) * np.zeros((Nx, sem_inf))
+for i in range(Nx):
+    EELsample = ys_14-ZLPs_14[i,:]
+    eps14[i,:] = kramer_kronig(deltaE, EELsample)
+
+
+
+eps14r = np.real(eps14)
+eps14i = np.imag(eps14)
+eps14a = np.absolute(eps14)
+plt.figure()
+plt.title("Dielectric function spectrum 14")
+plt.ylabel(r"$\varepsilon$")
+plt.xlabel("$\Delta E$ [eV]")
+plt.fill_between(x_14[:l], (np.average(eps14r, axis =0) - np.std(eps14r, axis = 0))[:l], (np.average(eps14r, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'blue', alpha = 0.18)
+plt.fill_between(x_14[:l], (np.average(eps14i, axis =0) - np.std(eps14i, axis = 0))[:l], (np.average(eps14i, axis =0) + np.std(eps14i, axis = 0))[:l], color = 'orange', alpha = 0.3)
+plt.fill_between(x_14[:l],( np.average(eps14a, axis =0) - np.std(eps14a, axis = 0))[:l], (np.average(eps14a, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'green', alpha = 0.2)
+plt.plot(x_14[:l], np.average(eps14r, axis =0)[:l], label = r"$\varepsilon_1$")
+plt.plot(x_14[:l], np.average(eps14i, axis =0)[:l], label = r"$\varepsilon_2$")
+plt.plot(x_14[:l], np.average(eps14a, axis =0)[:l], label = r"$|\varepsilon|$")
+plt.legend()
+
+eps14r = np.real(eps14)
+eps14i = np.imag(eps14)
+eps14a = np.absolute(eps14)
+plt.figure()
+plt.title("Dielectric function spectrum 14")
+plt.ylabel(r"$\varepsilon$")
+plt.xlabel("$\Delta E$ [eV]")
+plt.fill_between(x_14[:l], (np.average(eps14r, axis =0) - np.std(eps14r, axis = 0))[:l], (np.average(eps14r, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'blue', alpha = 0.18)
+plt.fill_between(x_14[:l], (np.average(eps14i, axis =0) - np.std(eps14i, axis = 0))[:l], (np.average(eps14i, axis =0) + np.std(eps14i, axis = 0))[:l], color = 'orange', alpha = 0.3)
+plt.fill_between(x_14[:l],( np.average(eps14a, axis =0) - np.std(eps14a, axis = 0))[:l], (np.average(eps14a, axis =0) + np.std(eps14r, axis = 0))[:l], color = 'green', alpha = 0.2)
+plt.plot(x_14[:l], np.average(eps14r, axis =0)[:l], label = r"$\varepsilon_1$")
+plt.plot(x_14[:l], np.average(eps14i, axis =0)[:l], label = r"$\varepsilon_2$")
+plt.plot(x_14[:l], np.average(eps14a, axis =0)[:l], label = r"$|\varepsilon|$")
+plt.legend()
+plt.xlim(-4,5)
+plt.ylim(-0.6E7,0.6E7)
+
+
+#%%
+plt.figure()
+plt.plot(deltaE[:2*l], eps1[:2*l], label = r"$\varepsilon_1$")
+plt.plot(deltaE[:2*l], eps2[:2*l], label = r"$\varepsilon_2$")
+plt.plot(deltaE[:2*l], np.absolute(eps[:2*l]), label = r"$|\varepsilon|$")
+plt.title(r"dielectric function")
+plt.legend()
+plt.xlabel(r"$\Delta E$")
+plt.ylabel(r"$\varepsilon$")
+
+plt.figure()
+plt.plot(deltaE[:l], eps1[:l], label = r"$\varepsilon_1$")
+plt.plot(deltaE[:l], eps2[:l], label = r"$\varepsilon_2$")
+plt.plot(deltaE[:l], np.absolute(eps[:l]), label = r"$|\varepsilon|$")
+plt.title(r"dielectric function")
+plt.legend()
+plt.xlabel(r"$\Delta E$")
+plt.ylabel(r"$\varepsilon$")

@@ -39,7 +39,7 @@ _logger = logging.getLogger(__name__)
 
 
 class Spectral_image():
-    def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None):
+    def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None):
         #TODO: rewrite everything to work with rotated data??? Or rotate data itself??? Lazy or nette oplossing?
         self.data = np.swapaxes(np.swapaxes(data, 0,1), 1,2)
         self.l = self.data.shape[2]
@@ -52,6 +52,8 @@ class Spectral_image():
             self.beam_energy = beam_energy
         if collection_angle is not None:
             self.collection_angle = collection_angle
+        if name is not None:
+            self.name = name
     
     def determine_deltaE(self):
         data_avg = np.average(self.data, axis = (0,1))
@@ -170,15 +172,24 @@ class Spectral_image():
         y_ZLP_extrp = np.zeros(sem_inf)
         x_extrp = np.linspace(self.deltaE[0]- self.l*self.ddeltaE, sem_inf*self.ddeltaE+self.deltaE[0]- self.l*self.ddeltaE, sem_inf)
         
-        y_ZLP_extrp[self.l:self.l*2] = ZLP
+        x_extrp = np.linspace(self.deltaE[0], sem_inf*self.ddeltaE+self.deltaE[0], sem_inf)
+
         
-        y_extrp[self.l:self.l*2] = y
-        x_extrp[self.l:self.l*2] = self.deltaE[-self.l:]
+        #y_ZLP_extrp[self.l:self.l*2] = ZLP
         
-        y_extrp[2*self.l:] = A*np.power(1+x_extrp[2*self.l:]-x_extrp[2*self.l],-r)
+        #y_extrp[self.l:self.l*2] = y
+        #x_extrp[self.l:self.l*2] = self.deltaE[-self.l:]
+        
+        #y_extrp[2*self.l:] = A*np.power(1+x_extrp[2*self.l:]-x_extrp[2*self.l],-r)
+        
+        y_ZLP_extrp[:self.l] = ZLP        
+        y_extrp[:self.l] = y
+        x_extrp[:self.l] = self.deltaE[-self.l:]
+        
+        y_extrp[self.l:] = A*np.power(1+x_extrp[self.l:]-x_extrp[self.l],-r)
         
         x = x_extrp
-        y_EEL = y_extrp
+        y = y_extrp
         y_ZLP = y_ZLP_extrp
         #y_EEL = y - y_ZLP
         
@@ -211,7 +222,7 @@ class Spectral_image():
         S_E_nc = np.real(iCFT( x,s_nu_nc))
         J1_E = np.real(iCFT(x,j1_nu))
         
-        return J1_E
+        return J1_E[:self.l]
     
     #METHODS ON ZLP
     #CALCULATING ZLPs FROM PRETRAINDED MODELS
@@ -662,6 +673,8 @@ class Spectral_image():
         self.S_s_std = (1+1j)*np.zeros(self.data[ :,:,self.deltaE>0].shape)
         self.thickness_avg = np.zeros(self.image_shape)
         self.thickness_std = np.zeros(self.image_shape)
+        self.IEELS_avg = np.zeros(self.data.shape)
+        self.IEELS_std = np.zeros(self.data.shape)
         N_ZLPs_calculated = hasattr(self, 'N_ZLPs')
         #TODO: add N_ZLP saving
         #if not N_ZLPs_calculated:
@@ -674,11 +687,13 @@ class Spectral_image():
                 dielectric_functions = (1+1j)* np.zeros(ZLPs[:,self.deltaE>0].shape)
                 S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
                 ts = np.zeros(ZLPs.shape[0])            
+                IEELSs = np.zeros(ZLPs.shape)
                 for k in range(ZLPs.shape[0]):
                     ZLP_k = ZLPs[k,:]
                     N_ZLP = np.sum(ZLPs)
                     IEELS = data_ij-ZLP_k
                     IEELS = self.deconvolute(i, j, ZLP_k)
+                    IEELSs[k,:] = IEELS
                     #TODO: FIX ZLP: now becomes very negative!!!!!!!
                     #TODO: VERY IMPORTANT
                     dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n =3)
@@ -689,6 +704,8 @@ class Spectral_image():
                 self.S_s_std[i,j,:] = np.std(S_ss, axis = 0)
                 self.thickness_avg[i,j] = np.average(ts)
                 self.thickness_std[i,j] = np.std(ts)
+                self.IEELS_avg[i,j,:] = np.average(IEELSs, axis = 0)
+                self.IEELS_std[i,j,:] = np.std(IEELSs, axis = 0)
         #return dielectric_function_im_avg, dielectric_function_im_std
     
     def crossings_im(self):#,  delta = 50):
@@ -727,6 +744,28 @@ class Spectral_image():
         crossing_E = deltaE_n[crossing.astype('bool')]
         n = len(crossing_E)
         return crossing_E, n
+    
+    
+    def plot_sum(self, title = None, xlab = None, ylab = None):
+        if hasattr(self, 'name'):
+            name = self.name
+        else:
+            name = ''
+        plt.figure()
+        if title is not None:
+            plt.title("intgrated intensity spectrum " + name)
+        else:
+            plt.title(title)
+        ax = sns.heatmap(np.sum(self.data, axis = 2))
+        if not hasattr(self, 'pixelsize'):
+            plt.xlabel(self.pixelsize)
+            plt.ylabel(self.pixelsize)
+        if xlab is not None:
+            plt.xlabel(xlab)
+        if ylab is not None:
+            plt.ylabel = ylab
+        plt.show()
+        
     
             
 def load_data(path_to_dmfile):
@@ -848,13 +887,15 @@ def iCFT(x, Y_k):
 #data2 = dmfile.getDataset(0)
 
 im = load_data('area03-eels-SI-aligned.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
-im.cut_image([0,70], [90,100])
-im.calc_ZLPs_gen2(specimen = 3)
+im.cut_image([0,70], [95,100])
+#im.cut_image([30,32],[5,6])
+im.calc_ZLPs_gen2(specimen = 4)
 im.smooth(window_len=50)
 im.im_dielectric_function()
 im.crossings_im()
 
 #%%
+"""
 plt.figure()
 plt.title("number of crossings real part dielectric function")
 ax = sns.heatmap(im.crossings_n)
@@ -870,3 +911,5 @@ plt.figure()
 plt.title("thickness of sample")
 ax = sns.heatmap(im.thickness_avg)
 plt.show()
+
+"""

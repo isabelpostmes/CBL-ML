@@ -434,6 +434,140 @@ def calc_ZLPs_gen( energies, specimen = 4):
         
     return ZLPs_gen, dE0, dE1, dE2
 
+def calc_ZLPs_gen2( energies, specimen = 4):
+    tf.reset_default_graph()
+    
+    if specimen == 3:
+        d_string = '06.12.2020'
+        path_to_data = 'Data_oud/Results/sp3/%(date)s/'% {"date": d_string} 
+    else:
+        d_string = '07.09.2020'
+        path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
+    
+    path_predict = r'Predictions_*.csv'
+    path_cost = r'Cost_*.csv' 
+    
+    all_files = glob.glob(path_to_data + path_predict)
+    
+    li = []
+    for filename in all_files:
+        df = pd.read_csv(filename, delimiter=",",  header=0, usecols=[0,1,2], names=['x', 'y', 'pred'])
+        li.append(df)
+        
+    
+    training_data = pd.concat(li, axis=0, ignore_index=True)
+    
+    
+    all_files_cost = glob.glob(path_to_data + path_cost)
+    
+    
+    import natsort
+    
+    all_files_cost_sorted = natsort.natsorted(all_files_cost)
+    
+    chi2_array = []
+    chi2_index = []
+    
+    for filename in all_files_cost_sorted:
+        df = pd.read_csv(filename, delimiter=",", header=0, usecols=[0,1], names=['train', 'test'])
+        best_try = np.argmin(df['test'])
+        chi2_array.append(df.iloc[best_try,0])
+        chi2_index.append(best_try)
+    
+    chi_data  = pd.DataFrame()
+    chi_data['Best chi2 value'] = chi2_array
+    chi_data['Epoch'] = chi2_index
+        
+    
+    
+    good_files = []
+    count = 0
+    threshold = 3
+    
+    for i,j in enumerate(chi2_array):
+        if j < threshold:
+            good_files.append(1) 
+            count +=1 
+        else:
+            good_files.append(0)
+    
+    
+    
+    
+    tf.get_default_graph
+    tf.disable_eager_execution()
+    
+    def make_model(inputs, n_outputs):
+        hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+        hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+        hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+        output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+        return output
+    
+    x = tf.placeholder("float", [None, 1], name="x")
+    predictions = make_model(x, 1)
+    
+    
+    prediction_file = pd.DataFrame()
+    len_data = len(energies)
+    predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+    predict_x = energies.reshape(len_data,1)
+    
+    ZLPs_gen = np.zeros((count, len_data))
+    j=0
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        
+        for i in range(0,len(good_files)):
+            if good_files[i] == 1:
+                if specimen ==3:
+                    best_model = 'Models_oud/Best_models/sp3/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                else:
+                    best_model = 'Models_oud/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                saver = tf.train.Saver(max_to_keep=1000)
+                saver.restore(sess, best_model)
+    
+                extrapolation = sess.run(predictions,
+                                        feed_dict={
+                                        x: predict_x
+                                        })
+                #prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(1000,)
+                ZLPs_gen[j,:] = np.exp(extrapolation.reshape(len_data,))
+                prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
+                j += 1
+    
+    dE1 = np.round(max(training_data['x'][(training_data['x']< 3)]),2)
+    dE2 = np.round(min(training_data['x'][(training_data['x']> 3)]),1)
+    dE0 = np.round(dE1 - .5, 2) 
+    
+    return ZLPs_gen, dE0, dE1, dE2
+    
+    nbins = len_data
+    li = []
+    diff = []
+    
+    for i in range(0, len(prediction_file.columns)):
+        df = pd.DataFrame()
+        #df['x'] = predict_x.reshape(1000,)
+        df['x'] = predict_x.reshape(len_data,)
+        df['prediction'] = prediction_file.iloc[:,i]
+        df['k'] = i
+        li.append(df)
+    
+    extrapolation = pd.concat(li, axis=0, ignore_index = True)
+    
+    ZLPs_gen = np.zeros((count, len_data))
+
+    for k in range(count): 
+        exp_k = extrapolation[extrapolation['k'] == k ]
+        #mean_k, var_k, count = binned_statistics(exp_k['x'], exp_k['prediction'], nbins)[0:3]
+        
+        mean_k = extrapolation[extrapolation['k'] == k ]['prediction']
+        
+        ZLPs_gen[k,:] =  np.exp(mean_k) #matching(energies,, data)
+        
+    return ZLPs_gen, dE0, dE1, dE2
+
 def calc_ZLPs(data, energies, ZLPs_gen, dE0, dE1, dE2, specimen = 4):
 
     """

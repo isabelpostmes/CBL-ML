@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import scipy
 import math
 #import start_cleaning_lau
-from functions_revised import *
+#from functions_revised import *
 
 def exp_decay(x, r):
     """ y_offset * np.power(x - x[0], -r) """
