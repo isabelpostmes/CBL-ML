@@ -39,13 +39,27 @@ _logger = logging.getLogger(__name__)
 
 
 class Spectral_image():
+    DIELECTRIC_FUNCTION_NAMES = ['dielectric_function', 'dielectricfunction', 'dielec_func', 'die_fun', 'df', 'epsilon']
+    EELS_NAMES = ['electron_energy_loss_spectrum','electron_energy_loss','EELS', 'EEL', 'energy_loss', 'data']
+    IEELS_NAMES = ['inelastic_scattering_energy_loss_spectrum', 'inelastic_scattering_energy_loss', 'inelastic_scattering', 'IEELS', 'IES']
+    ZLP_NAMES = ['zeros_loss_peak', 'zero_loss', 'ZLP', 'ZLPs']
+    
+    #TODO: consider wheter to follow physics or programming conventions in capatilizing these
+    m_0 = 511.06 #eV, electron rest mass
+    a_0 = 5.29E-11 #m, Bohr radius
+    h_bar = 6.582119569E-16 #eV/s
+    c = 2.99792458E8 #m/s
+    
+    
+    
+    
     def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None):
         #TODO: rewrite everything to work with rotated data??? Or rotate data itself??? Lazy or nette oplossing?
-        self.data = np.swapaxes(np.swapaxes(data, 0,1), 1,2)
-        self.l = self.data.shape[2]
+        self.data = data
         self.image_shape = self.data.shape[:2]
+        self.shape = self.data.shape
         self.ddeltaE = deltadeltaE
-        self.deltaE = self.determine_deltaE()
+        self.determine_deltaE()
         if pixelsize is not None:
             self.pixelsize = pixelsize
         if beam_energy is not None:
@@ -55,12 +69,39 @@ class Spectral_image():
         if name is not None:
             self.name = name
     
+    @classmethod
+    def load_data(cls, path_to_dmfile):
+        """
+        INPUT: 
+            path_to_dmfile: str, path to spectral image file (.dm3 or .dm4 extension)
+        OUTPUT:
+            image -- Spectral_image, object of Spectral_image class containing the data of the dm-file
+        """
+        dmfile = dm.fileDM(path_to_dmfile).getDataset(0)
+        data = np.swapaxes(np.swapaxes(dmfile['data'], 0,1), 1,2)
+        ddeltaE = dmfile['pixelSize'][0]
+        pixelSize = np.array(dmfile['pixelSize'][1:])
+        energyUnit = dmfile['pixelUnit'][0]
+        ddeltaE *= cls.get_prefix(energyUnit, 'eV')
+        pixelUnit = dmfile['pixelUnit'][1]
+        pixelSize *= cls.get_prefix(pixelUnit, 'm')
+        image = cls(data, ddeltaE, pixelsize = pixelSize)
+        return image
+    
+    
     def determine_deltaE(self):
+        """
+        INPUT: 
+            self
+        
+        Determines the delta energies of the spectral image, based on the delta delta energie,
+        and the index on which the spectral image has on average the highest intesity, this 
+        is taken as the zero point for the delta energy.
+        """
         data_avg = np.average(self.data, axis = (0,1))
         ind_max = np.argmax(data_avg)
-        #l = self.data.shape[0]
-        deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l-ind_max-1)*self.ddeltaE, self.l)
-        return deltaE
+        self.deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l-ind_max-1)*self.ddeltaE, self.l)
+        #return deltaE
     
     
     
@@ -138,27 +179,6 @@ class Spectral_image():
     
     
     def deconvolute(self, i,j, ZLP):
-        #x = df_sample.iloc[2].x_shifted
-        #y = df_sample.iloc[2].y_norm
-        
-        #x_lim = 1.3
-        
-        #x_exp = x[x<2][ x[x<2]> x_lim]
-        #y_exp = y[x<2][ x[x<2]> x_lim]
-        
-        #y_offset = y_exp[0]
-        
-        #y_fit_exp, cov = scipy.optimize.curve_fit(exp_decay, x_exp, y_exp)
-        
-        """
-        plt.figure()
-        plt.plot(x,y)
-        plt.plot(x_exp, exp_decay(x_exp, y_fit_exp[0]))
-        plt.xlim(0,5)
-        plt.ylim(0,0.02)
-        """
-        
-        #y_ZLP = np.concatenate((y[x<= x_lim], exp_decay(x[x>x_lim], y_fit_exp[0])))
         
         y = self.get_pixel_signal(i,j)
         r = 3 #Drude model, can also use estimation from exp. data
@@ -174,14 +194,6 @@ class Spectral_image():
         
         x_extrp = np.linspace(self.deltaE[0], sem_inf*self.ddeltaE+self.deltaE[0], sem_inf)
 
-        
-        #y_ZLP_extrp[self.l:self.l*2] = ZLP
-        
-        #y_extrp[self.l:self.l*2] = y
-        #x_extrp[self.l:self.l*2] = self.deltaE[-self.l:]
-        
-        #y_extrp[2*self.l:] = A*np.power(1+x_extrp[2*self.l:]-x_extrp[2*self.l],-r)
-        
         y_ZLP_extrp[:self.l] = ZLP        
         y_extrp[:self.l] = y
         x_extrp[:self.l] = self.deltaE[-self.l:]
@@ -191,31 +203,14 @@ class Spectral_image():
         x = x_extrp
         y = y_extrp
         y_ZLP = y_ZLP_extrp
-        #y_EEL = y - y_ZLP
-        
-        
         
         z_nu = CFT(x,y_ZLP)
         i_nu = CFT(x,y)
         abs_i_nu = np.absolute(i_nu)
-        max_i_nu = np.max(abs_i_nu)
-        i_nu_copy = np.copy(i_nu)
-        #i_nu[abs_i_nu<max_i_nu*0.00000000000001] = 0
         N_ZLP = 1#scipy.integrate.cumtrapz(y_ZLP, x, initial=0)[-1]#1 #arbitrary units??? np.sum(EELZLP)
         
         s_nu = N_ZLP*np.log(i_nu/z_nu)
         j1_nu = z_nu*s_nu/N_ZLP
-        #s_nu_2 = s_nu
-        #s_nu_2[np.isnan(s_nu)] = 0#1E10 #disregard NaN values, but setting them to 0 doesnt seem fair, as they should be inf
-        
-        """
-        plt.figure()
-        plt.title("s_nu and j1_nu")
-        plt.plot(s_nu)
-        plt.plot(j1_nu)
-        """
-        
-        #s_nu[150:1850] = 0
         S_E = np.real(iCFT(x,s_nu))
         s_nu_nc = s_nu
         s_nu_nc[500:-500] = 0
@@ -317,7 +312,13 @@ class Spectral_image():
                     self.ZLPs_gen[i, :] = np.exp(extrapolation)#.reshape(len_data,)
         
         
-        
+    @staticmethod
+    def make_model(inputs, n_outputs):
+        hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+        hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+        hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+        output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+        return output
     
     def calc_ZLPs_gen2(self,  specimen = 4):
         tf.reset_default_graph()
@@ -381,15 +382,10 @@ class Spectral_image():
         tf.get_default_graph
         tf.disable_eager_execution()
         
-        def make_model(inputs, n_outputs):
-            hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
-            hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
-            hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
-            output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
-            return output
+        
         
         x = tf.placeholder("float", [None, 1], name="x")
-        predictions = make_model(x, 1)
+        predictions = self.make_model(x, 1)
         
         
         prediction_file = pd.DataFrame()
@@ -434,7 +430,7 @@ class Spectral_image():
             self.calc_ZLPs_gen2("iets")
         
         def matching( signal, ind_ZLP):
-            gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]
+            gen_i_ZLP = self.ZLPs_gen[ind_ZLP, :]*np.max(signal)/np.max(self.ZLPs_gen[ind_ZLP,:]) #TODO!!!!, normalize?
             delta = np.divide((self.dE1 - self.dE0), 3)
             
             factor_NN = np.exp(- np.divide((self.deltaE[(self.deltaE<self.dE1) & (self.deltaE >= self.dE0)] - self.dE1)**2, delta**2))
@@ -661,7 +657,22 @@ class Spectral_image():
 
 
     
-    def im_dielectric_function(self, track_process = False):
+    def im_dielectric_function(self, track_process = False, plot = False):
+        """
+        INPUT:
+            self -- the image of which the dielectic functions are calculated
+            track_process -- boolean, default = False, if True: prints for each pixel that program is busy with that pixel.
+            plot -- boolean, default = False, if True, plots all calculated dielectric functions
+        OUTPUT:
+            self.dielectric_function_im_avg = average dielectric function for each pixel
+            self.dielectric_function_im_std = standard deviation of the dielectric function at each energy for each pixel
+            self.S_s_avg = average surface scattering distribution for each pixel
+            self.S_s_std = standard deviation of the surface scattering distribution at each energy for each pixel
+            self.thickness_avg = average thickness for each pixel
+            self.thickness_std = standard deviation thickness for each pixel
+            self.IEELS_avg = average bulk scattering distribution for each pixel
+            self.IEELS_std = standard deviation of the bulk scattering distribution at each energy for each pixel
+        """
         #TODO
         #data = self.data[self.deltaE>0, :,:]
         #energies = self.deltaE[self.deltaE>0]
@@ -679,6 +690,9 @@ class Spectral_image():
         #TODO: add N_ZLP saving
         #if not N_ZLPs_calculated:
         #    self.N_ZLPs = np.zeros(self.image_shape)
+        if plot:
+            fig1, ax1 = plt.subplots()
+            fig2, ax2 = plt.subplots()
         for i in range(self.image_shape[0]):
             for j in range(self.image_shape[1]):
                 if track_process: print("calculating dielectric function for pixel " , i,j)
@@ -688,15 +702,25 @@ class Spectral_image():
                 S_ss = np.zeros(ZLPs[:,self.deltaE>0].shape)
                 ts = np.zeros(ZLPs.shape[0])            
                 IEELSs = np.zeros(ZLPs.shape)
-                for k in range(ZLPs.shape[0]):
+                for k in range(23,28):#ZLPs.shape[0]):
                     ZLP_k = ZLPs[k,:]
-                    N_ZLP = np.sum(ZLPs)
+                    N_ZLP = np.sum(ZLP_k)
                     IEELS = data_ij-ZLP_k
                     IEELS = self.deconvolute(i, j, ZLP_k)
                     IEELSs[k,:] = IEELS
+                    if plot: 
+                        #ax1.plot(self.deltaE, IEELS)
+                        plt.figure()
+                        plt.plot(self.deltaE, IEELS)
                     #TODO: FIX ZLP: now becomes very negative!!!!!!!
                     #TODO: VERY IMPORTANT
                     dielectric_functions[k,:], ts[k], S_ss[k] = self.kramers_kronig_hs(IEELS, N_ZLP = N_ZLP, n =3)
+                    if plot: 
+                        #plt.figure()
+                        plt.plot(self.deltaE[self.deltaE>0], dielectric_functions[k,:]*2)
+                        plt.xlim(0,10)
+                        plt.ylim(-100, 400)
+                
                 #print(ts)
                 self.dielectric_function_im_avg[i,j,:] = np.average(dielectric_functions, axis = 0)
                 self.dielectric_function_im_std[i,j,:] = np.std(dielectric_functions, axis = 0)
@@ -709,6 +733,15 @@ class Spectral_image():
         #return dielectric_function_im_avg, dielectric_function_im_std
     
     def crossings_im(self):#,  delta = 50):
+        """
+        INPUT: 
+            self
+        OUTPUT:
+            self.crossings_E = numpy array (image-shape, N_c), where N_c the maximimun number of crossings of any pixel, 0 indicates no crossing
+            self.crossings_n = numpy array (image-shape), number of crossings per pixel
+        Calculates for each pixel the crossings of the real part of the dielectric function \
+            from negative to positive.
+        """
         self.crossings_E = np.zeros((self.image_shape[0], self.image_shape[1],1))
         self.crossings_n = np.zeros(self.image_shape)
         n_max = 1
@@ -727,7 +760,6 @@ class Spectral_image():
                     del crossings_E_new
                 self.crossings_E[i,j,:n] = crossings_E_ij
                 self.crossings_n[i,j] = n
-        #return crossings_E, crossings_n
     
     def crossings(self, i, j):#, delta = 50):
         #l = len(die_fun)
@@ -747,6 +779,15 @@ class Spectral_image():
     
     
     def plot_sum(self, title = None, xlab = None, ylab = None):
+        """
+        INPUT:
+            self -- spectral image 
+            title -- str, delfault = None, title of plot
+            xlab -- str, default = None, x-label
+            ylab -- str, default = None, y-label
+        OUTPUT:
+        Plots the summation over the intensity for each pixel in a heatmap.
+        """
         if hasattr(self, 'name'):
             name = self.name
         else:
@@ -765,68 +806,93 @@ class Spectral_image():
         if ylab is not None:
             plt.ylabel = ylab
         plt.show()
-        
     
-            
-def load_data(path_to_dmfile):
-    dmfile = dm.fileDM(path_to_dmfile).getDataset(0)
-    data = dmfile['data']
-    ddeltaE = dmfile['pixelSize'][0]
-    pixelSize = np.array(dmfile['pixelSize'][1:])
-    energyUnit = dmfile['pixelUnit'][0]
-    ddeltaE *= get_prefix(energyUnit, 'eV')
-    pixelUnit = dmfile['pixelUnit'][1]
-    pixelSize *= get_prefix(pixelUnit, 'm')
-    image = Spectral_image(data, ddeltaE, pixelsize = pixelSize)
-    return image
     
-
-
-
-def get_prefix(unit, SIunit = None, numeric = True):
-    if SIunit is not None:
-        lenSI = len(SIunit)
-        if unit[-lenSI:] == SIunit:
-            prefix = unit[:-lenSI]
-            if len(prefix) == 0:
+    #STATIC METHODS
+    @staticmethod
+    def get_prefix(unit, SIunit = None, numeric = True):
+        """
+        INPUT:
+            unit -- str, unit of which the prefix is wanted
+            SIunit -- str, default = None, the SI unit of the unit of which the prefix is wanted \
+                        (eg 'eV' for 'keV'), if None, first character of unit is evaluated as prefix
+            numeric -- bool, default = True, if numeric the prefix is translated to the numeric value \
+                        (e.g. 1E3 for 'k')
+        OUTPUT:
+            prefix -- str or int, the character of the prefix or the numeric value of the prefix
+        """
+        if SIunit is not None:
+            lenSI = len(SIunit)
+            if unit[-lenSI:] == SIunit:
+                prefix = unit[:-lenSI]
+                if len(prefix) == 0:
+                    if numeric: return 1
+                    else: return prefix
+            else:
+                print("provided unit not same as target unit: " + unit + ", and " + SIunit)
                 if numeric: return 1
                 else: return prefix
         else:
-            print("provided unit not same as target unit: " + unit + ", and " + SIunit)
-            if numeric: return 1
-            else: return prefix
-    else:
-        prefix = unit[0]
-    if not numeric:
-        return prefix
+            prefix = unit[0]
+        if not numeric:
+            return prefix
+
+        
+        if prefix == 'p':
+            return 1E-12
+        if prefix == 'n':
+            return 1E-9
+        if prefix == 'μ' or prefix == 'µ' or prefix == 'u':
+            return 1E-6
+        if prefix == 'm':
+            return 1E-3
+        if prefix == 'k':
+            return 1E3
+        if prefix == 'M':
+            return 1E6
+        if prefix == 'G':
+            return 1E9
+        if prefix == 'T':
+            return 1E12
+        else:
+            print("either no or unknown prefix in unit: " + unit + ", found prefix " + prefix + ", asuming no.")
+        return 1
     
-    #print(prefix, 'μ')
-    #print(prefix.type)
-    #print('μ'.type)
+    #PROPERTIES
+    @property
+    def l(self):
+        return self.data.shape[2]
     
-    if prefix == 'p':
-        return 1E-12
-    if prefix == 'n':
-        return 1E-9
-    if prefix == 'μ' or prefix == 'µ' or prefix == 'u':
-        return 1E-6
-    if prefix == 'm':
-        return 1E-3
-    if prefix == 'k':
-        return 1E3
-    if prefix == 'M':
-        return 1E6
-    if prefix == 'G':
-        return 1E9
-    if prefix == 'T':
-        return 1E12
-    else:
-        print("either no or unknown prefix in unit: " + unit + ", found prefix " + prefix + ", asuming no.")
-    return 1
+    #CLASS THINGIES
+    def __getitem__(self, key):
+        """ Determines behavior of `self[key]` """
+        return self.data[key]
+        #pass
     
-def exp_decay(x, r):
-    """ y_offset * np.power(x - x[0], -r) """
-    return y_offset * np.power(1 + x - x[0], -r)
+    
+    
+    def __str__(self):
+        if hasattr(self, 'name'):
+            name_str = ", name = " + self.name
+        else:
+            name_str = ""
+        return 'Spectral image: ' + name_str + ", image size:"+ str(self.data.shape[0]) + 'x' + \
+                    str(self.data.shape[1]) + ', deltaE range: [' + str(round(self.deltaE[0],3)) + ',' + \
+                        str(round(self.deltaE[-1],3)) + '], deltadeltaE: ' + str(round(self.ddeltaE,3))
+        
+    def __repr__(self):
+        data_str = "data * np.ones(" + str(self.shape) + ")"
+        if hasattr(self, 'name'):
+            name_str = ", name = " + self.name
+        else:
+            name_str = ""
+        return "Spectral_image(" + data_str +  ", deltadeltaE=" + str(round(self.ddeltaE, 3)) + name_str + ")"
+        
+    def __len__(self):
+        return self.l
+            
+
+    
 
 def CFT(x, y):
     x_0 = np.min(x)
@@ -849,7 +915,6 @@ def iCFT(x, Y_k):
     cont_factor = np.exp(-2j*np.pi*N_0*k/N)
     f_n = np.fft.ifft(cont_factor*Y_k)/delta_x # 2*np.pi ##np.exp(-2j*np.pi*x_0*k)
     return f_n            
-
 
 
 
@@ -886,16 +951,16 @@ def iCFT(x, Y_k):
 #dmfile = dm.fileDM('area03-eels-SI-aligned.dm4')
 #data2 = dmfile.getDataset(0)
 
-im = load_data('area03-eels-SI-aligned.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
+im = Spectral_image.load_data('area03-eels-SI-aligned.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
 im.cut_image([0,70], [95,100])
-#im.cut_image([30,32],[5,6])
+#im.cut_image([40,41],[4,5])
 im.calc_ZLPs_gen2(specimen = 4)
 im.smooth(window_len=50)
 im.im_dielectric_function()
 im.crossings_im()
 
 #%%
-"""
+
 plt.figure()
 plt.title("number of crossings real part dielectric function")
 ax = sns.heatmap(im.crossings_n)
@@ -912,4 +977,3 @@ plt.title("thickness of sample")
 ax = sns.heatmap(im.thickness_avg)
 plt.show()
 
-"""
