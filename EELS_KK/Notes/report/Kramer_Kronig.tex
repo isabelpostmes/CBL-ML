@@ -6,7 +6,7 @@ If one ignores the instrumental broadening, surface-mode scattering and the reta
 
 \begin{equation}\label{eq_S_E}
 \begin{aligned}
-I_{1}(E) & \approx S(E)=\frac{2 N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \int_{0}^{\beta} \frac{\theta d \theta}{\theta^{2}+\theta_{E}^{2}} \\
+I_{1}(E)  \approx S(E) &=\frac{2 N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \int_{0}^{\beta} \frac{\theta d \theta}{\theta^{2}+\theta_{E}^{2}} \\
 \\
 &=\frac{N_{ZLP} t}{\pi a_{0} m_{0} v^{2}} \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] \ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]
 \end{aligned}
@@ -16,6 +16,13 @@ In this equation is $J^1(E)$ the single scattering distribution, $S(E)$ the sing
 
 \begin{equation} \label{eq_th_E}
     \theta_E = E/(\gamma m_0v^2) .
+\end{equation}
+
+
+Rewriting eq. \eqref{eq_S_E} to extract $\operatorname{Im}\left[-1/\varepsilon(E)\right]$ gives:
+
+\begin{equation}
+    \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] = \frac{\pi a_{0} m_{0} v^{2}}{N_{ZLP} t} \frac{S(E)}{\ln \left[1+\left(\frac{\beta}{\theta_{E}}\right)^{2}\right]}. 
 \end{equation}
 
 
@@ -91,7 +98,7 @@ Having retrieved $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ from 
     Combining all this means that one can also obtain $\operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right]$ from $\operatorname{Im}\left[-\frac{1}{\varepsilon(E)}\right]$ by:
     
     \begin{equation}
-        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] =\mathcal{C}\left\{\operatorname{sgn}\left[\mathcal{S}^{-1}\left\{\operatorname{Im}\left[\frac{-1}{ \varepsilon(E)}\right]\right\}\right]\right\}.
+        \operatorname{Re}\left[\frac{1}{\varepsilon(E)}\right] - 1 =\mathcal{C}\left\{\operatorname{sgn}\left[\mathcal{S}^{-1}\left\{\operatorname{Im}\left[\frac{-1}{ \varepsilon(E)}\right]\right\}\right]\right\}.
     \end{equation}
 \end{itemize}
 

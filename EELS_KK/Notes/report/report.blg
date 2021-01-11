@@ -2,11 +2,11 @@ This is BibTeX, Version 0.99d (TeX Live 2020)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: report.aux
 The style file: biblatex.bst
-White space in argument---line 88 of file report.aux
+White space in argument---line 91 of file report.aux
  : \citation{denk
  :                betere ref}
 I'm skipping whatever remains of this command
-White space in argument---line 91 of file report.aux
+White space in argument---line 94 of file report.aux
  : \citation{check
  :                 lau}
 I'm skipping whatever remains of this command
@@ -27,6 +27,7 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: report-blx.bib
 Database file #2: bib.bib
+Warning--I didn't find a database entry for "thesis"
 Warning--I didn't find a database entry for "iets"
 Biblatex version: 3.15
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
