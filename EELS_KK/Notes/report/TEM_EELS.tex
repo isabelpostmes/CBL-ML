@@ -28,3 +28,13 @@ The following method assumes the recorded spectrum to only contain bulk scatteri
 Besides the ZLP, other excitations cloud the low loss region of the EELS, whereas we are only interested in the bulk excitations. The main problems are caused by relatavistic effects, and for very thin samples surface plasmons \cite{potapov}. Relativistic effects are visable in the spectrum as energy lost by Cherenkov radiation. One could solve this by lowering the acceleration voltage of the TEM significantly, but this often proves not usefull. Another important influence near the bandgap region is the losses due to surface plasmons, which is comparable to the losses due to the bulk plasmons for very thin samples \cite{potapov}. These contributions are often subtracted from the spectrum by using the free-electron model for the surface excitations. However, this model is insufficient when Chernikov radiation is also present, due to the coupling between the surface excitations and Chernikov effect \cite{potapov}.
 
 Another way to handle these unwanted contributions that is sufficient, in by appling the Kröger formula \cite{potapov,egerton_book}.
+
+
+
+\cite{thesis}
+\begin{equation}
+\begin{aligned}
+S_{tot}(E) &= S_{b} (E) + S_s (E)\\
+&= C_b(E) \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right] + C_s(E)\left(\operatorname{Im}\left[\frac{-4}{1+\varepsilon(E)}\right] - \operatorname{Im}\left[\frac{-1}{\varepsilon(E)}\right]\right) 
+\end{aligned}
+\end{equation}

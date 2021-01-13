@@ -1,0 +1,181 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Spectral\_image class guide}
+\author{isabelpostmes }
+\date{January 2021}
+\usepackage{verbatim}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\urlstyle{same}
+
+
+
+\usepackage{listings}
+\usepackage{stmaryrd}
+\usepackage{pythonhighlight}
+\usepackage{comment}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage[labelfont=bf]{caption}
+\definecolor{eminence}{RGB}{128,8,130}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{9}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
+
+
+
+
+
+\begin{document}
+
+\maketitle
+
+\section{Guide}
+
+
+
+\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttm\color{blue},
+keywordstyle=[2]\ttm\color{eminence},
+keywordstyle=[3]\ttm\color{brown},
+keywordstyle=[4]\ttm\color{red},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+commentstyle=\ttb\color{gray},
+numberstyle=\ttb\color{gray},
+%identifierstyle=\ttm\color{purple},
+morekeywords=[2]{True, False, range, bool, self},
+morekeywords={as},
+morekeywords=[4]{self, cls}
+frame=tb,                         % Any extra options here
+showstringspaces=false,
+breaklines=true,
+%postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
+
+%\lstinputlisting{image_class.py}
+
+\lstset{emph={%  
+    self, cls%
+    },emphstyle={\color{red}}%
+}%
+
+
+
+
+Lets talk through the Spectral\_image class. We start by loading a spectral image, saved in a .dm3 or .dm4 file through:
+
+\begin{lstlisting}
+>>> im = Spectral_image.load_data('path/to/dmfile.dm4')
+\end{lstlisting}
+
+This calls on an alternative constructor, in which the data from the dm-file is loaded, and plugged into the regular constructor. In this function, the loading package \verb|ncempy.io.dm| is used,  more info \href{https://pypi.org/project/ncempy/}{here}. 
+
+
+
+\begin{lstlisting}[numbers=left, firstnumber=81]
+    @classmethod
+    def load_data(cls, path_to_dmfile):
+        """
+        INPUT: 
+            path_to_dmfile: str, path to spectral image file (.dm3 or .dm4 extension)
+        OUTPUT:
+            image -- Spectral_image, object of Spectral_image class containing the data of the dm-file
+        """
+        dmfile = dm.fileDM(path_to_dmfile).getDataset(0)
+        data = np.swapaxes(np.swapaxes(dmfile['data'], 0,1), 1,2)
+        ddeltaE = dmfile['pixelSize'][0]
+        pixelsize = np.array(dmfile['pixelSize'][1:])
+        energyUnit = dmfile['pixelUnit'][0]
+        ddeltaE *= cls.get_prefix(energyUnit, 'eV')
+        pixelUnit = dmfile['pixelUnit'][1]
+        pixelsize *= cls.get_prefix(pixelUnit, 'm')
+        image = cls(data, ddeltaE, pixelsize = pixelsize)
+        return image
+\end{lstlisting}
+
+Furthermore, we see the \verb|cls.get_prefix()|, which is a small function which recognises the prefix in a unit and transfers it to a numerical value (e.g. 1E3 for k), see lines 870-916 in the complete code. Furthermore, the general constructor is called upon with
+
+\verb|cls(data, ddeltaE, pixelsize = pixelsize)|.
+
+The spectral image class starts by defining some constant variables, both class related and physical. The class constructor takes in at least the data of the spectral image, \verb|data|, and the broadness of the energy loss bins, \verb|deltadeltaE|. Other metadata can be given if known. 
+
+\begin{lstlisting}[numbers=left, firstnumber=41]
+class Spectral_image():
+\end{lstlisting}
+\begin{lstlisting}[numbers=left, firstnumber=53]
+    def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None):
+        self.data = data
+        self.ddeltaE = deltadeltaE
+        self.determine_deltaE()
+        if pixelsize is not None:
+            self.pixelsize = pixelsize
+        self.calc_axes()
+        if beam_energy is not None:
+            self.beam_energy = beam_energy
+        if collection_angle is not None:
+            self.collection_angle = collection_angle
+        if name is not None:
+            self.name = name
+
+\end{lstlisting}
+
+
+\begin{lstlisting}[numbers=left, firstnumber=100]
+\end{lstlisting}
+
+\section{Complete code}
+%\lstinputlisting{../../pyfiles/image_class.py}
+
+\end{document}
