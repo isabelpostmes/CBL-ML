@@ -5,7 +5,7 @@
 \author{isabelpostmes }
 \date{January 2021}
 \usepackage{verbatim}
-
+\usepackage{changepage}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -35,8 +35,9 @@
 % Custom colors
 \usepackage{color}
 \definecolor{deepblue}{rgb}{0,0,0.5}
-\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepred}{rgb}{0.5,0,0}
 \definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{darkbrown}{rgb}{0.5,0.3,0}
 
 \usepackage{listings}
 \usepackage{pxfonts}
@@ -76,8 +77,29 @@ morekeywords=[4]{self, cls, @property, @classmethod}
 % Python for inline
 \newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
 
+\usepackage{etoolbox}
+\usepackage{xcolor}
+\usepackage{listings}
 
+\newtoggle{InString}{}% Keep track of if we are within a string
+\togglefalse{InString}% Assume not initally in string
 
+\newcommand*{\ColorIfNotInString}[1]{\iftoggle{InString}{#1}{\color{deepred}#1}}%
+\newcommand*{\ProcessQuote}[1]{#1\iftoggle{InString}{\global\togglefalse{InString}}{\global\toggletrue{InString}}}%
+\lstset{literate=%
+%    {"}{{{\ProcessQuote{"}}}}1% Disable coloring within double quotes
+%    {'}{{{\ProcessQuote{'}}}}1% Disable coloring within single quote
+    {0}{{{\ColorIfNotInString{0}}}}1
+    {1}{{{\ColorIfNotInString{1}}}}1
+    {2}{{{\ColorIfNotInString{2}}}}1
+    {3}{{{\ColorIfNotInString{3}}}}1
+    {4}{{{\ColorIfNotInString{4}}}}1
+    {5}{{{\ColorIfNotInString{5}}}}1
+    {6}{{{\ColorIfNotInString{6}}}}1
+    {7}{{{\ColorIfNotInString{7}}}}1
+    {8}{{{\ColorIfNotInString{8}}}}1
+    {9}{{{\ColorIfNotInString{9}}}}1
+}
 
 
 \begin{document}
@@ -122,17 +144,17 @@ breaklines=true,
 language=Python,
 basicstyle=\ttm,
 otherkeywords={self},             % Add keywords here
-keywordstyle=\ttb\color{deepblue},
+keywordstyle=\ttn\color{blue},
 emph={__init__},          % Custom highlighting %HIER
-emphstyle=\ttb\color{deepred},    % Custom highlighting style
+emphstyle=\ttb,%\color{deepred},    % Custom highlighting style
 stringstyle=\color{deepgreen},
 %frame=tb,                         % Any extra options here
 showstringspaces=false            % 
 keywordstyle=[2]\ttm\color{deepred},
-keywordstyle=[3]\ttm\color{brown},
-keywordstyle=[4]\ttm\color{red},
-morekeywords=[2]{True, False, range, bool, None},
-morekeywords={as},
+keywordstyle=[3]\ttm\color{blue},
+keywordstyle=[4]\ttm\color{darkbrown},
+morekeywords=[2]{True, False, range, bool, None, hasattr},
+morekeywords=[3]{1,2,3,4,5,6,7,8,9,0},
 morekeywords=[4]{self, cls, @property, @classmethod}
 }
 
@@ -141,7 +163,7 @@ morekeywords=[4]{self, cls, @property, @classmethod}
 Lets talk through the Spectral\_image class. We start by loading a spectral image, saved in a .dm3 or .dm4 file through:
 
 \begin{lstlisting}
->>> im = Spectral_image.load_data('path/to/dmfile.dm4')
+>>> im = Spectral_image.load_data('path/to/dmfile.dm4') 1
 \end{lstlisting}
 
 
@@ -183,11 +205,14 @@ The definitions of some other properties, such as \verb|im.l|, \verb|im.image_sh
 
 Furthermore, there are some retrieving functions, such as \verb|im.get_data()|, \verb|im.get_deltaE()|, \verb|im.get_metadata|, and \verb|get_pixel_signal|, which should be quite self-explainatory, but whose definitions can be found in the complete code from line 124 onwards.
 
+\lstset{emph={%  
+    Spectral_image
+    }%
+}%
 
-
-\begin{python3}[numbers=left, firstnumber=41]
+\begin{lstlisting}[numbers=left, firstnumber=41]
 class Spectral_image():
-\end{python3}
+\end{lstlisting}
 \lstset{emph={%  
     __init__
     }%
@@ -209,16 +234,82 @@ class Spectral_image():
 \end{lstlisting}
 
 \subsection{Preparing data}
-Now that we have loaded the data, we can perform some operations on the data of the image before starting any calculations, if wished. For example, if we wish to cut the image 
+Now that we have loaded the data, we can perform some operations on the data of the image before starting any calculations, if wished. For example, if we wish to cut the image to a rectangle ranging from pixel a trough pixel b in width and from pixel c trough pixel d in height, you can simply run (added the \verb|+1|'s to emphasise the excluding nature of the function, for definition of function \verb|cut_image|, see line 154):
 
-\lstset{emph={%  
-    
-    }%
+\begin{lstlisting}
+>>> im.cut_image([a,b+1], [c,d+1])
+\end{lstlisting}
+
+Also, one can, in the future, cut to a certain energy range from \verb|E1| to \verb|E2|, by running (for definition of function \verb|cut|, see line 150):
+
+\begin{lstlisting}
+>>> im.cut(E1, E2)
+\end{lstlisting}
+
+Also, one can decide to smooth the spectra. The default smoothing is done by convoluting a length 10 Hanning window, but this can be altered by adding arguments \verb|window_len= |, and \verb|window= | respectively to the call function. Also it should be noted that by defualt, the orginal spectra are disregarded and overwritten by the smoothed signal, to save memory. If you do not want this, add \verb|keep_original=True| to your call-statement. Please note that in this case to call upon your smoothed data, you should call \verb|im.data_smooth| in stead of simply \verb|im.data|. The definition of function \verb|smooth| can be found in the complete code from line 164. For smoothing your data by a moving average over 50 values for example, run:
+
+\begin{lstlisting}
+>>> im.smooth(window_len= 50, window = 'flat')
+\end{lstlisting}
+
+\subsection{Calculations on image}
+Now that you have altered your image to your wishes, we can start the calculations on the spectra.
+
+One of the first things you probably want to do (otherwise why are you using this class instead of hyperspy), is loading in the trained ZLPs for the image. This can be done by running  (for the definition of function \verb|calc_ZLPs_gen2|, see complete code from line 446):
+
+\begin{lstlisting}
+>>> im.calc_ZLPs_gen2()
+\end{lstlisting}
+
+Due to memory considerations, it is not adviced to calculate the ZLPs for each pixel at once, but calculate them per pixel as they are needed. This can be done for pixel at coordinate [i,j] by (for the definition of function \verb|calc_ZLPs|, see complete code from line 446):
+\begin{lstlisting}
+>>> ZLPs_pixel_i_j = im.calc_ZLPs(i,j)
+\end{lstlisting}
+
+NB: the two functions mentioned above are at the time mere near copies from the code of Laurien, they might/will change significantly when the training of the neural network for ZLPs is incorperated into this class. 
+
+When the ZLPs are calculated, one can deconvolute the EEL spectra, to obtain the single scattering distributions. This is done as Egerton explains in his book, and the definition of function \verb|calc_ZLPs| can be found in the complete code from line 202 on. This is also done per pixel and per ZLP, once again for memory considerations.
+\begin{lstlisting}
+>>> S_E_ijk = im.deconvolute(i,j,ZLP_k)
+\end{lstlisting}
+
+
+Both the calculation of the ZLPs and the deconvolution of the signal are needed for the evaluation with the Kramers Kronig analysis. The Kramers Kronigs analysis inplemented in our code is the version Egerton explained in his book, with the hyperspy adaptation for tail correction. The definition of function \verb|kramers_kronig_hs| can be found in the complete code from line 481 on. For a single scattering distribution \verb|S_E_ijk| and integrated ZLP\_k intensity \verb|N_ZLP_k|, you can call get the dielectric function, thickness, and an approximation of the surface scattering contribution in the single scattering distribution by running:
+\begin{lstlisting}
+>>> df, t, SS_E = im.kramers_kronig_hs(S_E_ijk, N_ZLP_k)
+\end{lstlisting}
+
+If one wishes to calculate for each pixel the average dielectric function and thickness, you can call upon the \verb|im_dielectric_function| function, whose definition can be found at line 681. It subseqently calculates for each pixel [i,j], for each predicited ZLP\_k, the dielectric function and thickness, and saves as an attribute for each pixel the average dielectric function and average thickness, and the standard deviation in both.
+\begin{lstlisting}
+>>> im.im_dielectric_function()
+\end{lstlisting}
+
+Now that the dielectric function is calculated, we can evaluate it, for example by considering the crossings of the real part of the dielectric function from negative to positive. If the function \verb|crossings_im| (line 756) is called upon, there are two attributes created: \verb|im.crossings_E| and \verb|im.crossings_n|, where in the first all the energy values at which the average dielectric function of each pixel crosses are saved, and in the latter the number of crossings at each pixel.
+
+\begin{lstlisting}
+>>> im.crossings_im()
+\end{lstlisting}
+
+\subsection{Plotting functions}
+At this point, two plotting functions are implemented: \verb|plot_sum| (line 804) and \verb|plot_all| (line 835). The first plots the integrated intensity at each pixel. 
+\begin{lstlisting}
+>>> im.plot_sum()
+\end{lstlisting}
+
+With the latter, you can plot all spectra in the image, either in a single plot (default), or in a single image each (set \verb|same_image =False|). Furthermore you can choose a range of pixels for the spectra you want to plot, the range of energy, and change from the IEELS default, to plotting other functions per pixel, such as the average dielectric function. Other functionels can be found in the definition (line 835 complete code).
+\begin{lstlisting}
+>>> im.plot_all(self, range_x = [10,20], range_y = [0,80], range_E = [0.8,5], signal = "dielectric_function")
+\end{lstlisting}
+
+
+\newpage
+\begin{adjustwidth}{-20mm}{-25mm}
+\lstset{numbers=left, firstnumber=1
 }%
 \begin{lstlisting}[numbers=left, firstnumber=1]
 \end{lstlisting}
 
 \section{Complete code}
-%\lstinputlisting{image_class.py}
-
+\lstinputlisting{../../pyfiles/image_class.py}
+\end{adjustwidth}
 \end{document}
