@@ -30,6 +30,7 @@
 % Default fixed font does not support bold face
 \DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{9} % for bold
 \DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{9}  % for normal
+\DeclareFixedFont{\tti}{T1}{txtt}{itshape}{n}{9}  % for normal
 
 % Custom colors
 \usepackage{color}
@@ -38,23 +39,29 @@
 \definecolor{deepgreen}{rgb}{0,0.5,0}
 
 \usepackage{listings}
-
+\usepackage{pxfonts}
 % Python style for highlighting
 \newcommand\pythonstyle{\lstset{
 language=Python,
 basicstyle=\ttm,
 otherkeywords={self},             % Add keywords here
 keywordstyle=\ttb\color{deepblue},
-emph={MyClass,__init__},          % Custom highlighting
+emph={Spectral_image,__init__},          % Custom highlighting %HIER
 emphstyle=\ttb\color{deepred},    % Custom highlighting style
 stringstyle=\color{deepgreen},
-frame=tb,                         % Any extra options here
+%frame=tb,                         % Any extra options here
 showstringspaces=false            % 
+keywordstyle=[2]\ttm\color{deepred},
+keywordstyle=[3]\ttm\color{brown},
+keywordstyle=[4]\ttm\color{red},
+morekeywords=[2]{True, False, range, bool, None},
+morekeywords={as},
+morekeywords=[4]{self, cls, @property, @classmethod}
 }}
 
 
 % Python environment
-\lstnewenvironment{python}[1][]
+\lstnewenvironment{python3}[1][]
 {
 \pythonstyle
 \lstset{#1}
@@ -108,21 +115,42 @@ breaklines=true,
 
 \lstset{emph={%  
     self, cls%
-    },emphstyle={\color{red}}%
+    },emphstyle={\color{red}\itshape}%
 }%
 
+\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={__init__},          % Custom highlighting %HIER
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+%frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+keywordstyle=[2]\ttm\color{deepred},
+keywordstyle=[3]\ttm\color{brown},
+keywordstyle=[4]\ttm\color{red},
+morekeywords=[2]{True, False, range, bool, None},
+morekeywords={as},
+morekeywords=[4]{self, cls, @property, @classmethod}
+}
 
 
-
+\subsection{Loading data}
 Lets talk through the Spectral\_image class. We start by loading a spectral image, saved in a .dm3 or .dm4 file through:
 
 \begin{lstlisting}
 >>> im = Spectral_image.load_data('path/to/dmfile.dm4')
 \end{lstlisting}
 
+
 This calls on an alternative constructor, in which the data from the dm-file is loaded, and plugged into the regular constructor. In this function, the loading package \verb|ncempy.io.dm| is used,  more info \href{https://pypi.org/project/ncempy/}{here}. 
 
-
+\lstset{emph={%  
+    load_data
+    }%
+}%
 
 \begin{lstlisting}[numbers=left, firstnumber=81]
     @classmethod
@@ -145,15 +173,25 @@ This calls on an alternative constructor, in which the data from the dm-file is 
         return image
 \end{lstlisting}
 
-Furthermore, we see the \verb|cls.get_prefix()|, which is a small function which recognises the prefix in a unit and transfers it to a numerical value (e.g. 1E3 for k), see lines 870-916 in the complete code. Furthermore, the general constructor is called upon with
+Furthermore, we see the \verb|cls.get_prefix()|, which is a small function which recognises the prefix in a unit and transfers it to a numerical value (e.g. 1E3 for k), see lines 870-916 in the complete code. Furthermore, the general constructor is called upon with \verb|cls(data, ddeltaE, pixelsize = pixelsize)|.
 
-\verb|cls(data, ddeltaE, pixelsize = pixelsize)|.
+The spectral image class starts by defining some constant variables, both class related and physical, which you can find in the complete code. The class constructor takes in at least the data of the spectral image, \verb|data|, and the broadness of the energy loss bins, \verb|deltadeltaE|. Other metadata can be given if known. 
 
-The spectral image class starts by defining some constant variables, both class related and physical. The class constructor takes in at least the data of the spectral image, \verb|data|, and the broadness of the energy loss bins, \verb|deltadeltaE|. Other metadata can be given if known. 
+Also, the delta\_E axis, that is the energy-loss axis is determined by \verb|self.determine_deltaE()|, based upon the broadness of the energy-loss bins and the index at which the average of all spectra in the image has it maximum. The definition of \verb|determine_deltaE()| can be found at line 101 in the complete code. The image axes are determined by \verb|self.calc_axes()|, and output either index arrays, or, if the pixel size is defined, the spacings array in meters. The definition of \verb|calc_axes()| can be found at line 116 in the complete code. 
 
-\begin{lstlisting}[numbers=left, firstnumber=41]
+The definitions of some other properties, such as \verb|im.l|, \verb|im.image_shape|, and \verb|im.shape| can be found in the complete code from line 69 onwards.
+
+Furthermore, there are some retrieving functions, such as \verb|im.get_data()|, \verb|im.get_deltaE()|, \verb|im.get_metadata|, and \verb|get_pixel_signal|, which should be quite self-explainatory, but whose definitions can be found in the complete code from line 124 onwards.
+
+
+
+\begin{python3}[numbers=left, firstnumber=41]
 class Spectral_image():
-\end{lstlisting}
+\end{python3}
+\lstset{emph={%  
+    __init__
+    }%
+}%
 \begin{lstlisting}[numbers=left, firstnumber=53]
     def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None):
         self.data = data
@@ -168,14 +206,19 @@ class Spectral_image():
             self.collection_angle = collection_angle
         if name is not None:
             self.name = name
-
 \end{lstlisting}
 
+\subsection{Preparing data}
+Now that we have loaded the data, we can perform some operations on the data of the image before starting any calculations, if wished. For example, if we wish to cut the image 
 
-\begin{lstlisting}[numbers=left, firstnumber=100]
+\lstset{emph={%  
+    
+    }%
+}%
+\begin{lstlisting}[numbers=left, firstnumber=1]
 \end{lstlisting}
 
 \section{Complete code}
-%\lstinputlisting{../../pyfiles/image_class.py}
+%\lstinputlisting{image_class.py}
 
 \end{document}
