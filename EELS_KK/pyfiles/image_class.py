@@ -109,12 +109,6 @@ class Spectral_image():
         """
         data_avg = np.average(self.data, axis = (0,1))
         ind_max = np.argmax(data_avg)
-<<<<<<< HEAD
-        #l = self.data.shape[0]
-        deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l-ind_max-1)*self.ddeltaE, self.l)
-        return deltaE
-
-=======
         self.deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l-ind_max-1)*self.ddeltaE, self.l)
         #return deltaE
     
@@ -126,7 +120,6 @@ class Spectral_image():
             self.y_axis *= self.pixelsize[0]
             self.x_axis *= self.pixelsize[1] 
     
->>>>>>> c8e28ff86d461c432ea4286767ef0991097ef1f3
     #RETRIEVING FUNCTIONS
     def get_data(self):
         return self.data
@@ -838,27 +831,6 @@ class Spectral_image():
             plt.ylabel = ylab
         plt.show()
     
-<<<<<<< HEAD
-            
-def load_data(path_to_dmfile):
-    dmfile = dm.fileDM(path_to_dmfile).getDataset(0)
-    data = dmfile['data']
-    ddeltaE = dmfile['pixelSize'][0]
-    pixelSize = np.array(dmfile['pixelSize'][1:])
-    energyUnit = dmfile['pixelUnit'][0]
-    ddeltaE *= get_prefix(energyUnit, 'eV')
-    pixelUnit = dmfile['pixelUnit'][1]
-    pixelSize *= get_prefix(pixelUnit, 'm')
-    image = Spectral_image(data, ddeltaE, pixelsize = pixelSize)
-    return image
-
-def get_prefix(unit, SIunit = None, numeric = True):
-    if SIunit is not None:
-        lenSI = len(SIunit)
-        if unit[-lenSI:] == SIunit:
-            prefix = unit[:-lenSI]
-            if len(prefix) == 0:
-=======
     
     def plot_all(self, same_image = True, normalize = False, legend = False, 
                  range_x = None, range_y = None, range_E = None, signal = "EELS", log = False):
@@ -916,7 +888,6 @@ def get_prefix(unit, SIunit = None, numeric = True):
                     else: return prefix
             else:
                 print("provided unit not same as target unit: " + unit + ", and " + SIunit)
->>>>>>> c8e28ff86d461c432ea4286767ef0991097ef1f3
                 if numeric: return 1
                 else: return prefix
         else:
