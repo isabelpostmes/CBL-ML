@@ -44,30 +44,39 @@ class Spectral_image():
     IEELS_NAMES = ['inelastic_scattering_energy_loss_spectrum', 'inelastic_scattering_energy_loss', 'inelastic_scattering', 'IEELS', 'IES']
     ZLP_NAMES = ['zeros_loss_peak', 'zero_loss', 'ZLP', 'ZLPs']
     
-    #TODO: consider wheter to follow physics or programming conventions in capatilizing these
     m_0 = 511.06 #eV, electron rest mass
     a_0 = 5.29E-11 #m, Bohr radius
     h_bar = 6.582119569E-16 #eV/s
     c = 2.99792458E8 #m/s
     
     
-    
-    
     def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None):
-        #TODO: rewrite everything to work with rotated data??? Or rotate data itself??? Lazy or nette oplossing?
         self.data = data
-        self.image_shape = self.data.shape[:2]
-        self.shape = self.data.shape
         self.ddeltaE = deltadeltaE
         self.determine_deltaE()
         if pixelsize is not None:
             self.pixelsize = pixelsize
+        self.calc_axes()
         if beam_energy is not None:
             self.beam_energy = beam_energy
         if collection_angle is not None:
             self.collection_angle = collection_angle
         if name is not None:
             self.name = name
+    
+    
+    #PROPERTIES
+    @property
+    def l(self):
+        return self.data.shape[2]
+    @property
+    def image_shape(self):
+        return self.data.shape[:2]
+    
+    @property
+    def shape(self):
+        self.shape = self.data.shape
+    
     
     @classmethod
     def load_data(cls, path_to_dmfile):
@@ -80,12 +89,12 @@ class Spectral_image():
         dmfile = dm.fileDM(path_to_dmfile).getDataset(0)
         data = np.swapaxes(np.swapaxes(dmfile['data'], 0,1), 1,2)
         ddeltaE = dmfile['pixelSize'][0]
-        pixelSize = np.array(dmfile['pixelSize'][1:])
+        pixelsize = np.array(dmfile['pixelSize'][1:])
         energyUnit = dmfile['pixelUnit'][0]
         ddeltaE *= cls.get_prefix(energyUnit, 'eV')
         pixelUnit = dmfile['pixelUnit'][1]
-        pixelSize *= cls.get_prefix(pixelUnit, 'm')
-        image = cls(data, ddeltaE, pixelsize = pixelSize)
+        pixelsize *= cls.get_prefix(pixelUnit, 'm')
+        image = cls(data, ddeltaE, pixelsize = pixelsize)
         return image
     
     
@@ -104,6 +113,12 @@ class Spectral_image():
         #return deltaE
     
     
+    def calc_axes(self):
+        self.y_axis = np.linspace(0, self.image_shape[0]-1, self.image_shape[0])
+        self.x_axis = np.linspace(0, self.image_shape[1]-1, self.image_shape[1])
+        if hasattr(self, 'pixelsize'):
+            self.y_axis *= self.pixelsize[0]
+            self.x_axis *= self.pixelsize[1] 
     
     #RETRIEVING FUNCTIONS
     def get_data(self):
@@ -121,12 +136,13 @@ class Spectral_image():
         return meta_data
     
     def get_pixel_signal(self, i,j, signal = 'EELS'):
+        #TODO: add alternative signals + names
         if signal == 'EELS':
-            return self.data[ i, j, :]
+            return np.copy(self.data[ i, j, :])
         elif signal == 'df_avg':
-            return self.dielectric_function_im_avg[ i, j, :]
+            return np.copy(self.dielectric_function_im_avg[ i, j, :])
         else:
-            return self.data[ i, j, :]
+            return np.copy(self.data[ i, j, :])
     
     
     #METHODS ON SIGNAL
@@ -136,10 +152,14 @@ class Spectral_image():
         pass
     
     def cut_image(self, range1, range2):
+        #TODO: remember where cut
         self.data = self.data[range1[0]:range1[1],range2[0]:range2[1]]
-        self.image_shape = self.data.shape[:2]
+        self.y_axis = self.y_axis[range1[0]:range1[1]]
+        self.x_axis = self.x_axis[range1[0]:range1[1]]
     
-    
+    #TODO
+    def samenvoegen(self):
+        pass
     
     def smooth(self, window_len=10,window='hanning', keep_original = False):
         """smooth the data using a window with requested size.
@@ -159,6 +179,7 @@ class Spectral_image():
             the smoothed signal
     
         """
+        #TODO: add comnparison
         window_len += (window_len+1)%2
         s=np.r_['-1', self.data[:,:,window_len-1:0:-1],self.data,self.data[:,:,-2:-window_len-1:-1]]
     
@@ -778,6 +799,8 @@ class Spectral_image():
         return crossing_E, n
     
     
+    
+    #PLOTTING FUNCTIONS
     def plot_sum(self, title = None, xlab = None, ylab = None):
         """
         INPUT:
@@ -788,6 +811,7 @@ class Spectral_image():
         OUTPUT:
         Plots the summation over the intensity for each pixel in a heatmap.
         """
+        #TODO: invert colours
         if hasattr(self, 'name'):
             name = self.name
         else:
@@ -807,6 +831,40 @@ class Spectral_image():
             plt.ylabel = ylab
         plt.show()
     
+    
+    def plot_all(self, same_image = True, normalize = False, legend = False, 
+                 range_x = None, range_y = None, range_E = None, signal = "EELS", log = False):
+        #TODO: add titles and such
+        if range_x is None:
+            range_x = [0,self.image_shape[1]]
+        if range_y is None:
+            range_y = [0,self.image_shape[0]]
+        if same_image:
+            plt.figure()
+            plt.title("Spectrum image " + signal + " spectra")
+            plt.xlabel("[eV]")
+            if range_E is not None:
+                plt.xlim(range_E)
+        for i in range(range_y[0], range_y[1]):
+            for j in range(range_x[0], range_x[1]):
+                if not same_image:
+                    plt.figure()
+                    plt.title("Spectrum pixel: [" + str(j) +","+ str(i) + "]")
+                    plt.xlabel("[eV]")
+                    if range_E is not None:
+                        plt.xlim(range_E)
+                    if legend: 
+                        plt.legend()
+                signal_pixel = self.get_pixel_signal(i,j,signal)
+                if normalize:
+                    signal_pixel /= np.max(np.absolute(signal_pixel))
+                if log:
+                    signal_pixel = np.log(signal_pixel)
+                    plt.ylabel("log intensity")
+                plt.plot(self.deltaE, signal_pixel, label = "[" + str(j) +","+ str(i) + "]")
+            if legend: 
+                plt.legend()
+                
     
     #STATIC METHODS
     @staticmethod
@@ -836,7 +894,6 @@ class Spectral_image():
             prefix = unit[0]
         if not numeric:
             return prefix
-
         
         if prefix == 'p':
             return 1E-12
@@ -858,10 +915,7 @@ class Spectral_image():
             print("either no or unknown prefix in unit: " + unit + ", found prefix " + prefix + ", asuming no.")
         return 1
     
-    #PROPERTIES
-    @property
-    def l(self):
-        return self.data.shape[2]
+    
     
     #CLASS THINGIES
     def __getitem__(self, key):
