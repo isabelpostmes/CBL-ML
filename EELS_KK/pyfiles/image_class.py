@@ -61,9 +61,7 @@ class Spectral_image():
         #l = self.data.shape[0]
         deltaE = np.linspace(-ind_max * self.ddeltaE, (self.l-ind_max-1)*self.ddeltaE, self.l)
         return deltaE
-    
-    
-    
+
     #RETRIEVING FUNCTIONS
     def get_data(self):
         return self.data
@@ -779,9 +777,6 @@ def load_data(path_to_dmfile):
     pixelSize *= get_prefix(pixelUnit, 'm')
     image = Spectral_image(data, ddeltaE, pixelsize = pixelSize)
     return image
-    
-
-
 
 def get_prefix(unit, SIunit = None, numeric = True):
     if SIunit is not None:
