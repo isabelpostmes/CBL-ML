@@ -41,14 +41,14 @@ Convergence semi-angle = 24.6 mrad
 Collection semi-angle = 58.4 mrad
 
 Entrance spectrometer aperture = 
-•	eels-SI_001 = 5 mm
-•	eels-SI_002 = 5 mm
-•	eels-SI_003 = 5 mm
-•	eels-SI_004 = 5mm
+1.	eels-SI_001 = 5 mm
+2.	eels-SI_002 = 5 mm
+3.	eels-SI_003 = 5 mm
+4.	eels-SI_004 = 5mm
 
 Pixel time = 
-•	eels-SI_001 = 0.1s
-•	eels-SI_002 = 1s
-•	eels-SI_003 = 0.5s
-•	eels-SI_004 = 0.5s
+1.	eels-SI_001 = 0.1s
+2.	eels-SI_002 = 1s
+3.	eels-SI_003 = 0.5s
+4.	eels-SI_004 = 0.5s
 
