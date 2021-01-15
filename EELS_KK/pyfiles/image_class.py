@@ -28,11 +28,11 @@ import natsort
 import tensorflow.compat.v1 as tf
 import seaborn as sns
 import numpy as np
-#from lmfit import Model
+import math
 from scipy.fftpack import next_fast_len
 import logging
 from ncempy.io import dm;
-
+from k_means_clustering import k_means
 tf.get_logger().setLevel('ERROR')
 
 _logger = logging.getLogger(__name__)
@@ -121,7 +121,7 @@ class Spectral_image():
             self.x_axis *= self.pixelsize[1] 
     
     #RETRIEVING FUNCTIONS
-    def get_data(self):
+    def get_data(self): #TODO: add smooth possibility
         return self.data
     
     def get_deltaE(self):
@@ -137,9 +137,9 @@ class Spectral_image():
     
     def get_pixel_signal(self, i,j, signal = 'EELS'):
         #TODO: add alternative signals + names
-        if signal == 'EELS':
+        if signal in self.EELS_NAMES:
             return np.copy(self.data[ i, j, :])
-        elif signal == 'df_avg':
+        elif signal in self.DIELECTRIC_FUNCTION_NAMES:
             return np.copy(self.dielectric_function_im_avg[ i, j, :])
         else:
             return np.copy(self.data[ i, j, :])
@@ -151,11 +151,11 @@ class Spectral_image():
         #TODO
         pass
     
-    def cut_image(self, range1, range2):
-        #TODO: remember where cut
-        self.data = self.data[range1[0]:range1[1],range2[0]:range2[1]]
-        self.y_axis = self.y_axis[range1[0]:range1[1]]
-        self.x_axis = self.x_axis[range1[0]:range1[1]]
+    def cut_image(self, range_width, range_height):
+        #TODO: add floats for cutting to meter sizes?
+        self.data = self.data[range_height[0]:range_height[1], range_width[0]:range_width[1]]
+        self.y_axis = self.y_axis[range_height[0]:range_height[1]]
+        self.x_axis = self.x_axis[range_width[0]:range_width[1]]
     
     #TODO
     def samenvoegen(self):
@@ -245,7 +245,7 @@ class Spectral_image():
     def calculate_general_ZLPs(self, path_to_models):
         tf.reset_default_graph()
         #TODO: redifine paths based upon new fitter saving modes
-        #TODO: rewrite to have models as tributes?
+        #TODO: rewrite to have models as atributes?
         
         d_string = '07.09.2020'
         path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
@@ -798,10 +798,21 @@ class Spectral_image():
         n = len(crossing_E)
         return crossing_E, n
     
+    def cluster(self, n_clusters = 3, n_iterations = 30, based_upon = "sum"):
+        #TODO: add other based_upons
+        if based_upon == "sum":
+            values = np.sum(self.data, axis = 2).flatten()
+        else:
+            values = np.sum(self.data, axis = 2).flatten()
+        self.clusters, r = k_means(values, n_clusters = n_clusters, n_iterations =n_iterations)
+        self.clustered = np.zeros(self.image_shape)
+        for i in range(n_clusters):
+            in_cluster_i = r[i]
+            self.clustered += (np.reshape(in_cluster_i, self.image_shape))*(i+1)
     
     
     #PLOTTING FUNCTIONS
-    def plot_sum(self, title = None, xlab = None, ylab = None):
+    def  plot_sum(self, title = None, xlab = None, ylab = None):
         """
         INPUT:
             self -- spectral image 
@@ -817,20 +828,40 @@ class Spectral_image():
         else:
             name = ''
         plt.figure()
-        if title is not None:
+        if title is None:
             plt.title("intgrated intensity spectrum " + name)
         else:
             plt.title(title)
-        ax = sns.heatmap(np.sum(self.data, axis = 2))
-        if not hasattr(self, 'pixelsize'):
-            plt.xlabel(self.pixelsize)
-            plt.ylabel(self.pixelsize)
+        if hasattr(self, 'pixelsize'):
+        #    plt.xlabel(self.pixelsize)
+        #    plt.ylabel(self.pixelsize)
+            plt.xlabel("[m]")
+            plt.ylabel("[m]")
+            xticks, yticks = self.get_ticks()
+            ax = sns.heatmap(np.sum(self.data, axis = 2), xticklabels=xticks, yticklabels=yticks)
+        else:
+            ax = sns.heatmap(np.sum(self.data, axis = 2))
         if xlab is not None:
             plt.xlabel(xlab)
         if ylab is not None:
-            plt.ylabel = ylab
+            plt.ylabel(ylab)
         plt.show()
     
+    def get_ticks(self, sig = 3, n_tick = 10):
+        xlabels = np.zeros(self.x_axis.shape,dtype = object)
+        xlabels[:] = ""
+        each_n_pixels = math.floor(len(xlabels)/n_tick)
+        for i in range(len(xlabels)):
+            if i%each_n_pixels == 0:
+                xlabels[i] = '%s' % float('%.3g' % self.x_axis[i])
+        ylabels = np.zeros(self.y_axis.shape,dtype = object)
+        ylabels[:] = ""
+        each_n_pixels = math.floor(len(ylabels)/n_tick)
+        for i in range(len(ylabels)):
+            if i%each_n_pixels == 0:
+                ylabels[i] = '%s' % float('%.3g' % self.y_axis[i])
+        return xlabels, ylabels
+                
     
     def plot_all(self, same_image = True, normalize = False, legend = False, 
                  range_x = None, range_y = None, range_E = None, signal = "EELS", log = False):
@@ -1006,6 +1037,16 @@ def iCFT(x, Y_k):
 #data2 = dmfile.getDataset(0)
 
 im = Spectral_image.load_data('area03-eels-SI-aligned.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
+for i in [3,4,5,10]:
+    im.cluster(n_clusters = i)
+    plt.figure()
+    plt.title("spectral image, clustered with " + str(i) + " clusters")
+    plt.xlabel("[m]")
+    plt.ylabel("[m]")
+    xticks, yticks = im.get_ticks()
+    ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
+    plt.show()
+"""
 im.cut_image([0,70], [95,100])
 #im.cut_image([40,41],[4,5])
 im.calc_ZLPs_gen2(specimen = 4)
@@ -1030,4 +1071,4 @@ plt.figure()
 plt.title("thickness of sample")
 ax = sns.heatmap(im.thickness_avg)
 plt.show()
-
+"""
