@@ -31,8 +31,11 @@ import numpy as np
 import math
 from scipy.fftpack import next_fast_len
 import logging
-from ncempy.io import dm;
+from ncempy.io import dm
+
 from k_means_clustering import k_means
+from train_NN import *#train_NN
+
 tf.get_logger().setLevel('ERROR')
 
 _logger = logging.getLogger(__name__)
@@ -75,7 +78,11 @@ class Spectral_image():
     
     @property
     def shape(self):
-        self.shape = self.data.shape
+        return self.data.shape
+        
+    @property
+    def n_clusters(self):
+        return len(self.clusters)
     
     
     @classmethod
@@ -86,8 +93,19 @@ class Spectral_image():
         OUTPUT:
             image -- Spectral_image, object of Spectral_image class containing the data of the dm-file
         """
-        dmfile = dm.fileDM(path_to_dmfile).getDataset(0)
-        data = np.swapaxes(np.swapaxes(dmfile['data'], 0,1), 1,2)
+        dmfile_tot = dm.fileDM(path_to_dmfile)
+        for i in range(dmfile_tot.numObjects - dmfile_tot.thumbnail*1):
+            dmfile = dmfile_tot.getDataset(i)
+            if dmfile['data'].ndim == 3:
+                dmfile = dmfile_tot.getDataset(i)
+                data = np.swapaxes(np.swapaxes(dmfile['data'], 0,1), 1,2)
+                break
+            elif i == dmfile_tot.numObjects - dmfile_tot.thumbnail*1 - 1:
+                print("No spectral image detected")
+                dmfile = dmfile_tot.getDataset(0)
+                data = dmfile['data']
+        
+        #.getDataset(0)
         ddeltaE = dmfile['pixelSize'][0]
         pixelsize = np.array(dmfile['pixelSize'][1:])
         energyUnit = dmfile['pixelUnit'][0]
@@ -96,6 +114,8 @@ class Spectral_image():
         pixelsize *= cls.get_prefix(pixelUnit, 'm')
         image = cls(data, ddeltaE, pixelsize = pixelsize)
         return image
+    
+    
     
     
     def determine_deltaE(self):
@@ -476,6 +496,40 @@ class Spectral_image():
         return ZLPs
         
     
+    def train_ZLPs(self, n_clusters = None, conf_interval = 0.95):
+        if not hasattr(self, "clustered"):
+            if n_clusters is not None:
+                self.cluster(n_clusters)
+            else:
+                self.cluster()
+        elif n_clusters is not None and self.n_clusters != n_clusters:
+            self.cluster(n_clusters)
+        
+        if conf_interval >= 1:
+            ci_lim = 0
+        
+        integrated_I = np.sum(self.data, axis = 2)
+        
+        training_data_spectra = np.empty((0,self.l))
+        training_data_intensity = np.empty((0,1))
+        
+        training_data = np.zeros(self.n_clusters, dtype = object)
+        
+        for i in range(self.n_clusters):
+            data_cluster = self.data[self.clustered == i]
+            intensities_cluster = integrated_I[self.clustered == i]
+            arg_sort_I = np.argsort(intensities_cluster)
+            if conf_interval < 1:
+                ci_lim = round((1-conf_interval)/2 *intensities_cluster.size) #TODO: ask juan: round up or down?
+            data_cluster = data_cluster[arg_sort_I][ci_lim:-ci_lim]
+            intensities_cluster = np.ones(len(intensities_cluster)-2*ci_lim)*self.clusters[i]
+            training_data_spectra = np.append(training_data_spectra, data_cluster)
+            training_data_intensity = np.append(training_data_intensity, intensities_cluster)
+            training_data[i] = data_cluster
+        
+        #self.models = train_NN(self, training_data_spectra, training_data_intensity)
+        self.models = train_NN(self, training_data)
+
     #METHODS ON DIELECTRIC FUNCTIONS
     
     def kramers_kronig_hs(self, I_EELS,
@@ -798,17 +852,21 @@ class Spectral_image():
         n = len(crossing_E)
         return crossing_E, n
     
-    def cluster(self, n_clusters = 3, n_iterations = 30, based_upon = "sum"):
+    def cluster(self, n_clusters = 5, n_iterations = 30, based_upon = "sum"):
         #TODO: add other based_upons
         if based_upon == "sum":
             values = np.sum(self.data, axis = 2).flatten()
+        if based_upon == "log":
+            values = np.log(np.sum(self.data, axis = 2).flatten())
         else:
             values = np.sum(self.data, axis = 2).flatten()
-        self.clusters, r = k_means(values, n_clusters = n_clusters, n_iterations =n_iterations)
+        clusters_unsorted, r = k_means(values, n_clusters = n_clusters, n_iterations =n_iterations)
+        self.clusters = np.sort(clusters_unsorted)[::-1]
+        arg_sort_clusters = np.argsort(clusters_unsorted)[::-1]
         self.clustered = np.zeros(self.image_shape)
         for i in range(n_clusters):
-            in_cluster_i = r[i]
-            self.clustered += (np.reshape(in_cluster_i, self.image_shape))*(i+1)
+            in_cluster_i = r[arg_sort_clusters[i]]
+            self.clustered += (np.reshape(in_cluster_i, self.image_shape))*i
     
     
     #PLOTTING FUNCTIONS
@@ -1035,9 +1093,10 @@ def iCFT(x, Y_k):
 #%%
 #dmfile = dm.fileDM('area03-eels-SI-aligned.dm4')
 #data2 = dmfile.getDataset(0)
-
-im = Spectral_image.load_data('area03-eels-SI-aligned.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
-for i in [3,4,5,10]:
+"""
+im = Spectral_image.load_data('dmfiles/h-ws2_eels-SI_003.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
+im.plot_sum()
+for i in [5]:#[3,4,5,10]:
     im.cluster(n_clusters = i)
     plt.figure()
     plt.title("spectral image, clustered with " + str(i) + " clusters")
@@ -1046,6 +1105,8 @@ for i in [3,4,5,10]:
     xticks, yticks = im.get_ticks()
     ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
+"""
+im.train_ZLPs()
 """
 im.cut_image([0,70], [95,100])
 #im.cut_image([40,41],[4,5])
