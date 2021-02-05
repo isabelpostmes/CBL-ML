@@ -252,6 +252,9 @@ def train_NN(image, spectra):#, vacuum_in):
     nbins = round(image.l/4)#150
     
     
+    #filter out negatives and 0's
+    
+    
     
     spectra_smooth = smooth_clusters(image, spectra, wl1)
     dy_dx = derivative_clusters(image, spectra_smooth)
@@ -261,37 +264,15 @@ def train_NN(image, spectra):#, vacuum_in):
     
     dE1 = determine_dE1(image, dE1s, dy_dx)
     
-    """
-    df_dx = pd.DataFrame()
     
-    all_files = [file14, file15, file16, file17, file19, file20, file21, file22, file23]
-    
-    for i,j in enumerate([14,15,16,17,19,20,21,22,23]):
-        df_dx['x%(j)s' % {"j": j}]  =  all_files[i]['x_shifted']
-        df_dx['y%(j)s' % {"j": j}]  =  smooth(all_files[i]['y_norm'], wl1)
-        df_dx['derivative y%(j)s' %{"j": j}] = np.divide(df_dx['y%(j)s'% {"j": j}].diff(), \
-                                                         df_dx['x%(j)s'% {"j": j}].diff())
-    df_dx['smooth derivative y%(j)s' %{"j": j}] = smooth(df_dx['derivative y%(j)s' %{"j": j}], wl2)
-    """
     #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
     
-    dE2 = determine_dE2(image, spectra[0], nbins)
+    dE2 = determine_dE2(image, spectra[0], nbins, dE1)
+    
+    print("dE1 & dE2:", dE1, dE2)
     
     
     
-    
-    
-    """
-    df_vacmean = pd.DataFrame()
-    df_vacuum = df_vacuum[(df_vacuum['x_shifted'] < 20) & (df_vacuum['x_shifted'] > -.5)]
-    df_vacmean['x'] = np.linspace(df_vacuum['x_shifted'].min(),df_vacuum['x_shifted'].max(), nbins)
-    df_vacmean['y'], df_vacmean['sigma'] = binned_statistics(df_vacuum['x_shifted'], (df_vacuum['y']), nbins)[0:2]
-    df_vacmean['ratio'] = np.divide(df_vacmean['y'], df_vacmean['sigma'])
-    
-    dE2 = df_vacmean['x'][df_vacmean['ratio'] < 1].min()
-    dE2 = np.round(dE2)
-    print("The value for dE_II is", (dE2))
-    """
     
     
     
@@ -360,6 +341,8 @@ def determine_dE1(image, dE1_clusters, dy_dx_clusters = None, check_with_user =T
         else:
             lab = "sample cl." + str(i)
         plt.plot(der_deltaE, dx_dy_i_avg, color = colors[i], label = lab)
+    plt.plot([der_deltaE[0], der_deltaE[-1]],[0,0], color = 'black')
+    plt.title("derivatives of EELS per cluster, and range of first \npositive derivative of EELSs per cluster")
     plt.xlabel("energy loss [eV]")
     plt.ylabel("dy/dx")
     plt.legend()
@@ -382,43 +365,74 @@ def determine_dE1(image, dE1_clusters, dy_dx_clusters = None, check_with_user =T
         plt.vlines(dE1_i_avg, -2, 1, color= colors[i])
         lab = "sample cl." + str(i)
         plt.plot(der_deltaE, dx_dy_i_avg/dx_dy_0_avg, color = colors[i], label = lab)
-    plt.plot([der_deltaE[0], der_deltaE[-1]],[0,0], color = 'black')
+    plt.plot([der_deltaE[0], der_deltaE[-1]],[1,1], color = 'black')
+    plt.title("ratio between derivatives of EELS per cluster and the  \nderivative of vacuum cluster, and average of first positive \nderivative of EELSs per cluster")
     plt.xlabel("energy loss [eV]")
     plt.ylabel("ratio dy/dx sample and dy/dx vacuum")
     plt.legend()
     plt.xlim(dE1_min_avg/2, dE1_min_avg*3)
     plt.ylim(-1,2)
+    plt.show()
+    print("please review the two auxillary plots on the derivatives of the EEL spectra. \n"+\
+          "dE1 is the point before which the influence of the sample on the spectra is negligiable.") #TODO: check spelling
+    return user_check("dE1", dE1_min_avg)
+
+        
+def determine_dE2(image, vacuum_cluster, nbins, dE1, check_with_user=True):
+    x_bins = np.linspace(image.deltaE.min(),image.deltaE.max(), nbins)
+    [y_0_bins, sigma_0_bins], edges = binned_statistics(image.deltaE, vacuum_cluster, nbins, ["mean", "var"])
+    ratio_0_std = np.divide(y_0_bins,sigma_0_bins)
+    #ratio_0_var = np.divide(y_0_bins,np.power(sigma_0_bins,2))
     
+    dE2 = np.min(x_bins[(x_bins>dE1) * (ratio_0_std <1)])
     
+    if not check_with_user:
+        return dE2
+    
+    plt.plot(x_bins, ratio_0_std)
+    plt.title("I_vacuum_bins/std_vacuum_bins")
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("ratio")
+    plt.plot([x_bins[0], x_bins[-1]],[1,1])
+    plt.show()
+    """
+    plt.plot(x_bins, ratio_0_var)
+    plt.title("I_vacuum_bins/var_vacuum_bins")
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("ratio")
+    plt.plot([x_bins[0], x_bins[-1]],[1,1])
+    plt.show()
+    """
+    print("please review the auxillary plot on the ratio between the variance and the amplitude of "\
+          +"the intensity of the vacuum EEL spectra. \n"+\
+          "dE2 is the point after which the influence of the ZLP on the spectra is negligiable.") #TODO: check spelling
+    return user_check("dE2", dE2)
+
+
+def user_check(dE12, value):
     #TODO: opschonen?
-    ans = input("Are you happy with a dE1 of " + str(round(dE1_min_avg, 4)) + "? [y/n/wanted dE1] \n")
+    ans = input("Are you happy with a " + dE12 + " of " + str(round(value, 4)) + "? [y/n/wanted "+dE12+"] \n")
     if ans[0] not in["y", "n","0","1","2","3","4","5","6","7","8","9"]:
-        ans = input("Please respond with either 'yes', 'no', or your wanted dE1, otherwise assumed yes: \n")
+        ans = input("Please respond with either 'yes', 'no', or your wanted " + dE12 + ", otherwise assumed yes: \n")
     if ans[0] not in["y", "n","0","1","2","3","4","5","6","7","8","9"]:
-        print("Stupid, assumed yes, using dE1 of " + str(round(dE1_min_avg, 4)))
-        return dE1_min_avg
+        print("Stupid, assumed yes, using " + dE12 + " of " + str(round(value, 4)))
+        return value
     elif ans[0] == 'y':
-        print("Perfect, using dE1 of " + str(round(dE1_min_avg, 4)))
-        return dE1_min_avg
+        print("Perfect, using " + dE12 + " of " + str(round(value, 4)))
+        return value
     elif ans[0] == 'n':
-        ans = input("Please input your desired dE1: \n")
+        ans = input("Please input your desired " + dE12 + ": \n")
     if ans[0] not in["0","1","2","3","4","5","6","7","8","9"]:
-        ans = input("Last chance, input your desired dE1: \n")
+        ans = input("Last chance, input your desired " + dE12 + ": \n")
     if ans[0] not in["0","1","2","3","4","5","6","7","8","9"]:
-        print("Stupid, using old dE1 of " + str(round(dE1_min_avg, 4)))
-        return dE1_min_avg
+        print("Stupid, using old " + dE12 + " of " + str(round(value, 4)))
+        return value
     else: 
         try:
             return (float(ans))
         except:
-            print("input was invalid number, using original dE1")
-            return dE1_min_avg
-        
-def determine_dE2(image, vacuum_cluster, nbins):
-    x_bins = np.linspace(image.deltaE.min(),image.deltaE.max(), nbins)
-    y_0_bins, sigma_0_bins = binned_statistics(image.deltaE, vacuum_cluster, nbins, ["mean", "var"])
-    ratio_0 = np.divide(y_0_bins/sigma_0_bins)
-    
+            print("input was invalid number, using original " + dE12)
+            return value
 
 #ZLP FITTING
 
