@@ -84,6 +84,9 @@ class Spectral_image():
     def n_clusters(self):
         return len(self.clusters)
     
+    @property
+    def n_spectra(self):
+        return np.product(self.image_shape)
     
     @classmethod
     def load_data(cls, path_to_dmfile):
@@ -1105,8 +1108,23 @@ for i in [5]:#[3,4,5,10]:
     xticks, yticks = im.get_ticks()
     ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
+im.train_ZLPs(conf_interval = 0.7)
 """
-im.train_ZLPs()
+
+"""
+im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
+im.plot_sum()
+for i in [5]:#[3,4,5,10]:
+    im.cluster(n_clusters = i)
+    plt.figure()
+    plt.title("spectral image, clustered with " + str(i) + " clusters")
+    plt.xlabel("[m]")
+    plt.ylabel("[m]")
+    xticks, yticks = im.get_ticks()
+    ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
+    plt.show()
+"""
+im.train_ZLPs(conf_interval = 0.7)
 """
 im.cut_image([0,70], [95,100])
 #im.cut_image([40,41],[4,5])

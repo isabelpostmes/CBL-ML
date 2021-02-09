@@ -8,12 +8,17 @@ TRAINING ZLP MODEL
 """
 import numpy as np
 import pandas as pd
+import math
 from copy import copy
 import scipy
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib import rc, cm
-
+from tensorflow.keras import Sequential
+from tensorflow.keras import layers
+from tensorflow.keras import optimizers
+from tensorflow.keras.layers import Dense
+import tensorflow.compat.v1 as tf
 
 
 #TODO: change from binned statistics to eliminate hortizontal uncertainty?
@@ -92,7 +97,10 @@ def binned_statistics(x,y, nbins, stats = None):
         mean, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='mean', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='mean', bins=cuts2)
         result.append(mean)
     if "var" in stats:
-        var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='std', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='std', bins=cuts2)
+        #var, edges, binnum = scipy.stats.binned_statistic(x,y, statistic='std', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='std', bins=cuts2)
+        low, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_low, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_low, bins=cuts2)
+        high, edges, binnum = scipy.stats.binned_statistic(x,y,statistic=CI_high, bins=cuts2)#df_train[:,0], df_train[:,1], statistic=CI_high, bins=cuts2)            
+        var = high-low
         result.append(var)
     if "count" in stats:
         count, edges, binnum = scipy.stats.binned_statistic(x,y,statistic='count', bins=cuts2)#df_train[:,0], df_train[:,1], statistic='count', bins=cuts2)
@@ -240,8 +248,25 @@ def residuals(prediction, y, std):
     res = np.divide((prediction - y), std)
     return res
 
+def make_model_lau(inputs, n_outputs):
+    hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+    hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+    hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+    output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+    return output
+
+def make_model(inputs, n_outputs):
+    hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+    hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+    hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+    output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+    return output
 
 def train_NN(image, spectra):#, vacuum_in):
+    
+    #reset tensorflow
+    tf.get_default_graph
+    tf.disable_eager_execution()
     #oud:
     wl1 = 50
     wl2 = 100
@@ -249,27 +274,77 @@ def train_NN(image, spectra):#, vacuum_in):
     #new??? #TODO
     wl1 = round(image.l/20)
     wl2 = wl1*2
-    nbins = round(image.l/4)#150
+    units_per_bin = 4
+    nbins = round(image.l/units_per_bin)#150
     
     
     #filter out negatives and 0's
-    
+    for i  in range(image.n_clusters):
+        spectra[i][spectra[i]<1] = 1
     
     
     spectra_smooth = smooth_clusters(image, spectra, wl1)
     dy_dx = derivative_clusters(image, spectra_smooth)
     smooth_dy_dx = smooth_clusters(image, dy_dx, wl2)
-    dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
+    #dE1s = find_clusters_dE1(image, smooth_dy_dx, spectra_smooth)
     
     
-    dE1 = determine_dE1(image, dE1s, dy_dx)
+    dE1 = determine_dE1_new(image, smooth_dy_dx, spectra_smooth)#dE1s, dy_dx)
     
     
     #TODO: instead of the binned statistics, just use xth value to dischart -> neh says Juan    
     
-    dE2 = determine_dE2(image, spectra[0], nbins, dE1)
+    dE2 = determine_dE2_new(image, spectra_smooth, smooth_dy_dx)#[0], nbins, dE1)
     
-    print("dE1 & dE2:", dE1, dE2)
+    print("dE1 & dE2:", np.round(dE1,3), dE2)
+    
+    spectra_mean, spectra_var, cluster_intensities, deltaE = create_data(image, spectra, dE1, dE2, units_per_bin)
+    
+    x = tf.placeholder(["float", "float"], [None, 1], name="x")
+    y = tf.placeholder("float", [None, 1], name="y")
+    sigma = tf.placeholder("float", [None, 1], name="sigma")
+    
+    predictions = make_model(x,1)
+    
+    full_x = np.vstack((spectra_mean,cluster_intensities)).T
+    full_y = spectra_mean # = df_train_full.drop_duplicates(subset = ['x']) # Only keep one copy per x-value
+    full_sigma = spectra_var
+    del spectra_mean, spectra_var
+    
+    
+    #N_full = len(df_train_full['x'])
+    
+    #full_x = np.copy(df_train_full['x']).reshape(N_full,1)
+    #full_y = np.copy(df_train_full['y']).reshape(N_full,1)
+    #full_sigma = np.copy(df_train_full['sigma']).reshape(N_full,1)
+    
+    #N_pred = 3000
+    #pred_min = -.5
+    #pred_max = 20
+    predict_x = image.deltaE #np.linspace(pred_min,pred_max,N_pred).reshape(N_pred,1)
+    
+    #print("Dataset is split into train subset (80%) and validation subset (20%)")
+    
+    
+    #MONTE CARLO
+    Nrep = 1000
+
+    full_y_reps = np.zeros(shape=(N_full, Nrep))
+    i=0
+    while i < Nrep:
+            full_rep = np.random.normal(0, full_sigma)
+            full_y_reps[:,i] = (full_y + full_rep).reshape(N_full)
+            i+=1 
+            
+    std_reps = np.std(full_y_reps, axis=1)
+    mean_reps = np.mean(full_y_reps, axis=1)
+    
+    print('MC pseudo data has been created for 1000 replicas')
+    
+    
+    N_train = int(.8 * N_full)
+    N_test = int(.2 * N_full)
+    
     
     
     
@@ -283,11 +358,115 @@ def find_dE1(image, dy_dx, y_smooth):
     #first positive derivative after dE=0:
     
     crossing = (dy_dx > 0)
-    up = np.argmax(crossing[np.argmax(y_smooth)+1:]) + np.argmax(y_smooth) +1
+    if not crossing.any():
+        print("shouldn't get here")
+        up = np.argmin(np.absolute(dy_dx)[np.argmax(y_smooth)+1:]) + np.argmax(y_smooth) +1
+    else:
+        up = np.argmax(crossing[np.argmax(y_smooth)+1:]) + np.argmax(y_smooth) +1
     pos_der = image.deltaE[up]
     return pos_der
     
 
+def determine_dE1_new(image, dy_dx_clusters, y_smooth_clusters, check_with_user = True):
+    dy_dx_avg = np.zeros((image.n_clusters, image.l-1))
+    dE1_clusters = np.zeros(image.n_clusters)
+    for i in range(image.n_clusters):
+        dy_dx_avg[i,:] = np.average(dy_dx_clusters[i], axis=0)
+        y_smooth_cluster_avg = np.average(y_smooth_clusters[i], axis=0)
+        dE1_clusters[i] = find_dE1(image, dy_dx_avg[i,:], y_smooth_cluster_avg)
+        
+    if not check_with_user:
+        return dE1_clusters
+    
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    
+    if len(colors) < image.n_clusters:
+        print("thats too many clusters to effectively plot, man")
+        return dE1_clusters
+        #TODO: be kinder
+    der_deltaE = image.deltaE[:-1]
+    plt.figure()
+    for i in range(image.n_clusters):
+        dx_dy_i_avg = dy_dx_avg[i,:]
+        #dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
+        ci_low = np.nanpercentile(dy_dx_clusters[i],  16, axis=0)
+        ci_high = np.nanpercentile(dy_dx_clusters[i],  84, axis=0)
+        plt.fill_between(der_deltaE,ci_low, ci_high, color = colors[i], alpha = 0.2)
+        plt.vlines(dE1_clusters[i], -3E3, 2E3, ls = 'dotted', color= colors[i])
+        if i == 0:
+            lab = "vacuum"
+        else:
+            lab = "sample cl." + str(i)
+        plt.plot(der_deltaE, dx_dy_i_avg, color = colors[i], label = lab)
+    plt.plot([der_deltaE[0], der_deltaE[-1]],[0,0], color = 'black')
+    plt.title("derivatives of EELS per cluster, and range of first \npositive derivative of EELSs per cluster")
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("dy/dx")
+    plt.legend()
+    plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
+    plt.ylim(-3e3,2e3)
+    
+    
+    plt.figure()
+    for i in range(1,image.n_clusters):
+        dx_dy_i_avg = dy_dx_avg[i,:]
+        dx_dy_i_std = np.std(dy_dx_clusters[i], axis = 0)
+        #dx_dy_i_min = np.min(dy_dx_clusters[i], axis = 0)
+        #plt.fill_between(image.deltaE, dx_dy_i_avg-dx_dy_i_std, dx_dy_i_avg+dx_dy_i_std, color = colors[i], alpha = 0.2)
+        #plt.axvspand(dE1_i_avg-dE1_i_std, dE1_i_avg+dE1_i_std, color = colors[i], alpha=0.1)
+        plt.vlines(dE1_clusters[i], -2, 1, ls = 'dotted', color= colors[i])
+        lab = "sample cl." + str(i)
+        plt.plot(der_deltaE, dx_dy_i_avg/dy_dx_avg[0,:], color = colors[i], label = lab)
+    plt.plot([der_deltaE[0], der_deltaE[-1]],[1,1], color = 'black')
+    plt.title("ratio between derivatives of EELS per cluster and the  \nderivative of vacuum cluster, and average of first positive \nderivative of EELSs per cluster")
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("ratio dy/dx sample and dy/dx vacuum")
+    plt.legend()
+    plt.xlim(np.min(dE1_clusters)/4, np.max(dE1_clusters)*2)
+    plt.ylim(-2,3)
+    plt.show()
+    print("please review the two auxillary plots on the derivatives of the EEL spectra. \n"+\
+          "dE1 is the point before which the influence of the sample on the spectra is negligiable.") #TODO: check spelling
+    
+    for i in range(image.n_clusters):
+        if i == 0: name = "vacuum cluster"
+        else: name = "sample cluster " + str(i)
+        dE1_clusters[i] = user_check("dE1 of " + name, dE1_clusters[i])
+    return dE1_clusters
+
+
+def create_data(image, spectra_clusters, dE1, dE2, units_per_bin):
+    min_pseudo_bins = 20
+    #TODO: do we want to do this?
+    #n_pseudo_bins = math.floor(len(image.deltaE[image.deltaE>dE2])/units_per_bin)
+    #n_pseudo_bins = max(min_pseudo_bins, n_pseudo_bins)
+    n_pseudo_bins = min_pseudo_bins
+    
+    cluster_intensities = np.zeros(0)
+    spectra_log_var = np.zeros(0)#image.n_clusters, dtype=object)
+    spectra_log_mean = np.zeros(0)
+    deltaE = np.zeros(0)#image.n_clusters, dtype=object)
+    #pseudo_data = np.zeros(image.n_clusters, dtype=object)
+    for i in range(image.n_clusters):
+        n_bins = math.floor(len(image.deltaE[image.deltaE<dE1[i]])/units_per_bin)
+        n = n_bins*units_per_bin
+        #[spectra[i], spectra_var[i]], edges   = binned_statistics(image.deltaE[:n], spectra[i][:, :n], n_bins, stats=["mean", "var"])
+        #deltaE[i] = (edges[1:]+edges[:-1])/2
+        [i_log_means, i_log_vars], edges = binned_statistics(image.deltaE[:n], np.log(spectra_clusters[i][:, :n]), n_bins, stats=["mean", "var"])
+        spectra_log_mean = np.append(spectra_log_mean, i_log_means)
+        spectra_log_var = np.append(spectra_log_var, i_log_vars)
+        deltaE = np.append(deltaE, np.linspace((image.deltaE[0]+image.deltaE[units_per_bin])/2, (image.deltaE[n-1]+image.deltaE[n-units_per_bin-1])/2, n_bins))
+        ddeltaE = image.ddeltaE*units_per_bin
+        
+        #pseudodata
+        #print(n_bins, n, '\n', edges, '\n', (edges[1:]-edges[:-1])/2)
+        spectra_log_mean = np.append(spectra_log_mean, 0.5 * np.ones(n_pseudo_bins))
+        spectra_log_var = np.append(spectra_log_var, 0.8 * np.ones(n_pseudo_bins))
+        deltaE = np.append(deltaE, dE2 + np.linspace(0,n_pseudo_bins-1, n_pseudo_bins)*ddeltaE)
+        
+        cluster_intensities = np.append(cluster_intensities, np.ones(n_bins+n_pseudo_bins) * image.clusters[i])
+    print(spectra_log_mean.shape, spectra_log_var.shape, deltaE.shape)
+    return spectra_log_mean, spectra_log_var, cluster_intensities, deltaE
 
 def find_clusters_dE1(image, dy_dx_clusters, y_smooth_clusters):
     dE1_clusters = np.zeros(image.n_clusters, dtype=object)
@@ -302,8 +481,10 @@ def find_clusters_dE1(image, dy_dx_clusters, y_smooth_clusters):
         dE1_clusters[i] = dE1_cluster
         i_avg = round(np.average(dE1_clusters[i]),4)
         i_std = round(np.std(dE1_clusters[i]), 4)
+        i_ci_low = np.nanpercentile(dE1_clusters[i],  16)
+        i_ci_high = np.nanpercentile(dE1_clusters[i],  84)
         i_min = round(np.min(dE1_clusters[i]),4)
-        print("dE1 cluster ", i, " avg: ", i_avg, ", std: ", i_std, ", min: ", i_min)
+        print("dE1 cluster ", i, " avg: ", i_avg, ", std: ", i_ci_high-i_ci_low, ", min: ", i_min)
     return dE1_clusters
     pass
 
@@ -377,7 +558,58 @@ def determine_dE1(image, dE1_clusters, dy_dx_clusters = None, check_with_user =T
           "dE1 is the point before which the influence of the sample on the spectra is negligiable.") #TODO: check spelling
     return user_check("dE1", dE1_min_avg)
 
+
+def determine_dE2_new(image, spectra_smooth_clusters, dy_dx_clusters):
+    desired_ratio = 3 #TODO: think
+    
+    dE2_option1 = np.zeros(image.n_clusters-1)
+    dE2_option2 = np.zeros(image.n_clusters-1)
+    
+    
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    
+    plt.figure()
+    I_0_avg = np.average(spectra_smooth_clusters[0], axis = 0)
+    I_0_std = np.std(spectra_smooth_clusters[0], axis = 0)
+    for i in range(1,image.n_clusters):
+        I_i_avg = np.average(spectra_smooth_clusters[i], axis = 0)
+        I_i_std = np.std(spectra_smooth_clusters[i], axis = 0)
         
+        dE2_option1[i-1] = image.deltaE[np.argmax(I_i_avg/I_0_avg)]
+        plt.vlines(dE2_option1[i-1], np.min(I_i_avg/I_0_avg), np.max(I_i_avg/I_0_avg), color= colors[i])
+        lab = "sample cl." + str(i)
+        plt.plot(image.deltaE, I_i_avg/I_0_avg, color = colors[i], label = lab)
+    plt.plot([image.deltaE[0], image.deltaE[-1]],[1,1], color = 'black')
+    plt.title("ratio between average intensities of EELS per cluster and the  \naverage intensity of vacuum cluster, and max value of ratios")
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("ratio intensity sample and intensity vacuum")
+    plt.legend()
+    #plt.xlim(np.min(dE2_option1)/2, np*3)
+    #plt.ylim(-1,2)
+    plt.show()
+    
+    for i in range(1,image.n_clusters):
+        I_i_avg = np.average(spectra_smooth_clusters[i], axis = 0)
+        I_i_std = np.std(spectra_smooth_clusters[i], axis = 0)
+        
+        dE2_option2[i-1] = image.deltaE[np.argmax((I_i_avg/I_0_avg)>desired_ratio)]
+        plt.vlines(dE2_option2[i-1], np.min(I_i_avg/I_0_avg), np.max(I_i_avg/I_0_avg), color= colors[i])
+        lab = "sample cl." + str(i)
+        plt.plot(image.deltaE, I_i_avg/I_0_avg, color = colors[i], label = lab)
+    plt.plot([image.deltaE[0], image.deltaE[-1]],[1,1], color = 'black')
+    plt.title("ratio between average intensities of EELS per cluster and the  \naverage intensity of vacuum cluster, and first crossing of " + str(desired_ratio))
+    plt.xlabel("energy loss [eV]")
+    plt.ylabel("ratio intensity sample and intensity vacuum")
+    plt.legend()
+    #plt.xlim(np.min(dE2_option1)/2, np*3)
+    #plt.ylim(-1,2)
+    plt.show()
+    
+    dE2 = np.average(dE2_option1)
+    
+    dE2 = user_check("dE2", dE2)
+    return dE2
+     
 def determine_dE2(image, vacuum_cluster, nbins, dE1, check_with_user=True):
     x_bins = np.linspace(image.deltaE.min(),image.deltaE.max(), nbins)
     [y_0_bins, sigma_0_bins], edges = binned_statistics(image.deltaE, vacuum_cluster, nbins, ["mean", "var"])
