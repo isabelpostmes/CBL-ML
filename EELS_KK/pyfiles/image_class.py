@@ -34,7 +34,7 @@ import logging
 from ncempy.io import dm
 
 from k_means_clustering import k_means
-from train_NN import *#train_NN
+from train_NN import train_NN
 
 tf.get_logger().setLevel('ERROR')
 
@@ -354,7 +354,165 @@ class Spectral_image():
                                             })
                     prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
                     self.ZLPs_gen[i, :] = np.exp(extrapolation)#.reshape(len_data,)
+  
+    
+  
+    def calc_ZLPs_gen2_I(self,  specimen = 4):
+        tf.reset_default_graph()
+        d_string = '11.02.2021'
+        count = 40
         
+        
+        
+        tf.get_default_graph()
+        tf.disable_eager_execution()
+        
+        
+        
+        x = tf.placeholder("float", [None, 2], name="x")
+        predictions = self.make_model(x, 1)
+        
+        
+        prediction_file = pd.DataFrame()
+        len_data = self.l * self.n_clusters
+        predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+        predict_x = self.deltaE.reshape(len_data,1)
+        
+        predict_x = np.empty((0,2))
+        for i in range(self.n_clusters):
+            predict_x = np.concatenate((predict_x, np.vstack((self.deltaE,np.ones(self.l)*self.clusters[i])).T))
+    
+        
+        good_files = np.ones(count)
+        
+        
+        
+        self.ZLPs_gen = np.zeros((count, len_data))
+        j=0
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            
+            for i in range(0,len(good_files)):
+                if good_files[i] == 1:
+                    best_model = 'Models_004_2/Best_models/sp3/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    saver = tf.train.Saver(max_to_keep=1000)
+                    saver.restore(sess, best_model)
+        
+                    extrapolation = sess.run(predictions,
+                                            feed_dict={
+                                            x: predict_x
+                                            })
+                    #prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(1000,)
+                    self.ZLPs_gen[j,:] = np.exp(extrapolation.reshape(len_data,))
+                    prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
+                    j += 1
+        
+        #self.dE1 = np.round(max(training_data['x'][(training_data['x']< 3)]),2)
+        #self.dE2 = np.round(min(training_data['x'][(training_data['x']> 3)]),1)
+        #self.dE0 = np.round(self.dE1 - .5, 2) 
+        
+    def calculate_general_ZLPs_I(self, path_to_models):
+        tf.reset_default_graph()
+        #TODO: redifine paths based upon new fitter saving modes
+        #TODO: rewrite to have models as atributes?
+        """
+        d_string = '07.09.2020'
+        path_to_data = 'Data_oud/Results/%(date)s/'% {"date": d_string} 
+        
+        path_predict = r'Predictions_*.csv'
+        path_cost = r'Cost_*.csv' 
+        
+        all_files = glob.glob(path_to_data + path_predict)
+        
+        li = []
+        for filename in all_files:
+            df = pd.read_csv(filename, delimiter=",",  header=0, usecols=[0,1,2], names=['x', 'y', 'pred'])
+            li.append(df)
+        
+        training_data = pd.concat(li, axis=0, ignore_index=True)
+        
+        self.dE1 = np.round(max(training_data['x'][(training_data['x']< 3)]),2)
+        self.dE2 = np.round(min(training_data['x'][(training_data['x']> 3)]),1)
+        self.dE0 = np.round(self.dE1 - .5, 2) 
+        
+        all_files_cost = glob.glob(path_to_data + path_cost)
+        all_files_cost_sorted = natsort.natsorted(all_files_cost)
+        
+        chi2_array = []
+        chi2_index = []
+        
+        for filename in all_files_cost_sorted:
+            df = pd.read_csv(filename, delimiter=",", header=0, usecols=[0,1], names=['train', 'test'])
+            best_try = np.argmin(df['test'])
+            chi2_array.append(df.iloc[best_try,0])
+            chi2_index.append(best_try)
+        
+        chi_data  = pd.DataFrame()
+        chi_data['Best chi2 value'] = chi2_array
+        chi_data['Epoch'] = chi2_index
+            
+        good_files = []
+        count = 0
+        threshold = 3
+        
+        for i,j in enumerate(chi2_array):
+            if j < threshold:
+                good_files.append(1) 
+                count +=1 
+            else:
+                good_files.append(0)
+        """
+        
+        
+        tf.get_default_graph()
+        tf.disable_eager_execution()
+        #config = tf.ConfigProto()
+        #config.gpu_options.allow_growth = True
+        
+        
+        def make_model(inputs, n_outputs):
+            hidden_layer_1 = tf.layers.dense(inputs, 10, activation=tf.nn.sigmoid)
+            hidden_layer_2 = tf.layers.dense(hidden_layer_1, 15, activation=tf.nn.sigmoid)
+            hidden_layer_3 = tf.layers.dense(hidden_layer_2, 5, activation=tf.nn.relu)
+            output = tf.layers.dense(hidden_layer_3, n_outputs, name='outputs', reuse=tf.AUTO_REUSE)
+            return output
+        
+        x = tf.placeholder("float", [None, 2], name="x")
+        predictions = make_model(x, 1)
+        
+        
+        prediction_file = pd.DataFrame()
+        len_data = self.l
+        predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+        predict_x = self.deltaE.reshape(self.l,1)
+        
+        predict_x = np.empty((0,2))
+        for i in range(self.n_clusters):
+            predict_x = np.concatenate((predict_x, np.vstack((self.deltaE,np.ones(self.l)*self.clusters[i])).T))
+    
+        
+        count = 40
+        good_files = np.ones(count)
+        
+        d_string = '11.02.2021'
+        
+        self.ZLPs_gen = np.zeros((count, len_data))
+        with tf.Session() as sess: #TODO: gives warning
+            sess.run(tf.global_variables_initializer())
+            
+            for i in range(0,len(good_files)):
+                if good_files[i] == 1:
+                    best_model = 'Models_004_2/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    saver = tf.train.Saver(max_to_keep=1000)
+                    saver.restore(sess, best_model)
+        
+                    extrapolation = sess.run(predictions, #TODO: RESTARTS KERNEL!!!!!
+                                            feed_dict={
+                                            x: predict_x
+                                            })
+                    prediction_file['prediction_%(i)s' % {"i": i}] = extrapolation.reshape(len_data,)
+                    self.ZLPs_gen[i, :] = np.exp(extrapolation)#.reshape(len_data,)
+
         
     @staticmethod
     def make_model(inputs, n_outputs):
@@ -1096,18 +1254,19 @@ def iCFT(x, Y_k):
 #%%
 #dmfile = dm.fileDM('area03-eels-SI-aligned.dm4')
 #data2 = dmfile.getDataset(0)
-"""
-im = Spectral_image.load_data('dmfiles/h-ws2_eels-SI_003.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
-im.plot_sum()
+
+im2 = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_003.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
+im2.plot_sum()
 for i in [5]:#[3,4,5,10]:
-    im.cluster(n_clusters = i)
+    im2.cluster(n_clusters = i)
     plt.figure()
     plt.title("spectral image, clustered with " + str(i) + " clusters")
     plt.xlabel("[m]")
     plt.ylabel("[m]")
-    xticks, yticks = im.get_ticks()
-    ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
+    xticks, yticks = im2.get_ticks()
+    ax = sns.heatmap(im2.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
+"""
 im.train_ZLPs(conf_interval = 0.7)
 """
 
@@ -1123,8 +1282,9 @@ for i in [5]:#[3,4,5,10]:
     xticks, yticks = im.get_ticks()
     ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
-"""
+
 im.train_ZLPs(conf_interval = 0.7)
+"""
 """
 im.cut_image([0,70], [95,100])
 #im.cut_image([40,41],[4,5])
