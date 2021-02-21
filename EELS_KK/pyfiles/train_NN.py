@@ -9,6 +9,7 @@ TRAINING ZLP MODEL
 import numpy as np
 import pandas as pd
 import math
+import os
 from copy import copy
 import scipy
 import matplotlib.pyplot as plt
@@ -238,7 +239,7 @@ def fun_clusters(clusters, function, **kwargs):
 
 def smooth_clusters(image, clusters, window_len = None):
     smoothed_clusters = np.zeros((image.n_clusters), dtype = object)
-    for i in range(image.n_clusters):
+    for i in range(len(clusters)):
         smoothed_clusters[i] = smooth(clusters[i])
     return smoothed_clusters
 
@@ -285,7 +286,7 @@ def train_NN(image, spectra):#, vacuum_in):
     
     
     #filter out negatives and 0's
-    for i  in range(image.n_clusters):
+    for i  in range(len(spectra)):
         spectra[i][spectra[i]<1] = 1
     
     
@@ -308,7 +309,7 @@ def train_NN(image, spectra):#, vacuum_in):
     
     
     
-    full_x = np.vstack((spectra_mean,cluster_intensities)).T
+    full_x = np.vstack((deltaE,cluster_intensities)).T
     full_y = spectra_mean # = df_train_full.drop_duplicates(subset = ['x']) # Only keep one copy per x-value
     full_sigma = spectra_var
     del spectra_mean, spectra_var
@@ -347,7 +348,7 @@ def function_train(image, full_x, full_y, full_sigma):
     
     """
     
-    
+    n_input = 1
     
     
     
@@ -358,10 +359,13 @@ def function_train(image, full_x, full_y, full_sigma):
     y = tf.placeholder("float", [None, 1], name="y")
     sigma = tf.placeholder("float", [None, 1], name="sigma")
     
+    if n_input == 1:
+        x = tf.placeholder("float", [None, 1], name="x")
+    
     predictions = make_model(x,1)
     
     #MONTE CARLO
-    N_rep = 40
+    N_rep = 10
     N_full = len(full_y)
 
     full_y_reps = np.zeros(shape=(N_full, N_rep))
@@ -382,30 +386,45 @@ def function_train(image, full_x, full_y, full_sigma):
         predict_x = np.concatenate((predict_x, np.vstack((image.deltaE,np.ones(image.l)*image.clusters[i])).T))
     #image.deltaE #np.linspace(pred_min,pred_max,N_pred).reshape(N_pred,1)
     N_pred = image.l * image.n_clusters
-    
+    predict_x = predict_x.reshape(N_pred, 2)
+    if n_input ==1:
+        N_pred = image.l
+        predict_x = image.deltaE.reshape(N_pred,1)
+        full_x = full_x[:, 0]
     
     chi_array = []
     
     cost = tf.reduce_mean(tf.square((y-predictions)/sigma), name="cost_function")
-    eta = 28.0e-3
+    eta = 6.0e-3
     optimizer = tf.train.RMSPropOptimizer(learning_rate=eta, decay=0.9, momentum=0.0, epsilon=1e-10).minimize(cost)
     saver = tf.train.Saver(max_to_keep=1000)
     
     #print("Start training on", '%04d'%(N_train), "and validating on",'%0.4d'%(N_test), "samples")
     
     #Nrep = 100
-
+    map_name = 'Models'
+    i=0
+    while os.path.exists(map_name):
+        map_name = 'Models' + str(i)
+        i += 1
+        
+        
     for i in range(0,N_rep):
+        
+        
         
         full_y = full_y_reps[:, i].reshape(N_full,1)
         
         train_x, test_x, train_y, test_y, train_sigma, test_sigma = \
             train_test_split(full_x, full_y, full_sigma, test_size=ratio_test)
     
-        print(len(train_x))
+        #print(len(train_x))
         N_train = len(train_y)
         N_test = len(test_y)
-        train_x, test_x = train_x.reshape(N_train,2), test_x.reshape(N_test,2)
+        if n_input == 2:
+            train_x, test_x = train_x.reshape(N_train,2), test_x.reshape(N_test,2)
+        else:
+            train_x, test_x = train_x.reshape(N_train,1), test_x.reshape(N_test,1)            
         train_y, test_y = train_y.reshape(N_train,1), test_y.reshape(N_test,1)
         train_sigma, test_sigma = train_sigma.reshape(N_train,1), test_sigma.reshape(N_test,1)
         
@@ -443,7 +462,7 @@ def function_train(image, full_x, full_y, full_sigma):
                     print("Epoch:", '%04d' % (epoch+1), "| Training cost=", "{:.9f}".format(avg_cost), "| Validation cost=", "{:.9f}".format(test_cost))
                     array_train.append(avg_cost)
                     array_test.append(test_cost)
-                    path_to_data = 'Models/All_models/'
+                    path_to_data = map_name + '/All_models/'
                     Path(path_to_data).mkdir(parents=True, exist_ok=True)
                     saver.save(sess, path_to_data + 'my-model.ckpt', global_step=epoch , write_meta_graph=False) 
 
@@ -454,7 +473,7 @@ def function_train(image, full_x, full_y, full_sigma):
 
             best_iteration = np.argmin(array_test) 
             best_epoch = best_iteration * display_step
-            best_model = 'Models/All_models/my-model.ckpt-%(s)s' % {'s': best_epoch}
+            best_model = map_name + '/All_models/my-model.ckpt-%(s)s' % {'s': best_epoch}
 
             print("Optimization %(i)s Finished! Best model after epoch %(s)s" % {'i': i, 's': best_epoch})
             
@@ -465,7 +484,7 @@ def function_train(image, full_x, full_y, full_sigma):
             t_string = now.strftime("%H:%M:%S")
             
             saver.restore(sess, best_model)
-            path_to_data = 'Models/Best_models/%(s)s/'  % {'s': d_string}
+            path_to_data = map_name + '/Best_models/%(s)s/'  % {'s': d_string}
             Path(path_to_data).mkdir(parents=True, exist_ok=True)
             saver.save(sess, path_to_data + 'best_model_%(i)s' %{'i': i})
 
@@ -489,14 +508,14 @@ def function_train(image, full_x, full_y, full_sigma):
         nownow = datetime.now()
         print("time elapsed", nownow-now)
 
-        a = np.array(train_x).reshape(N_train,2)
+        #a = np.array(train_x).reshape(N_train,2)
         b = np.array(train_y).reshape(N_train,)
         c = np.array(predictions_values).reshape(N_train,)
         
         d = array_train
         e = array_test
        
-        k = np.array(predict_x).reshape(N_pred,2)
+        #k = np.array(predict_x).reshape(N_pred,2)
         l = np.array(extrapolation).reshape(N_pred,)
         
         path_to_data = 'Data/Results/%(date)s/'% {"date": d_string} 

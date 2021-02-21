@@ -34,7 +34,9 @@ import logging
 from ncempy.io import dm
 
 from k_means_clustering import k_means
-from train_NN import train_NN
+#from train_NN import train_NN
+from train_NN_pc import train_NN_pc
+
 
 tf.get_logger().setLevel('ERROR')
 
@@ -54,6 +56,17 @@ class Spectral_image():
     
     
     def __init__(self, data, deltadeltaE, pixelsize = None, beam_energy = None, collection_angle = None, name = None):
+        """
+        INPUT:
+            data = 3D-numpy array (x-axis x y-axis x energy loss-axis), spectral image data
+            deltadeltaE = float, width of energy loss bins
+        Keyword-arguments:
+            pixelsize = float (default: None), width of pixels
+            beam_energy = float (default: None), energy of electron beam [eV]
+            collection_angle = float (default: None), collection angle of STEM [rad]
+            name = str (default: None), name if given along is used in title of plots
+        """
+        
         self.data = data
         self.ddeltaE = deltadeltaE
         self.determine_deltaE()
@@ -68,24 +81,29 @@ class Spectral_image():
             self.name = name
     
     
-    #PROPERTIES
+    #%%PROPERTIES
     @property
     def l(self):
+        """returns length of spectra, i.e. num energy loss bins"""
         return self.data.shape[2]
     @property
     def image_shape(self):
+        """return 2D-shape of spectral image"""
         return self.data.shape[:2]
     
     @property
     def shape(self):
+        """returns 3D-shape of spectral image"""
         return self.data.shape
         
     @property
     def n_clusters(self):
+        """return number of clusters image is clustered into"""
         return len(self.clusters)
     
     @property
     def n_spectra(self):
+        """returns number of spectra in specral image"""
         return np.product(self.image_shape)
     
     @classmethod
@@ -143,22 +161,34 @@ class Spectral_image():
             self.y_axis *= self.pixelsize[0]
             self.x_axis *= self.pixelsize[1] 
     
-    #RETRIEVING FUNCTIONS
+    #%%RETRIEVING FUNCTIONS
     def get_data(self): #TODO: add smooth possibility
+        """returns spectra image data in 3D-numpy array (x-axis x y-axis x energy loss-axis)"""
         return self.data
     
     def get_deltaE(self):
+        """returns energy loss axis in numpy array"""
         return self.deltaE
     
     def get_metadata(self):
+        """returns list with values for beam_energy and collection_angle, if defined"""
         meta_data = {}
         if self.beam_energy is not None:
             meta_data['beam_energy'] = self.beam_energy
         if self.collection_angle is not None:
-            meta_data['collection_angl'] = self.collection_angle
+            meta_data['collection_angle'] = self.collection_angle
         return meta_data
     
     def get_pixel_signal(self, i,j, signal = 'EELS'):
+        """
+        INPUT:
+            i: int, x-coordinate for the pixel
+            j: int, y-coordinate for the pixel
+        Keyword argument:
+            signal: str (default = 'EELS'), what signal is requested, should comply with defined names
+        OUTPUT:
+            signal: 1D numpy array, array with the requested signal from the requested pixel
+        """
         #TODO: add alternative signals + names
         if signal in self.EELS_NAMES:
             return np.copy(self.data[ i, j, :])
@@ -168,7 +198,34 @@ class Spectral_image():
             return np.copy(self.data[ i, j, :])
     
     
-    #METHODS ON SIGNAL
+    def get_cluster_spectra(self, conf_interval = 0.68, clusters = None, save_as_attribute = False):
+        if clusters is None:
+            clusters = range(self.n_clusters)
+        if conf_interval >= 1:
+            ci_lim = 0
+        
+        integrated_I = np.sum(self.data, axis = 2)
+        cluster_data = np.zeros(len(clusters), dtype = object)
+        
+        j=0
+        for i in clusters:
+            data_cluster = self.data[self.clustered == i]
+            intensities_cluster = integrated_I[self.clustered == i]
+            arg_sort_I = np.argsort(intensities_cluster)
+            if conf_interval < 1:
+                ci_lim = round((1-conf_interval)/2 *intensities_cluster.size) #TODO: ask juan: round up or down?
+            data_cluster = data_cluster[arg_sort_I][ci_lim:-ci_lim]
+            intensities_cluster = np.ones(len(intensities_cluster)-2*ci_lim)*self.clusters[i]
+            cluster_data[j] = data_cluster
+            j += 1
+        
+        if save_as_attribute:
+            self.cluster_data = cluster_data
+        else:
+            return cluster_data
+    
+    
+    #%%METHODS ON SIGNAL
     
     def cut(self, E1, E2):
         #TODO
@@ -263,7 +320,7 @@ class Spectral_image():
         
         return J1_E[:self.l]
     
-    #METHODS ON ZLP
+    #%%METHODS ON ZLP
     #CALCULATING ZLPs FROM PRETRAINDED MODELS
     def calculate_general_ZLPs(self, path_to_models):
         tf.reset_default_graph()
@@ -307,14 +364,16 @@ class Spectral_image():
             
         good_files = []
         count = 0
-        threshold = 3
+        threshold = 6
         
         for i,j in enumerate(chi2_array):
             if j < threshold:
                 good_files.append(1) 
                 count +=1 
             else:
-                good_files.append(0)
+                good_fi
+                
+                les.append(0)
         
         tf.get_default_graph()
         tf.disable_eager_execution()
@@ -357,33 +416,78 @@ class Spectral_image():
   
     
   
-    def calc_ZLPs_gen2_I(self,  specimen = 4):
-        tf.reset_default_graph()
-        d_string = '11.02.2021'
-        count = 40
+    def calc_ZLPs_gen2_I(self, path_model = "Models", d_string = '13.02.2021', count = 50, n_input = 1, specimen = 4):
+        #GET GOODFILES KAN HEUL VEEL MAKKELIJKER< NIET NU
         
+        path_to_data = path_model + '/Results/%(date)s/'% {"date": d_string} 
+        
+        path_predict = r'Predictions_*.csv'
+        path_cost = r'Cost_*.csv' 
+        
+        all_files = glob.glob(path_to_data + path_predict)
+        
+        li = []
+        for filename in all_files:
+            df = pd.read_csv(filename, delimiter=",",  header=0, usecols=[0,1,2], names=['x', 'y', 'pred'])
+            li.append(df)
+        
+        
+        
+        all_files_cost = glob.glob(path_to_data + path_cost)
+        all_files_cost_sorted = natsort.natsorted(all_files_cost)
+        
+        chi2_array = []
+        chi2_index = []
+        
+        for filename in all_files_cost_sorted:
+            df = pd.read_csv(filename, delimiter=",", header=0, usecols=[0,1], names=['train', 'test'])
+            best_try = np.argmin(df['test'])
+            chi2_array.append(df.iloc[best_try,0])
+            chi2_index.append(best_try)
+        
+        chi_data  = pd.DataFrame()
+        chi_data['Best chi2 value'] = chi2_array
+        chi_data['Epoch'] = chi2_index
+            
+        good_files = []
+        count = 0
+        threshold = 3
+        
+        for i,j in enumerate(chi2_array):
+            if j < threshold:
+                good_files.append(1) 
+                count +=1 
+            else:
+                good_files.append(0)
+        
+        count = len(good_files)
         
         
         tf.get_default_graph()
         tf.disable_eager_execution()
         
-        
-        
-        x = tf.placeholder("float", [None, 2], name="x")
+        #n_input = 1
+        if n_input == 2:
+            x = tf.placeholder("float", [None, 2], name="x")
+        else:
+            x = tf.placeholder("float", [None, 1], name="x")
         predictions = self.make_model(x, 1)
         
         
         prediction_file = pd.DataFrame()
         len_data = self.l * self.n_clusters
         predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
-        predict_x = self.deltaE.reshape(len_data,1)
         
-        predict_x = np.empty((0,2))
-        for i in range(self.n_clusters):
-            predict_x = np.concatenate((predict_x, np.vstack((self.deltaE,np.ones(self.l)*self.clusters[i])).T))
+        if n_input == 1:
+            len_data = self.l
+            predict_x = self.deltaE.reshape(len_data,1)
+        else:
+            predict_x = np.empty((0,2))
+            for i in range(self.n_clusters):
+                predict_x = np.concatenate((predict_x, np.vstack((self.deltaE,np.ones(self.l)*self.clusters[i])).T))
     
         
-        good_files = np.ones(count)
+        #good_files = np.ones(count)
         
         
         
@@ -394,7 +498,11 @@ class Spectral_image():
             
             for i in range(0,len(good_files)):
                 if good_files[i] == 1:
-                    best_model = 'Models_004_2/Best_models/sp3/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    #print("ik kom hier")
+                    if n_input == 1:#2: #HIER CHANGE #TODO
+                        best_model = path_model + '/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+                    else:
+                        best_model = path_model + '_ni_1/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
                     saver = tf.train.Saver(max_to_keep=1000)
                     saver.restore(sess, best_model)
         
@@ -489,7 +597,7 @@ class Spectral_image():
         predict_x = np.empty((0,2))
         for i in range(self.n_clusters):
             predict_x = np.concatenate((predict_x, np.vstack((self.deltaE,np.ones(self.l)*self.clusters[i])).T))
-    
+        len_data = self.l*self.n_clusters
         
         count = 40
         good_files = np.ones(count)
@@ -657,7 +765,7 @@ class Spectral_image():
         return ZLPs
         
     
-    def train_ZLPs(self, n_clusters = None, conf_interval = 0.95):
+    def train_ZLPs(self, n_clusters = None, conf_interval = 0.68, clusters = None):
         if not hasattr(self, "clustered"):
             if n_clusters is not None:
                 self.cluster(n_clusters)
@@ -666,30 +774,27 @@ class Spectral_image():
         elif n_clusters is not None and self.n_clusters != n_clusters:
             self.cluster(n_clusters)
         
-        if conf_interval >= 1:
-            ci_lim = 0
-        
-        integrated_I = np.sum(self.data, axis = 2)
-        
-        training_data_spectra = np.empty((0,self.l))
-        training_data_intensity = np.empty((0,1))
-        
-        training_data = np.zeros(self.n_clusters, dtype = object)
-        
-        for i in range(self.n_clusters):
-            data_cluster = self.data[self.clustered == i]
-            intensities_cluster = integrated_I[self.clustered == i]
-            arg_sort_I = np.argsort(intensities_cluster)
-            if conf_interval < 1:
-                ci_lim = round((1-conf_interval)/2 *intensities_cluster.size) #TODO: ask juan: round up or down?
-            data_cluster = data_cluster[arg_sort_I][ci_lim:-ci_lim]
-            intensities_cluster = np.ones(len(intensities_cluster)-2*ci_lim)*self.clusters[i]
-            training_data_spectra = np.append(training_data_spectra, data_cluster)
-            training_data_intensity = np.append(training_data_intensity, intensities_cluster)
-            training_data[i] = data_cluster
-        
-        #self.models = train_NN(self, training_data_spectra, training_data_intensity)
+        training_data = self.get_cluster_spectra( conf_interval = conf_interval, clusters = clusters)
         self.models = train_NN(self, training_data)
+
+
+    def train_ZLPs_pc(self, n_clusters = None, conf_interval = 0.68, clusters = None):
+        if not hasattr(self, "clustered"):
+            if n_clusters is not None:
+                self.cluster(n_clusters)
+            else:
+                self.cluster()
+        elif n_clusters is not None and self.n_clusters != n_clusters:
+            self.cluster(n_clusters)
+        
+        
+        intensities = []
+        for i in clusters:
+            intensities.append(self.clusters[i])
+        
+        training_data = self.get_cluster_spectra( conf_interval = conf_interval, clusters = clusters)
+        self.models = train_NN_pc(self, training_data, intensities = intensities)
+
 
     #METHODS ON DIELECTRIC FUNCTIONS
     
@@ -1165,7 +1270,14 @@ class Spectral_image():
             print("either no or unknown prefix in unit: " + unit + ", found prefix " + prefix + ", asuming no.")
         return 1
     
-    
+    @staticmethod
+    def calc_avg_ci(np_array, axis=0, ci = 16, return_low_high = True):
+        avg = np.average(np_array, axis=axis)
+        ci_low = np.nanpercentile(np_array,  ci, axis=axis)
+        ci_high = np.nanpercentile(np_array,  100-ci, axis=axis)
+        if return_low_high:
+            return avg, ci_low, ci_high
+        return avg, ci_high-ci_low
     
     #CLASS THINGIES
     def __getitem__(self, key):
@@ -1254,7 +1366,7 @@ def iCFT(x, Y_k):
 #%%
 #dmfile = dm.fileDM('area03-eels-SI-aligned.dm4')
 #data2 = dmfile.getDataset(0)
-
+"""
 im2 = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_003.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
 im2.plot_sum()
 for i in [5]:#[3,4,5,10]:
@@ -1266,6 +1378,8 @@ for i in [5]:#[3,4,5,10]:
     xticks, yticks = im2.get_ticks()
     ax = sns.heatmap(im2.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
+im2.calc_ZLPs_gen2_I()
+"""
 """
 im.train_ZLPs(conf_interval = 0.7)
 """
@@ -1273,6 +1387,7 @@ im.train_ZLPs(conf_interval = 0.7)
 """
 im = Spectral_image.load_data('../dmfiles/h-ws2_eels-SI_004.dm4')#('pyfiles/area03-eels-SI-aligned.dm4')
 im.plot_sum()
+
 for i in [5]:#[3,4,5,10]:
     im.cluster(n_clusters = i)
     plt.figure()
@@ -1283,8 +1398,23 @@ for i in [5]:#[3,4,5,10]:
     ax = sns.heatmap(im.clustered, xticklabels=xticks, yticklabels=yticks)
     plt.show()
 
-im.train_ZLPs(conf_interval = 0.7)
+for i in range(im.n_clusters):
+    im.train_ZLPs_pc(conf_interval = 0.7, clusters=[i])
+
 """
+cluster_ZLPs = np.zeros((im.n_clusters, 50, im.l))
+
+plt.figure()
+for i in range(im.n_clusters):
+    im.calc_ZLPs_gen2_I(path_model= "Models" + str(i) + '_2', d_string="16.02.2021", count = 50, n_input=1)
+    cluster_ZLPs[i,:len(im.ZLPs_gen),:] = im.ZLPs_gen
+    avg,low,high = im.calc_avg_ci(im.ZLPs_gen)
+    plt.fill_between(im.deltaE, low, high, alpha = 0.1)
+    plt.plot(im.deltaE, avg, label = "cluser " + str(i))
+plt.legend()
+
+
+
 """
 im.cut_image([0,70], [95,100])
 #im.cut_image([40,41],[4,5])
