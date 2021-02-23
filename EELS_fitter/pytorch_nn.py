@@ -12,6 +12,9 @@ from sklearn.model_selection import train_test_split
 import load_data
 import functions
 
+np.random.seed(100)
+
+
 wl1 = 50
 wl2 = 100
 
@@ -138,6 +141,9 @@ df_window_vacuum = load_data.df_vacuum[(load_data.df_vacuum['x_shifted'] <= dE1)
 df_mean, df_vacmean = pd.DataFrame(), pd.DataFrame()
 nbins = 30
 
+test1 = df_window['x_shifted'].min()
+test2 = df_window['x_shifted'].max()
+
 df_mean['x'] = np.linspace(df_window['x_shifted'].min(),df_window['x_shifted'].max(), nbins)
 df_mean['y'], df_mean['sigma'] = functions.binned_statistics(df_window['x_shifted'], np.log(df_window['y']), nbins)[0:2]
 
@@ -227,6 +233,8 @@ class MLP(nn.Module):
         x = self.relu(x)
         x = self.output(x)
         return x
+
+
 
 
 def loss_fn(input, target, error):
