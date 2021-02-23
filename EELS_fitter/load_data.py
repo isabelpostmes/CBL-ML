@@ -30,14 +30,9 @@ ndat=int(len(ZLP_y14))
 ZLP_x14 = np.zeros(ndat)
 Eloss_min = -4.054 # eV
 Eloss_max = +45.471 # eV
-i=0
-while(i<ndat):
-    ZLP_x14[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat) 
-    i = i + 1
 
-ZLP_x15, ZLP_x16, ZLP_x17, ZLP_x19, ZLP_x20, ZLP_x21, ZLP_x22, ZLP_x23 = \
-    ZLP_x14,  ZLP_x14,  ZLP_x14,  ZLP_x14,  ZLP_x14, ZLP_x14,  ZLP_x14, ZLP_x14
+ZLP_x14 = Eloss_min + (np.arange(ndat) + 0.5)*(Eloss_max-Eloss_min)/ndat
+ZLP_x15 = ZLP_x16 = ZLP_x17 = ZLP_x19 = ZLP_x20 = ZLP_x21 = ZLP_x22 = ZLP_x23 = ZLP_x14
 
 file14 = pd.DataFrame({"x":ZLP_x14, "y":ZLP_y14})
 file15 = pd.DataFrame({"x":ZLP_x15, "y":ZLP_y15})
