@@ -299,19 +299,28 @@ def function_train():
     
     Nrep = 100
 
-    for i in range(0,25):
+    for i in range(0,Nrep):
         
-        full_y = full_y_reps[:, i].reshape(N_full,1)
-        
-        train_x, test_x, train_y, test_y, train_sigma, test_sigma = \
-            train_test_split(full_x, full_y, full_sigma, test_size=.2)
-    
-        print(len(train_x))
-        train_x, test_x = train_x.reshape(N_train,1), test_x.reshape(N_test,1)
-        train_y, test_y = train_y.reshape(N_train,1), test_y.reshape(N_test,1)
-        train_sigma, test_sigma = train_sigma.reshape(N_train,1), test_sigma.reshape(N_test,1)
-        
-        
+        # full_y = full_y_reps[:, i].reshape(N_full,1)
+
+        full_y = full_y_reps[:, i].reshape(N_full, 1)
+        train_x, train_y, train_sigma = full_x, full_y, full_sigma
+        train_x = train_x.reshape(N_full, 1)
+        train_y = train_y.reshape(N_full, 1)
+        train_sigma = train_sigma.reshape(N_full, 1)
+
+        # train_x, test_x, train_y, test_y, train_sigma, test_sigma = \
+        #     train_test_split(full_x, full_y, full_sigma, test_size=.2)
+        #
+        # print(len(train_x))
+        # train_x, test_x = train_x.reshape(N_train,1), test_x.reshape(N_test,1)
+        # train_y, test_y = train_y.reshape(N_train,1), test_y.reshape(N_test,1)
+        # train_sigma, test_sigma = train_sigma.reshape(N_train,1), test_sigma.reshape(N_test,1)
+
+        # train_x = full_x.reshape(N_train,1)
+        # train_y = full_y.reshape(N_train,1)
+        # train_sigma = full_sigma.reshape(N_train,1)
+
         ### Train and validate
         prev_test_cost = 0
         prev_epoch = 0
@@ -324,8 +333,8 @@ def function_train():
 
             sess.run(tf.global_variables_initializer())
             
-            training_epochs  = 1000
-            display_step = 500
+            training_epochs  = 20000
+            display_step = 1000
 
             for epoch in range(training_epochs):
 
@@ -342,78 +351,78 @@ def function_train():
 
 
                 if epoch % display_step == 0:
-                    print("Epoch:", '%04d' % (epoch+1), "| Training cost=", "{:.9f}".format(avg_cost), "| Validation cost=", "{:.9f}".format(test_cost))
+                    print("Epoch:", '%04d' % (epoch+1), "| Training cost=", "{:.9f}".format(avg_cost))
                     array_train.append(avg_cost)
-                    array_test.append(test_cost)
+                    # array_test.append(test_cost)
                     saver.save(sess, 'Models/All_models/my-model.ckpt', global_step=epoch , write_meta_graph=False) 
 
                     
-                elif test_cost < prev_test_cost:
-                    prev_test_cost = test_cost
-                    prev_epoch = epoch
+                # elif test_cost < prev_test_cost:
+                #     prev_test_cost = test_cost
+                #     prev_epoch = epoch
 
-            best_iteration = np.argmin(array_test) 
-            best_epoch = best_iteration * display_step
-            best_model = 'Models/All_models/my-model.ckpt-%(s)s' % {'s': best_epoch}
+            # best_iteration = np.argmin(array_test)
+            # best_epoch = best_iteration * display_step
+            # best_model = 'Models/All_models/my-model.ckpt-%(s)s' % {'s': best_epoch}
 
-            print("Optimization %(i)s Finished! Best model after epoch %(s)s" % {'i': i, 's': best_epoch})
+            # print("Optimization %(i)s Finished! Best model after epoch %(s)s" % {'i': i, 's': best_epoch})
             
 
 
-            dt_string = now.strftime("%d.%m.%Y %H:%M:%S")
-            d_string = now.strftime("%d.%m.%Y")
-            t_string = now.strftime("%H:%M:%S")
-            
-            saver.restore(sess, best_model)
-            saver.save(sess, 'Models/Best_models/%(s)s/best_model_%(i)s' % {'s': d_string, 'i': i})
-
-
-            predictions_values = sess.run(predictions, 
-                                feed_dict={
-                                    x: train_x,
-                                    y: train_y 
-                                }) 
-
-
-            extrapolation = sess.run(predictions,
-                                feed_dict={
-                                    x: predict_x
-                                })
-            
+            # dt_string = now.strftime("%d.%m.%Y %H:%M:%S")
+            # d_string = now.strftime("%d.%m.%Y")
+            # t_string = now.strftime("%H:%M:%S")
+            #
+            # saver.restore(sess, best_model)
+            # saver.save(sess, 'Models/Best_models/%(s)s/best_model_%(i)s' % {'s': d_string, 'i': i})
+            #
+            #
+            # predictions_values = sess.run(predictions,
+            #                     feed_dict={
+            #                         x: train_x,
+            #                         y: train_y
+            #                     })
+            #
+            #
+            # extrapolation = sess.run(predictions,
+            #                     feed_dict={
+            #                         x: predict_x
+            #                     })
+            #
 
         sess.close()
         
 
-        nownow = datetime.now()
-        print("time elapsed", nownow-now)
-
-        a = np.array(train_x).reshape(N_train,)
-        b = np.array(train_y).reshape(N_train,)
-        c = np.array(predictions_values).reshape(N_train,)
-        
-        d = array_train
-        e = array_test
-       
-        k = np.array(predict_x).reshape(N_pred,)
-        l = np.array(extrapolation).reshape(N_pred,)
-        
-        path_to_data = 'Data/Results/%(date)s/'% {"date": d_string} 
-        
-        np.savetxt(path_to_data + 'Predictions_%(k)s.csv' % {"k": i}, list(zip(a,b,c)),  delimiter=',', fmt='%f')
-        np.savetxt(path_to_data + 'Cost_%(k)s.csv' % {"k": i}, list(zip(d,e)),  delimiter=',',fmt='%f')
-        np.savetxt(path_to_data + 'Extrapolation_%(k)s.csv' % {"k":i}, list(zip(k, l)),  delimiter=',', fmt='%f')
+        # nownow = datetime.now()
+        # print("time elapsed", nownow-now)
+        #
+        # a = np.array(train_x).reshape(N_train,)
+        # b = np.array(train_y).reshape(N_train,)
+        # c = np.array(predictions_values).reshape(N_train,)
+        #
+        # d = array_train
+        # e = array_test
+        #
+        # k = np.array(predict_x).reshape(N_pred,)
+        # l = np.array(extrapolation).reshape(N_pred,)
+        #
+        # path_to_data = 'Data/Results/%(date)s/'% {"date": d_string}
+        #
+        # np.savetxt(path_to_data + 'Predictions_%(k)s.csv' % {"k": i}, list(zip(a,b,c)),  delimiter=',', fmt='%f')
+        # np.savetxt(path_to_data + 'Cost_%(k)s.csv' % {"k": i}, list(zip(d,e)),  delimiter=',',fmt='%f')
+        # np.savetxt(path_to_data + 'Extrapolation_%(k)s.csv' % {"k":i}, list(zip(k, l)),  delimiter=',', fmt='%f')
+        #
     
-    
-    plt.figure(figsize=(10,5))
-    plt.plot(train_x, train_y, '.', label='train')
-    plt.plot(test_x, test_y, '.', label='test')
-    plt.axvline(x=dE1, color='lightgray')
-    plt.axvline(x=dE2, color='lightgray')
-    plt.title('Visualization of training data', fontsize=15)
-    plt.ylabel('Log intensity', fontsize=14)
-    plt.xlabel('Energy loss (eV)', fontsize=14)
-    plt.legend(fontsize=14)
-    plt.show()
+    # plt.figure(figsize=(10,5))
+    # plt.plot(train_x, train_y, '.', label='train')
+    # plt.plot(test_x, test_y, '.', label='test')
+    # plt.axvline(x=dE1, color='lightgray')
+    # plt.axvline(x=dE2, color='lightgray')
+    # plt.title('Visualization of training data', fontsize=15)
+    # plt.ylabel('Log intensity', fontsize=14)
+    # plt.xlabel('Energy loss (eV)', fontsize=14)
+    # plt.legend(fontsize=14)
+    # plt.show()
     
  #%%
  
@@ -425,43 +434,43 @@ function_train()
 
  #%%
  
-d_string = '09.11.2020'
-good_files = np.ones(100)
-prediction_file = pd.DataFrame()
-
-predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
-
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    
-    for i in range(0,25):
-        if good_files[i] == 1:
-            best_model = 'Models/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
-            #saver = tf.compat.v1.train.Saver(max_to_keep=1000)
-            saver = tf.train.Saver(max_to_keep=1000)
-            saver.restore(sess, best_model)
-
-            extrapolation = sess.run(predictions,
-                                    feed_dict={
-                                    x: predict_x
-                                    })
-
-            prediction_file['prediction_%(i)s' % {"j": j, "i": i}] = extrapolation.reshape(1000,)
-            
-
-#%%
-
-for i in range(0,25):
-    plt.plot(predict_x, np.exp(prediction_file.iloc[:,i]))
-    plt.xlim([1, 5])
-    plt.ylim([0, 10000])
-
-
-
-
-
-
-
+# d_string = '09.11.2020'
+# good_files = np.ones(100)
+# prediction_file = pd.DataFrame()
+#
+# predict_x = np.linspace(-0.5, 20, 1000).reshape(1000,1)
+#
+# with tf.Session() as sess:
+#     sess.run(tf.global_variables_initializer())
+#
+#     for i in range(0,25):
+#         if good_files[i] == 1:
+#             best_model = 'Models/Best_models/%(s)s/best_model_%(i)s'% {'s': d_string, 'i': i}
+#             #saver = tf.compat.v1.train.Saver(max_to_keep=1000)
+#             saver = tf.train.Saver(max_to_keep=1000)
+#             saver.restore(sess, best_model)
+#
+#             extrapolation = sess.run(predictions,
+#                                     feed_dict={
+#                                     x: predict_x
+#                                     })
+#
+#             prediction_file['prediction_%(i)s' % {"j": j, "i": i}] = extrapolation.reshape(1000,)
+#
+#
+# #%%
+#
+# for i in range(0,25):
+#     plt.plot(predict_x, np.exp(prediction_file.iloc[:,i]))
+#     plt.xlim([1, 5])
+#     plt.ylim([0, 10000])
+#
+#
+#
+#
+#
+#
+#
 
 
 

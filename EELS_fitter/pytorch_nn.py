@@ -235,11 +235,12 @@ class MLP(nn.Module):
         return x
 
 
+def weight_reset(m):
+    if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+        m.reset_parameters()
 
-
-def loss_fn(input, target, error):
-    loss = torch.mean(((input - target)/error) ** 2)
-    print(loss)
+def loss_fn(output, target, error):
+    loss = torch.mean(torch.square((output - target)/error))
     return loss
 
 # TODO: write a dataloader
@@ -253,18 +254,21 @@ def training_loop(n_epochs):
     display_step = 1000
     for i in range(n_rep):
         print("Started training on replica number {}".format(i))
+
         model = MLP(num_inputs=1, num_outputs=1)
-        optimizer = optim.Adam(model.parameters(), lr=6 * 1e-3)
+        model.apply(weight_reset)
+        #optimizer = optim.RMSprop(model.parameters(), lr=6 * 1e-3, eps=1e-5, momentum=0.0, alpha = 0.9)
+        optimizer = optim.Adam(model.parameters(), lr=1e-3)
         # TODO: rewrite to include pytorch directly, see pyfiles/train_nn.py
         full_y = full_y_reps[:, i].reshape(N_full, 1)
-        train_x, test_x, train_y, test_y, train_sigma, test_sigma = train_test_split(full_x, full_y, full_sigma, test_size=.2)
-        train_x, test_x = train_x.reshape(N_train, 1), test_x.reshape(N_test, 1)
-        train_y, test_y = train_y.reshape(N_train, 1), test_y.reshape(N_test, 1)
-        train_sigma, test_sigma = train_sigma.reshape(N_train, 1), test_sigma.reshape(N_test, 1)
+        train_x, train_y,train_sigma = full_x, full_y, full_sigma
+        train_x = train_x.reshape(N_full, 1)
+        train_y = train_y.reshape(N_full, 1)
+        train_sigma = train_sigma.reshape(N_full, 1)
 
         train_x = torch.from_numpy(train_x)
         train_y = torch.from_numpy(train_y)
-        train_sigma = train_x = torch.from_numpy(train_sigma)
+        train_sigma = torch.from_numpy(train_sigma)
         # train_data_x, train_data_y, train_errors = get_batch(i)
         for epoch in range(1, n_epochs + 1):
             output = model(train_x.float())
@@ -275,10 +279,11 @@ def training_loop(n_epochs):
             optimizer.step()
 
             if epoch % display_step == 0:
-                print('{} Epoch {}, Training loss {}'.format(datetime.datetime.now(), epoch, loss_train))
+                print('Epoch {}, Training loss {}'.format(epoch, loss_train))
 
 
 # model = MLP(num_inputs=1, num_outputs=1)
+# optimizer = optim.RMSprop(model.parameters(), lr=6*1e-3, eps=1e-5, momentum=0)
 # optimizer = optim.Adam(model.parameters(), lr=6*1e-3)
 
 training_loop(
