@@ -27,15 +27,21 @@ ZLP_y23 = np.loadtxt(fname + "(23)_Vacuum_m4d054eV_45d471eV.txt")
 ndat=int(len(ZLP_y14))
 
 # Energy loss values
+#ZLP_x14 = np.zeros(ndat)
+# Eloss_min = -4.054 # eV
+# Eloss_max = +45.471 # eV
+
 ZLP_x14 = np.zeros(ndat)
 Eloss_min = -4.054 # eV
 Eloss_max = +45.471 # eV
 i=0
 while(i<ndat):
     ZLP_x14[i]= Eloss_min +\
-        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat) 
+        ( Eloss_max - Eloss_min)*((i+0.5)*1.0/ndat)
     i = i + 1
 
+# ZLP_x14 = Eloss_min + (np.arange(ndat) + 0.5)*(Eloss_max-Eloss_min)/ndat
+#ZLP_x15 = ZLP_x16 = ZLP_x17 = ZLP_x19 = ZLP_x20 = ZLP_x21 = ZLP_x22 = ZLP_x23 = ZLP_x14
 ZLP_x15, ZLP_x16, ZLP_x17, ZLP_x19, ZLP_x20, ZLP_x21, ZLP_x22, ZLP_x23 = \
     ZLP_x14,  ZLP_x14,  ZLP_x14,  ZLP_x14,  ZLP_x14, ZLP_x14,  ZLP_x14, ZLP_x14
 
